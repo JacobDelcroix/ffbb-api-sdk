@@ -30,12 +30,20 @@ Les DTOs de hits sont générés depuis les modèles du SDK Python, **complété
 observés** dans chaque index (par exemple `joue`, `resultatEquipe1` et `resultatEquipe2` sur les rencontres,
 absents du modèle Python). Liste complète des propriétés : [référence DTOs](../reference/dtos.md#réponses-meilisearch-et-lives).
 
-Comme dans le SDK Python, deux comportements à connaître :
+Deux comportements à connaître :
 
-1. **Filtrage côté client** : un hit n'est gardé que si le texte recherché apparaît vraiment dans un de ses
-   champs « nom » (nom du club, commune, équipes…). La recherche floue de Meilisearch ne remonte donc pas de faux positifs.
-2. **Pagination complète** : `limit` fixe la taille de la première page, mais **toutes** les pages suivantes
-   sont récupérées (par 1000) jusqu'à `estimatedTotalHits`. Une recherche large peut donc renvoyer beaucoup de hits.
+1. **Filtrage côté client** (comme le SDK Python) : un hit n'est gardé que si le texte recherché apparaît vraiment
+   dans un de ses champs « nom » (nom du club, commune, équipes…). La recherche floue de Meilisearch ne remonte donc
+   pas de faux positifs, mais une page peut contenir moins de `limit` hits.
+2. **`limit` est un plafond** : `searchNews('a', limit: 10)` renvoie au plus 10 hits. Au-delà de la taille d'une
+   page Meilisearch, les pages suivantes sont récupérées (par 1000) jusqu'à `limit`. Avec `limit: null`, **toutes**
+   les pages sont récupérées jusqu'à `estimatedTotalHits`, comme le fait toujours le SDK Python.
+
+```php
+$ffbb->searchSalles('gymnase', limit: 25);     // 25 hits maximum
+$ffbb->searchSalles('gymnase', limit: null);   // tous les hits (peut être long)
+$ffbb->multiSearch('Lille', limit: 5);         // 5 hits maximum par index
+```
 
 ## Les 13 index
 

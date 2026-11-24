@@ -18,7 +18,8 @@ use Psr\SimpleCache\CacheInterface;
  *
  * - multiSearch()                 : POST multi-search avec cache applicatif (TTL 300 s) ;
  * - smartMultiSearch()            : + filtrage des hits côté client (HitMatcher) ;
- * - recursiveSmartMultiSearch()   : + récupération de toutes les pages jusqu'à estimatedTotalHits.
+ * - recursiveSmartMultiSearch()   : + récupération des pages suivantes, jusqu'à `limit` hits
+ *                                   (ou jusqu'à estimatedTotalHits si `limit` est null).
  *
  * Un résultat est le tableau brut renvoyé par Meilisearch pour une sous-requête :
  * indexUid, hits, query, limit, offset, estimatedTotalHits, facetDistribution, facetStats…
@@ -113,7 +114,11 @@ final class MeilisearchSearcher
                 continue;
             }
 
-            $ceiling = $result['estimatedTotalHits'];
+            // `limit` plafonne le nombre total de hits (écart volontaire avec le Python, qui pagine
+            // toujours jusqu'à estimatedTotalHits) ; null = toutes les pages.
+            $ceiling = $query->limit === null
+                ? $result['estimatedTotalHits']
+                : min($result['estimatedTotalHits'], ($query->offset ?? 0) + $query->limit);
             $offset = ($query->offset ?? 0) + count($result['hits']);
 
             while ($offset < $ceiling) {

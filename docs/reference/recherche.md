@@ -47,12 +47,13 @@ Guide avec exemples : [05-recherche](../guides/05-recherche.md)
 Recherche universelle sur les 13 index (un résultat par index, dans l'ordre de l'enum Index).
 
 ```php
-public function multiSearch(?string $name = null): ?array
+public function multiSearch(?string $name = null, ?int $limit = 10): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
 | `$name` | `?string` | `null` | Texte recherché (null : aucune requête). |
+| `$limit` | `int\|null` | `10` | hits maximum par index (null = tous) |
 
 **Retour :** `list<SearchResult<object>>|null`
 

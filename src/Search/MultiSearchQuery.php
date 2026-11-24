@@ -85,7 +85,7 @@ final readonly class MultiSearchQuery
      *
      * @return list<self>
      */
-    public static function forAllIndexes(?string $q, ?int $limit = 1): array
+    public static function forAllIndexes(?string $q, ?int $limit = 10): array
     {
         return array_map(
             static fn (Index $index): self => self::for($index, $q, $limit),

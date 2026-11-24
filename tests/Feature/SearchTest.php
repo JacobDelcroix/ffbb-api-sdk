@@ -33,27 +33,60 @@ it('cherche un club et filtre les hits côté client', function () {
         ->and($mock->getLastPendingRequest()->headers()->get('Authorization'))->toBe('Bearer meili-token-1234567890');
 });
 
-it('récupère les pages suivantes jusqu à estimatedTotalHits', function () {
-    $bodies = [];
-    $mock = new MockClient([MultiSearch::class => function (PendingRequest $request) use (&$bodies) {
+/**
+ * Faux Meilisearch : 2500 hits au total, 1000 maximum par page, 20 sans limit (défaut Meilisearch).
+ *
+ * @param  list<array{int, int|null}>  $bodies
+ */
+function paginatedMeili(array &$bodies): MockClient
+{
+    return new MockClient([MultiSearch::class => function (PendingRequest $request) use (&$bodies) {
         $results = [];
 
         foreach ($request->body()->all()['queries'] as $query) {
-            $bodies[] = [$query['offset'], $query['limit']];
-            $count = min($query['limit'], 2500 - $query['offset']);
+            $bodies[] = [$query['offset'], $query['limit'] ?? null];
+            $count = max(0, min($query['limit'] ?? 20, 1000, 2500 - $query['offset']));
             $results[] = [
-                'hits' => array_map(static fn (int $i): array => ['id' => (string) ($query['offset'] + $i)], range(0, $count - 1)),
+                'hits' => array_map(static fn (int $i): array => ['id' => (string) ($query['offset'] + $i)], $count > 0 ? range(0, $count - 1) : []),
                 'estimatedTotalHits' => 2500,
             ];
         }
 
         return meili($results);
     }]);
+}
 
-    $result = ffbb($mock)->searchRencontres('', limit: 500);
+it('respecte limit comme plafond du nombre de hits', function () {
+    $bodies = [];
+    $result = ffbb(paginatedMeili($bodies))->searchRencontres('', limit: 10);
+
+    expect($result->hits)->toHaveCount(10)
+        ->and($bodies)->toBe([[0, 10]]);
+});
+
+it('complète jusqu à limit quand limit dépasse une page', function () {
+    $bodies = [];
+    $result = ffbb(paginatedMeili($bodies))->searchRencontres('', limit: 1500);
+
+    expect($result->hits)->toHaveCount(1500)
+        ->and($bodies)->toBe([[0, 1500], [1000, 500]]);
+});
+
+it('récupère toutes les pages jusqu à estimatedTotalHits avec limit null', function () {
+    $bodies = [];
+    $result = ffbb(paginatedMeili($bodies))->searchRencontres('', limit: null);
 
     expect($result->hits)->toHaveCount(2500)
-        ->and($bodies)->toBe([[0, 500], [500, 1000], [1500, 1000]]);
+        ->and($bodies)->toBe([[0, null], [20, 1000], [1020, 1000], [2020, 480]]);
+});
+
+it('plafonne aussi la recherche universelle par index', function () {
+    $bodies = [];
+    $results = ffbb(paginatedMeili($bodies))->multiSearch('', limit: 3);
+
+    expect($results)->toHaveCount(13)
+        ->and($results[0]->hits)->toHaveCount(3)
+        ->and($bodies)->toHaveCount(13);
 });
 
 it('construit les filtres géographiques comme le Python', function () {

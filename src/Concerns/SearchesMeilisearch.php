@@ -25,8 +25,9 @@ use CoachBasket\Ffbb\Support\Validator;
  * Recherche Meilisearch (miroir de _SearchFacade / MeilisearchFFBBClient).
  *
  * Chaque recherche renvoie un SearchResult typé : hits (DTO de l'index), estimatedTotalHits,
- * facetDistribution, facetStats… Comme en Python, toutes les pages sont récupérées jusqu'à
- * estimatedTotalHits et les hits sont filtrés côté client (HitMatcher).
+ * facetDistribution, facetStats… `limit` plafonne le nombre de hits (les pages suivantes sont
+ * récupérées si `limit` dépasse la taille d'une page Meilisearch) ; `limit: null` récupère toutes les pages
+ * jusqu'à estimatedTotalHits, comme le Python. Les hits sont filtrés côté client (HitMatcher).
  *
  * @property-read MeilisearchSearcher $search
  *
@@ -37,11 +38,12 @@ trait SearchesMeilisearch
     /**
      * Recherche universelle sur les 13 index (un résultat par index, dans l'ordre de l'enum Index).
      *
+     * @param  int|null  $limit  hits maximum par index (null = tous)
      * @return list<SearchResult<object>>|null
      */
-    public function multiSearch(?string $name = null): ?array
+    public function multiSearch(?string $name = null, ?int $limit = 10): ?array
     {
-        $queries = MultiSearchQuery::forAllIndexes(Validator::searchQuery($name, 'name'));
+        $queries = MultiSearchQuery::forAllIndexes(Validator::searchQuery($name, 'name'), $limit);
         $results = $this->search->recursiveSmartMultiSearch($queries);
 
         if ($results === null) {
