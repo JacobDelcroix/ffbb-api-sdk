@@ -1,0 +1,34 @@
+name: Fix code style
+
+# Applique Pint, régénère la référence API (Pint peut retoucher des docblocks)
+# et commit les corrections sur la branche poussée.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: fix-code-style-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist
+      - run: vendor/bin/pint
+      - run: php bin/generate-api-reference
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'style: Pint'

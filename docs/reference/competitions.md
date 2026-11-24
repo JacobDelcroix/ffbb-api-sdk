@@ -22,12 +22,12 @@ Détail d'une compétition avec phases, poules et rencontres imbriquées.
 - autre erreur HTTP / réseau → reconstruction depuis Meilisearch.
 
 ```php
-public function getCompetition(string|int $competitionId, ?string $deepLimit = '1000', ?array $fields = null): ?array
+public function getCompetition(int|string $competitionId, ?string $deepLimit = '1000', ?array $fields = null): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$competitionId` | `string\|int` | — | Identifiant de la compétition. |
+| `$competitionId` | `int\|string` | — | Identifiant de la compétition. |
 | `$deepLimit` | `?string` | `'1000'` | Nombre maximum d'éléments imbriqués (rencontres, classements) renvoyés par Directus. |
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 
@@ -42,12 +42,12 @@ Détail d'une poule avec rencontres et classements.
 Sur erreur (hors 404), la poule est reconstruite depuis Meilisearch.
 
 ```php
-public function getPoule(string|int $pouleId, ?string $deepLimit = '1000', ?array $fields = null): ?array
+public function getPoule(int|string $pouleId, ?string $deepLimit = '1000', ?array $fields = null): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$pouleId` | `string\|int` | — | Identifiant de la poule. |
+| `$pouleId` | `int\|string` | — | Identifiant de la poule. |
 | `$deepLimit` | `?string` | `'1000'` | Nombre maximum d'éléments imbriqués (rencontres, classements) renvoyés par Directus. |
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 
@@ -60,12 +60,12 @@ public function getPoule(string|int $pouleId, ?string $deepLimit = '1000', ?arra
 Uniquement le classement d'une poule.
 
 ```php
-public function getClassement(string|int $pouleId): ?array
+public function getClassement(int|string $pouleId): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$pouleId` | `string\|int` | — | Identifiant de la poule. |
+| `$pouleId` | `int\|string` | — | Identifiant de la poule. |
 
 **Retour :** `list<array<string, mixed>>|null`
 

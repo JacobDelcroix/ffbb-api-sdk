@@ -25,12 +25,12 @@ Guide avec exemples : [04-rencontres-et-listes](../guides/04-rencontres-et-liste
 Un match Genius Sports (statistiques live).
 
 ```php
-public function getGeniusSportMatch(string|int $id, ?array $fields = null): ?array
+public function getGeniusSportMatch(int|string $id, ?array $fields = null): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 
 **Retour :** `array<string, mixed>|null`
@@ -42,12 +42,12 @@ public function getGeniusSportMatch(string|int $id, ?array $fields = null): ?arr
 Une vidéo Rematch.
 
 ```php
-public function getRematchVideo(string|int $id, ?array $fields = null): ?array
+public function getRematchVideo(int|string $id, ?array $fields = null): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 
 **Retour :** `array<string, mixed>|null`
@@ -59,12 +59,12 @@ public function getRematchVideo(string|int $id, ?array $fields = null): ?array
 Un match d'une équipe de France.
 
 ```php
-public function getEdfMatch(string|int $id, ?array $fields = null): ?array
+public function getEdfMatch(int|string $id, ?array $fields = null): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 
 **Retour :** `array<string, mixed>|null`
@@ -76,12 +76,12 @@ public function getEdfMatch(string|int $id, ?array $fields = null): ?array
 Un joueur ou une joueuse des équipes de France.
 
 ```php
-public function getEdfPlayer(string|int $id, ?array $fields = null): ?array
+public function getEdfPlayer(int|string $id, ?array $fields = null): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 
 **Retour :** `array<string, mixed>|null`

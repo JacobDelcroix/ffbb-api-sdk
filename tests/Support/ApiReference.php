@@ -16,8 +16,9 @@ use CoachBasket\Ffbb\Exceptions;
 use CoachBasket\Ffbb\FfbbDataClient;
 use ReflectionClass;
 use ReflectionMethod;
-use ReflectionNamedType;
 use ReflectionParameter;
+use ReflectionType;
+use ReflectionUnionType;
 use UnitEnum;
 
 /**
@@ -389,7 +390,7 @@ final class ApiReference
             return $p->isDefaultValueAvailable() ? $out.' = '.self::exportDefault($p) : $out;
         }, $method->getParameters());
 
-        $return = $method->hasReturnType() ? ': '.self::shortType((string) $method->getReturnType()) : '';
+        $return = $method->hasReturnType() ? ': '.self::reflectionType($method->getReturnType(), $method->getDeclaringClass()->getName()) : '';
         $static = $method->isStatic() ? 'static ' : '';
 
         return "public {$static}function {$method->getName()}(".implode(', ', $params).")".$return;
@@ -397,7 +398,44 @@ final class ApiReference
 
     private static function typeOf(ReflectionParameter $param): string
     {
-        return $param->hasType() ? self::shortType((string) $param->getType()) : 'mixed';
+        return $param->hasType()
+            ? self::reflectionType($param->getType(), $param->getDeclaringClass()?->getName() ?? '')
+            : 'mixed';
+    }
+
+    /**
+     * Rendu stable d'un type de réflexion, quelle que soit la version de PHP :
+     * noms courts, classe déclarante → self, membres d'union triés (null en dernier).
+     */
+    private static function reflectionType(?ReflectionType $type, string $declaringClass): string
+    {
+        if ($type === null) {
+            return 'mixed';
+        }
+
+        $members = $type instanceof ReflectionUnionType
+            ? array_map(static fn (ReflectionType $t): string => (string) $t, $type->getTypes())
+            : [ltrim((string) $type, '?')];
+
+        $nullable = $type->allowsNull() && ! in_array('mixed', $members, true) && ! in_array('null', $members, true);
+
+        $members = array_map(
+            static fn (string $m): string => ltrim($m, '\\') === ltrim($declaringClass, '\\') || $m === 'static' ? 'self' : self::shortType($m),
+            $members,
+        );
+
+        $members = array_values(array_filter($members, static fn (string $m): bool => $m !== 'null'));
+        sort($members);
+
+        if ($type instanceof ReflectionUnionType) {
+            if ($nullable || $type->allowsNull()) {
+                $members[] = 'null';
+            }
+
+            return implode('|', array_unique($members));
+        }
+
+        return ($nullable ? '?' : '').$members[0];
     }
 
     /**
@@ -409,9 +447,7 @@ final class ApiReference
             return self::shortType($doc['return']);
         }
 
-        $type = $method->getReturnType();
-
-        return $type === null ? 'mixed' : self::shortType((string) $type);
+        return self::reflectionType($method->getReturnType(), $method->getDeclaringClass()->getName());
     }
 
     private static function shortType(string $type): string

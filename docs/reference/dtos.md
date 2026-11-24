@@ -98,8 +98,8 @@ Collection `ffbbnational_galeries_ffbbnational_tags`.
 
 | Propriété | Type |
 |---|---|
-| `ffbbnational_galeries_id` | `GaleriesItem\|string\|int\|null` |
-| `ffbbnational_tags_id` | `TagsItem\|string\|int\|null` |
+| `ffbbnational_galeries_id` | `GaleriesItem\|int\|string\|null` |
+| `ffbbnational_tags_id` | `TagsItem\|int\|string\|null` |
 | `id` | `?int` |
 
 ## GaleriesFilesItem
@@ -109,7 +109,7 @@ Collection `ffbbnational_galeries_files`.
 | Propriété | Type |
 |---|---|
 | `directus_files_id` | `mixed` |
-| `ffbbnational_galeries_id` | `GaleriesItem\|string\|int\|null` |
+| `ffbbnational_galeries_id` | `GaleriesItem\|int\|string\|null` |
 | `id` | `?int` |
 
 ## PratiquesItem
@@ -125,7 +125,7 @@ Collection `ffbbnational_pratiques`.
 | `affiche` | `mixed` |
 | `affiche_externe` | `?string` |
 | `assurance` | `?string` |
-| `cartographie` | `CartographiesItem\|string\|int\|null` |
+| `cartographie` | `CartographiesItem\|int\|string\|null` |
 | `code` | `?string` |
 | `code_structure` | `?string` |
 | `cp_salle` | `?string` |
@@ -196,8 +196,8 @@ Collection `ffbbnational_rss_ffbbnational_categories`.
 
 | Propriété | Type |
 |---|---|
-| `ffbbnational_categories_id` | `CategoriesItem\|string\|int\|null` |
-| `ffbbnational_rss_id` | `RssItem\|string\|int\|null` |
+| `ffbbnational_categories_id` | `CategoriesItem\|int\|string\|null` |
+| `ffbbnational_rss_id` | `RssItem\|int\|string\|null` |
 | `id` | `?int` |
 
 ## RssFfbbnationalTagsItem
@@ -206,8 +206,8 @@ Collection `ffbbnational_rss_ffbbnational_tags`.
 
 | Propriété | Type |
 |---|---|
-| `ffbbnational_rss_id` | `RssItem\|string\|int\|null` |
-| `ffbbnational_tags_id` | `TagsItem\|string\|int\|null` |
+| `ffbbnational_rss_id` | `RssItem\|int\|string\|null` |
+| `ffbbnational_tags_id` | `TagsItem\|int\|string\|null` |
 | `id` | `?int` |
 
 ## TagsItem
@@ -287,10 +287,10 @@ Collection `ffbbserver_competitions`.
 
 | Propriété | Type |
 |---|---|
-| `categorie` | `CategoriesChampionnatsItem\|string\|int\|null` |
+| `categorie` | `CategoriesChampionnatsItem\|int\|string\|null` |
 | `code` | `?string` |
 | `compare_old_site` | `?bool` |
-| `competition_origine` | `CompetitionsItem\|string\|int\|null` |
+| `competition_origine` | `int\|self\|string\|null` |
 | `competition_origine_niveau` | `?int` |
 | `competition_origine_nom` | `?string` |
 | `creationEnCours` | `?bool` |
@@ -299,23 +299,23 @@ Collection `ffbbserver_competitions`.
 | `emarqueV2` | `?bool` |
 | `etat` | `?string` |
 | `id` | `?string` |
-| `idCompetitionPere` | `CompetitionsItem\|string\|int\|null` |
+| `idCompetitionPere` | `int\|self\|string\|null` |
 | `liveStat` | `?bool` |
 | `logo` | `mixed` |
 | `nom` | `?string` |
 | `ordre` | `?int` |
-| `organisateur` | `OrganismesItem\|string\|int\|null` |
+| `organisateur` | `OrganismesItem\|int\|string\|null` |
 | `phase_code` | `?string` |
 | `phases` | `?array` |
 | `poules` | `?array` |
 | `pro` | `?bool` |
 | `publicationInternet` | `?string` |
-| `saison` | `SaisonsItem\|string\|int\|null` |
+| `saison` | `SaisonsItem\|int\|string\|null` |
 | `sexe` | `?string` |
 | `slug` | `?string` |
 | `toUpdate` | `?bool` |
 | `typeCompetition` | `?string` |
-| `typeCompetitionGenerique` | `TypesCompetitionsItem\|string\|int\|null` |
+| `typeCompetitionGenerique` | `TypesCompetitionsItem\|int\|string\|null` |
 
 ## EngagementsItem
 
@@ -333,18 +333,18 @@ Collection `ffbbserver_engagements`.
 | `date_created` | `?string` |
 | `date_updated` | `?string` |
 | `emailCorrespondantEquipe` | `?string` |
-| `entraineur` | `EntraineursItem\|string\|int\|null` |
-| `entraineurAdjoint` | `EntraineursItem\|string\|int\|null` |
+| `entraineur` | `EntraineursItem\|int\|string\|null` |
+| `entraineurAdjoint` | `EntraineursItem\|int\|string\|null` |
 | `forfaitGeneral` | `?bool` |
 | `id` | `?string` |
-| `idCompetition` | `CompetitionsItem\|string\|int\|null` |
-| `idOrganisme` | `OrganismesItem\|string\|int\|null` |
-| `idOrganismeCtc` | `OrganismesItem\|string\|int\|null` |
-| `idPoule` | `PoulesItem\|string\|int\|null` |
+| `idCompetition` | `CompetitionsItem\|int\|string\|null` |
+| `idOrganisme` | `OrganismesItem\|int\|string\|null` |
+| `idOrganismeCtc` | `OrganismesItem\|int\|string\|null` |
+| `idPoule` | `PoulesItem\|int\|string\|null` |
 | `logo` | `mixed` |
 | `logo_genius` | `?string` |
 | `modification` | `?string` |
-| `niveau` | `TypesDivisionsItem\|string\|int\|null` |
+| `niveau` | `TypesDivisionsItem\|int\|string\|null` |
 | `nom` | `?string` |
 | `nomCorrespondantEquipe` | `?string` |
 | `nomCtc` | `?string` |
@@ -375,7 +375,7 @@ Collection `ffbbserver_entraineurs`.
 |---|---|
 | `adresse1` | `?string` |
 | `adresse2` | `?string` |
-| `commune` | `CommunesItem\|string\|int\|null` |
+| `commune` | `CommunesItem\|int\|string\|null` |
 | `date_created` | `?string` |
 | `date_updated` | `?string` |
 | `idLicence` | `?string` |
@@ -413,7 +413,7 @@ Collection `ffbbserver_formations`.
 | `date_created` | `?string` |
 | `date_updated` | `?string` |
 | `description` | `?string` |
-| `domain` | `FormationsDomainItem\|string\|int\|null` |
+| `domain` | `FormationsDomainItem\|int\|string\|null` |
 | `duration_hours` | `?string` |
 | `files` | `?array` |
 | `goals` | `?string` |
@@ -433,7 +433,7 @@ Collection `ffbbserver_formations`.
 | `sessions` | `?array` |
 | `sort` | `?int` |
 | `status` | `?string` |
-| `theme` | `FormationsThemeItem\|string\|int\|null` |
+| `theme` | `FormationsThemeItem\|int\|string\|null` |
 | `title` | `?string` |
 | `user_created` | `?string` |
 | `user_updated` | `?string` |
@@ -455,7 +455,7 @@ Collection `ffbbserver_formations_files`.
 | Propriété | Type |
 |---|---|
 | `directus_files_id` | `mixed` |
-| `ffbbserver_formations_id` | `FormationsItem\|string\|int\|null` |
+| `ffbbserver_formations_id` | `FormationsItem\|int\|string\|null` |
 | `id` | `?int` |
 
 ## FormationsThemeItem
@@ -493,7 +493,7 @@ Collection `ffbbserver_labellisation_programme`.
 | `demandeLabel` | `?bool` |
 | `engagement` | `?string` |
 | `id` | `?string` |
-| `labellisationLabel` | `LabellisationLabelItem\|string\|int\|null` |
+| `labellisationLabel` | `LabellisationLabelItem\|int\|string\|null` |
 | `libelle` | `?string` |
 | `licence` | `?bool` |
 | `lienHelloassoInitial` | `?string` |
@@ -516,8 +516,8 @@ Collection `ffbbserver_labellisations_organismes`.
 | `debut` | `?string` |
 | `fin` | `?string` |
 | `id` | `?string` |
-| `idLabellisationProgramme` | `LabellisationProgrammeItem\|string\|int\|null` |
-| `idOrganisme` | `OrganismesItem\|string\|int\|null` |
+| `idLabellisationProgramme` | `LabellisationProgrammeItem\|int\|string\|null` |
+| `idOrganisme` | `OrganismesItem\|int\|string\|null` |
 
 ## MembresItem
 
@@ -534,7 +534,7 @@ Collection `ffbbserver_membres`.
 | `date_updated` | `?string` |
 | `id` | `?string` |
 | `idLicence` | `?string` |
-| `idOrganisme` | `OrganismesItem\|string\|int\|null` |
+| `idOrganisme` | `OrganismesItem\|int\|string\|null` |
 | `libelleFonction` | `?string` |
 | `mail` | `?string` |
 | `nom` | `?string` |
@@ -564,13 +564,13 @@ Collection `ffbbserver_officiels_rencontres`.
 | `date_created` | `?string` |
 | `date_updated` | `?string` |
 | `distanceKm` | `?float` |
-| `fonction` | `FonctionsOfficielsItem\|string\|int\|null` |
+| `fonction` | `FonctionsOfficielsItem\|int\|string\|null` |
 | `id` | `?string` |
 | `indemnite` | `?float` |
-| `officiel` | `OfficielsItem\|string\|int\|null` |
+| `officiel` | `OfficielsItem\|int\|string\|null` |
 | `ordre` | `?int` |
 | `presence` | `?string` |
-| `rencontre` | `RencontresItem\|string\|int\|null` |
+| `rencontre` | `RencontresItem\|int\|string\|null` |
 
 ## OffresPratiquesItem
 
@@ -593,10 +593,10 @@ Collection `ffbbserver_organismes`.
 |---|---|
 | `adresse` | `?string` |
 | `adresseClubPro` | `?string` |
-| `cartographie` | `CartographiesItem\|string\|int\|null` |
+| `cartographie` | `CartographiesItem\|int\|string\|null` |
 | `code` | `?string` |
-| `commune` | `CommunesItem\|string\|int\|null` |
-| `communeClubPro` | `CommunesItem\|string\|int\|null` |
+| `commune` | `CommunesItem\|int\|string\|null` |
+| `communeClubPro` | `CommunesItem\|int\|string\|null` |
 | `competitions` | `?array` |
 | `dateAffiliation` | `?string` |
 | `date_created` | `?string` |
@@ -616,14 +616,14 @@ Collection `ffbbserver_organismes`.
 | `nom_simple` | `?string` |
 | `offresPratiques` | `?array` |
 | `omnisport` | `?bool` |
-| `organisme_id_pere` | `OrganismesItem\|string\|int\|null` |
+| `organisme_id_pere` | `int\|self\|string\|null` |
 | `organismes_fils` | `?array` |
 | `saison` | `?string` |
 | `saison_en_cours` | `?bool` |
-| `salle` | `SallesItem\|string\|int\|null` |
+| `salle` | `SallesItem\|int\|string\|null` |
 | `telephone` | `?string` |
 | `type` | `?string` |
-| `type_association` | `TypesAssociationsItem\|string\|int\|null` |
+| `type_association` | `TypesAssociationsItem\|int\|string\|null` |
 | `urlSiteWeb` | `?string` |
 | `url_competition` | `?string` |
 
@@ -633,8 +633,8 @@ Collection `ffbbserver_organismes_ffbbserver_offres_pratiques`.
 
 | Propriété | Type |
 |---|---|
-| `ffbbserver_offres_pratiques_id` | `OffresPratiquesItem\|string\|int\|null` |
-| `ffbbserver_organismes_id` | `OrganismesItem\|string\|int\|null` |
+| `ffbbserver_offres_pratiques_id` | `OffresPratiquesItem\|int\|string\|null` |
+| `ffbbserver_organismes_id` | `OrganismesItem\|int\|string\|null` |
 | `id` | `?int` |
 
 ## OrganismesFfbbserverOrganismesItem
@@ -643,9 +643,9 @@ Collection `ffbbserver_organismes_ffbbserver_organismes`.
 
 | Propriété | Type |
 |---|---|
-| `ffbbserver_organismes_id` | `OrganismesItem\|string\|int\|null` |
+| `ffbbserver_organismes_id` | `OrganismesItem\|int\|string\|null` |
 | `id` | `?int` |
-| `related_ffbbserver_organismes_id` | `OrganismesItem\|string\|int\|null` |
+| `related_ffbbserver_organismes_id` | `OrganismesItem\|int\|string\|null` |
 
 ## PoulesItem
 
@@ -658,7 +658,7 @@ Collection `ffbbserver_poules`.
 | `date_updated` | `?string` |
 | `engagements` | `?array` |
 | `id` | `?string` |
-| `id_competition` | `CompetitionsItem\|string\|int\|null` |
+| `id_competition` | `CompetitionsItem\|int\|string\|null` |
 | `nom` | `?string` |
 | `rencontres` | `?array` |
 
@@ -674,15 +674,15 @@ Collection `ffbbserver_poules_classements`.
 | `gagnes` | `?int` |
 | `horsClassement` | `?bool` |
 | `id` | `?string` |
-| `idCompetition` | `CompetitionsItem\|string\|int\|null` |
-| `idEngagement` | `EngagementsItem\|string\|int\|null` |
-| `idPoule` | `PoulesItem\|string\|int\|null` |
+| `idCompetition` | `CompetitionsItem\|int\|string\|null` |
+| `idEngagement` | `EngagementsItem\|int\|string\|null` |
+| `idPoule` | `PoulesItem\|int\|string\|null` |
 | `matchJoues` | `?int` |
 | `match_joues` | `?int` |
 | `nombreDefauts` | `?int` |
 | `nombreForfaits` | `?int` |
 | `nuls` | `?int` |
-| `organisme` | `OrganismesItem\|string\|int\|null` |
+| `organisme` | `OrganismesItem\|int\|string\|null` |
 | `organisme_nom` | `?string` |
 | `paniersEncaisses` | `?int` |
 | `paniersMarques` | `?int` |
@@ -703,7 +703,7 @@ Collection `ffbbserver_rencontres`.
 
 | Propriété | Type |
 |---|---|
-| `competitionId` | `CompetitionsItem\|string\|int\|null` |
+| `competitionId` | `CompetitionsItem\|int\|string\|null` |
 | `creation` | `?string` |
 | `date` | `?string` |
 | `dateSaisieResultat` | `?string` |
@@ -720,11 +720,11 @@ Collection `ffbbserver_rencontres`.
 | `handicap2` | `?int` |
 | `horaire` | `?int` |
 | `id` | `?string` |
-| `idEngagementEquipe1` | `EngagementsItem\|string\|int\|null` |
-| `idEngagementEquipe2` | `EngagementsItem\|string\|int\|null` |
-| `idOrganismeEquipe1` | `OrganismesItem\|string\|int\|null` |
-| `idOrganismeEquipe2` | `OrganismesItem\|string\|int\|null` |
-| `idPoule` | `PoulesItem\|string\|int\|null` |
+| `idEngagementEquipe1` | `EngagementsItem\|int\|string\|null` |
+| `idEngagementEquipe2` | `EngagementsItem\|int\|string\|null` |
+| `idOrganismeEquipe1` | `OrganismesItem\|int\|string\|null` |
+| `idOrganismeEquipe2` | `OrganismesItem\|int\|string\|null` |
+| `idPoule` | `PoulesItem\|int\|string\|null` |
 | `joue` | `?bool` |
 | `modification` | `?string` |
 | `nomEquipe1` | `?string` |
@@ -739,8 +739,8 @@ Collection `ffbbserver_rencontres`.
 | `remise` | `?bool` |
 | `resultatEquipe1` | `?int` |
 | `resultatEquipe2` | `?int` |
-| `saison` | `SaisonsItem\|string\|int\|null` |
-| `salle` | `SallesItem\|string\|int\|null` |
+| `saison` | `SaisonsItem\|int\|string\|null` |
+| `salle` | `SallesItem\|int\|string\|null` |
 | `status` | `?string` |
 | `toUpdate` | `?bool` |
 | `uniqueKey` | `?string` |
@@ -785,8 +785,8 @@ Collection `ffbbserver_salles`.
 | `adresse` | `?string` |
 | `adresseComplement` | `?string` |
 | `capaciteSpectateur` | `?string` |
-| `cartographie` | `CartographiesItem\|string\|int\|null` |
-| `commune` | `CommunesItem\|string\|int\|null` |
+| `cartographie` | `CartographiesItem\|int\|string\|null` |
+| `commune` | `CommunesItem\|int\|string\|null` |
 | `date_created` | `?string` |
 | `date_updated` | `?string` |
 | `id` | `?string` |
@@ -807,7 +807,7 @@ Collection `ffbbserver_sessions`.
 | `date_start` | `?string` |
 | `date_updated` | `?string` |
 | `entity` | `?string` |
-| `formations` | `FormationsItem\|string\|int\|null` |
+| `formations` | `FormationsItem\|int\|string\|null` |
 | `id` | `?string` |
 | `idOrigin` | `?string` |
 | `place` | `?string` |
@@ -827,14 +827,14 @@ Collection `ffbbserver_terrains`.
 | Propriété | Type |
 |---|---|
 | `accesLibre` | `?bool` |
-| `cartographie` | `CartographiesItem\|string\|int\|null` |
-| `commune` | `CommunesItem\|string\|int\|null` |
+| `cartographie` | `CartographiesItem\|int\|string\|null` |
+| `commune` | `CommunesItem\|int\|string\|null` |
 | `date_created` | `?string` |
 | `date_updated` | `?string` |
 | `id` | `?string` |
 | `largeur` | `?int` |
 | `longueur` | `?int` |
-| `natureSol` | `RevetementsItem\|string\|int\|null` |
+| `natureSol` | `RevetementsItem\|int\|string\|null` |
 | `nom` | `?string` |
 | `numero` | `?int` |
 | `rue` | `?string` |
@@ -849,11 +849,11 @@ Collection `ffbbserver_tournois`.
 | `adresseComplement` | `?string` |
 | `ageMax` | `?int` |
 | `ageMin` | `?int` |
-| `cartographie` | `CartographiesItem\|string\|int\|null` |
+| `cartographie` | `CartographiesItem\|int\|string\|null` |
 | `categorieChampionnat3x3Id` | `?string` |
 | `categorieChampionnat3x3Libelle` | `?string` |
 | `code` | `?string` |
-| `commune` | `CommunesItem\|string\|int\|null` |
+| `commune` | `CommunesItem\|int\|string\|null` |
 | `date_created` | `?string` |
 | `date_updated` | `?string` |
 | `debut` | `?string` |
@@ -869,7 +869,7 @@ Collection `ffbbserver_tournois`.
 | `siteChoisi` | `?string` |
 | `tarifOrganisateur` | `?string` |
 | `telephoneOrganisateur` | `?string` |
-| `tournoiType` | `TypesTournoisItem\|string\|int\|null` |
+| `tournoiType` | `TypesTournoisItem\|int\|string\|null` |
 | `tournoiTypes3x3` | `?array` |
 | `urlOrganisateur` | `?string` |
 
@@ -879,8 +879,8 @@ Collection `ffbbserver_tournois_ffbbserver_types_tournois3x3`.
 
 | Propriété | Type |
 |---|---|
-| `ffbbserver_tournois_id` | `TournoisItem\|string\|int\|null` |
-| `ffbbserver_types_tournois_3x3_id` | `TypesTournois3x3Item\|string\|int\|null` |
+| `ffbbserver_tournois_id` | `TournoisItem\|int\|string\|null` |
+| `ffbbserver_types_tournois_3x3_id` | `TypesTournois3x3Item\|int\|string\|null` |
 | `id` | `?int` |
 
 ## TypesAssociationsItem
@@ -915,7 +915,7 @@ Collection `ffbbserver_types_divisions`.
 
 | Propriété | Type |
 |---|---|
-| `categorieChampionnat` | `CategoriesChampionnatsItem\|string\|int\|null` |
+| `categorieChampionnat` | `CategoriesChampionnatsItem\|int\|string\|null` |
 | `ccg` | `?int` |
 | `code` | `?string` |
 | `date_created` | `?string` |
@@ -963,5 +963,5 @@ Collection `ffbbserver_types_tournois3x3`.
 | `libelle` | `?string` |
 | `logo` | `mixed` |
 | `type_league` | `?string` |
-| `type_tournois` | `TypesTournoisItem\|string\|int\|null` |
+| `type_tournois` | `TypesTournoisItem\|int\|string\|null` |
 | `user_created` | `?string` |

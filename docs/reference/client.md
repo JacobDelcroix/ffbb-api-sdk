@@ -73,12 +73,12 @@ public function directus(string $collection): QueryBuilder
 Pré-charge un organisme et ses équipes dans le cache.
 
 ```php
-public function warmOrganismeCache(string|int $organismeId): void
+public function warmOrganismeCache(int|string $organismeId): void
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$organismeId` | `string\|int` | — | Identifiant numérique de l'organisme (ex. `10238`), pas son code `HDF…`. |
+| `$organismeId` | `int\|string` | — | Identifiant numérique de l'organisme (ex. `10238`), pas son code `HDF…`. |
 
 **Retour :** `void`
 
@@ -89,12 +89,12 @@ public function warmOrganismeCache(string|int $organismeId): void
 Pré-charge une compétition et toutes ses poules dans le cache.
 
 ```php
-public function warmCompetitionCache(string|int $competitionId): void
+public function warmCompetitionCache(int|string $competitionId): void
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$competitionId` | `string\|int` | — | Identifiant de la compétition. |
+| `$competitionId` | `int\|string` | — | Identifiant de la compétition. |
 
 **Retour :** `void`
 

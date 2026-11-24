@@ -270,12 +270,12 @@ public function getData(): array
 Un élément par identifiant, hydraté dans son DTO.
 
 ```php
-public function findData(string|int $id): ?object
+public function findData(int|string $id): ?object
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
 **Retour :** `?object`
 
@@ -304,12 +304,12 @@ public function first(): ?array
 Un élément par identifiant (seuls fields, deep et alias s'appliquent).
 
 ```php
-public function find(string|int $id): ?array
+public function find(int|string $id): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
 **Retour :** `array<string, mixed>|null`
 

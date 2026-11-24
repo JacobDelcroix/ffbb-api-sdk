@@ -24,7 +24,7 @@ jobs:
     env:
       HAS_ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Récupérer le SDK Python
         run: git clone --filter=blob:none https://github.com/nickdesi/ffbb-data-client upstream

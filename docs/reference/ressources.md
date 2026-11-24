@@ -65,12 +65,12 @@ public function getOpenapiSpec(): ?array
 Détail d'une rencontre (match) : équipes, date, score, salle, officiels (null si introuvable).
 
 ```php
-public function getRencontre(string|int $id): ?array
+public function getRencontre(int|string $id): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
 **Retour :** `array<string, mixed>|null`
 
@@ -81,12 +81,12 @@ public function getRencontre(string|int $id): ?array
 Détail d'un engagement : une équipe d'un club dans une compétition / poule (null si introuvable).
 
 ```php
-public function getEngagement(string|int $id): ?array
+public function getEngagement(int|string $id): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
 **Retour :** `array<string, mixed>|null`
 
@@ -97,12 +97,12 @@ public function getEngagement(string|int $id): ?array
 Détail d'une formation (null si introuvable).
 
 ```php
-public function getFormation(string|int $id): ?array
+public function getFormation(int|string $id): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
 **Retour :** `array<string, mixed>|null`
 
@@ -113,12 +113,12 @@ public function getFormation(string|int $id): ?array
 Détail d'un entraîneur (par numéro de licence) (null si introuvable).
 
 ```php
-public function getEntraineur(string|int $id): ?array
+public function getEntraineur(int|string $id): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
 **Retour :** `array<string, mixed>|null`
 
@@ -129,12 +129,12 @@ public function getEntraineur(string|int $id): ?array
 Détail d'une commune (null si introuvable).
 
 ```php
-public function getCommune(string|int $id): ?array
+public function getCommune(int|string $id): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
 **Retour :** `array<string, mixed>|null`
 
@@ -145,12 +145,12 @@ public function getCommune(string|int $id): ?array
 Détail d'un officiel (arbitre, OTM) (null si introuvable).
 
 ```php
-public function getOfficiel(string|int $id): ?array
+public function getOfficiel(int|string $id): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
 **Retour :** `array<string, mixed>|null`
 
@@ -161,12 +161,12 @@ public function getOfficiel(string|int $id): ?array
 Détail d'une salle : nom, adresse, commune, coordonnées (null si introuvable).
 
 ```php
-public function getSalle(string|int $id): ?array
+public function getSalle(int|string $id): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
 **Retour :** `array<string, mixed>|null`
 
@@ -177,12 +177,12 @@ public function getSalle(string|int $id): ?array
 Détail d'un terrain (3x3 / extérieur) (null si introuvable).
 
 ```php
-public function getTerrain(string|int $id): ?array
+public function getTerrain(int|string $id): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
 **Retour :** `array<string, mixed>|null`
 
@@ -193,12 +193,12 @@ public function getTerrain(string|int $id): ?array
 Détail d'un tournoi (null si introuvable).
 
 ```php
-public function getTournoi(string|int $id): ?array
+public function getTournoi(int|string $id): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
 **Retour :** `array<string, mixed>|null`
 
@@ -209,12 +209,12 @@ public function getTournoi(string|int $id): ?array
 Détail d'une offre de pratique (null si introuvable).
 
 ```php
-public function getPratique(string|int $id): ?array
+public function getPratique(int|string $id): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
 **Retour :** `array<string, mixed>|null`
 
@@ -225,12 +225,12 @@ public function getPratique(string|int $id): ?array
 Une session de formation (null si introuvable).
 
 ```php
-public function getSession(string|int $id, ?array $fields = null): ?array
+public function getSession(int|string $id, ?array $fields = null): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 
 **Retour :** `array<string, mixed>|null`

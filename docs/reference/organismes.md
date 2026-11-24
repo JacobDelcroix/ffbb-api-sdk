@@ -23,12 +23,12 @@ Détail d'un organisme (77 champs par défaut).
 Sur erreur (hors 404), l'organisme est reconstruit depuis Meilisearch.
 
 ```php
-public function getOrganisme(string|int $organismeId, ?array $fields = null): ?array
+public function getOrganisme(int|string $organismeId, ?array $fields = null): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$organismeId` | `string\|int` | — | Identifiant numérique de l'organisme (ex. `10238`), pas son code `HDF…`. |
+| `$organismeId` | `int\|string` | — | Identifiant numérique de l'organisme (ex. `10238`), pas son code `HDF…`. |
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 
 **Retour :** `array<string, mixed>|null`
@@ -40,12 +40,12 @@ public function getOrganisme(string|int $organismeId, ?array $fields = null): ?a
 Version allégée de getOrganisme() pour les contextes de recherche (31 champs).
 
 ```php
-public function getOrganismeForSearch(string|int $organismeId): ?array
+public function getOrganismeForSearch(int|string $organismeId): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$organismeId` | `string\|int` | — | Identifiant numérique de l'organisme (ex. `10238`), pas son code `HDF…`. |
+| `$organismeId` | `int\|string` | — | Identifiant numérique de l'organisme (ex. `10238`), pas son code `HDF…`. |
 
 **Retour :** `array<string, mixed>|null`
 
@@ -56,12 +56,12 @@ public function getOrganismeForSearch(string|int $organismeId): ?array
 Uniquement les équipes engagées d'un club.
 
 ```php
-public function getEquipes(string|int $organismeId): ?array
+public function getEquipes(int|string $organismeId): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$organismeId` | `string\|int` | — | Identifiant numérique de l'organisme (ex. `10238`), pas son code `HDF…`. |
+| `$organismeId` | `int\|string` | — | Identifiant numérique de l'organisme (ex. `10238`), pas son code `HDF…`. |
 
 **Retour :** `list<array<string, mixed>>|null`
 
@@ -89,12 +89,12 @@ public function listCompetitions(int $limit = 10, ?array $fields = null): array
 Contacts d'un club : contact du club + membres (dirigeants).
 
 ```php
-public function getClubContacts(string|int $organismeId): ?ClubContacts
+public function getClubContacts(int|string $organismeId): ?ClubContacts
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$organismeId` | `string\|int` | — | Identifiant numérique de l'organisme (ex. `10238`), pas son code `HDF…`. |
+| `$organismeId` | `int\|string` | — | Identifiant numérique de l'organisme (ex. `10238`), pas son code `HDF…`. |
 
 **Retour :** `?ClubContacts`
 
@@ -105,12 +105,12 @@ public function getClubContacts(string|int $organismeId): ?ClubContacts
 Contacts d'une équipe engagée : correspondant, entraîneur et adjoint.
 
 ```php
-public function getEngagementContacts(string|int $id): ?EngagementContacts
+public function getEngagementContacts(int|string $id): ?EngagementContacts
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$id` | `string\|int` | — | Identifiant Directus de l'élément. |
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
 **Retour :** `?EngagementContacts`
 
