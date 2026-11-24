@@ -121,7 +121,7 @@ Et aussi :
 | [`searchMultipleYoutubeVideos()`](recherche.md#searchmultipleyoutubevideos) | Recherche (Meilisearch) | Plusieurs recherches dans les vidéos YouTube FFBB, en un seul appel multi-search (un résultat par nom). |
 | [`searchNews()`](recherche.md#searchnews) | Recherche (Meilisearch) | Recherche plein texte dans les actualités ffbb.com (null si aucun nom). |
 | [`searchOrganismes()`](recherche.md#searchorganismes) | Recherche (Meilisearch) | Recherche plein texte dans les organismes (clubs, comités, ligues) (null si aucun nom). |
-| [`searchOrganismesByCity()`](recherche.md#searchorganismesbycity) | Recherche (Meilisearch) | Clubs d'une commune (correspondance exacte sur le nom de la commune). |
+| [`searchOrganismesByCity()`](recherche.md#searchorganismesbycity) | Recherche (Meilisearch) | Clubs d'une commune (correspondance exacte sur le nom de la commune, insensible à la casse). |
 | [`searchOrganismesByGeo()`](recherche.md#searchorganismesbygeo) | Recherche (Meilisearch) | Clubs dans un rayon autour d'un point GPS, triés par distance. |
 | [`searchPratiques()`](recherche.md#searchpratiques) | Recherche (Meilisearch) | Recherche plein texte dans les offres de pratique (null si aucun nom). |
 | [`searchRencontres()`](recherche.md#searchrencontres) | Recherche (Meilisearch) | Recherche plein texte dans les rencontres (null si aucun nom). |

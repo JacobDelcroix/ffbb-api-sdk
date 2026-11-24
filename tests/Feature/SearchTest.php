@@ -67,17 +67,61 @@ it('construit les filtres géographiques comme le Python', function () {
         ->and($query['limit'])->toBe(20);
 });
 
-it('filtre les équipes par sexe et niveau', function () {
+it('filtre les équipes par sexe et niveau sur des attributs filtrables', function () {
     $mock = new MockClient([MultiSearch::class => meili([['hits' => [], 'estimatedTotalHits' => 0]])]);
 
-    ffbb($mock)->searchEngagementsFiltered(50.0, 3.0, sexes: ['F'], niveauCodes: ['DEP', 'REG']);
+    ffbb($mock)->searchEngagementsFiltered(50.0, 3.0, sexes: ['F', 'mi'], niveauCodes: ['PRF', 'SED2F']);
     $query = $mock->getLastPendingRequest()->body()->all()['queries'][0];
 
     expect($query['filter'])->toBe([
         '_geoRadius(50.0, 3.0, 10000)',
-        'sexe = "F"',
-        'niveau.code = "DEP" OR niveau.code = "REG"',
+        'idCompetition.sexe = "Féminin" OR idCompetition.sexe = "Mixte"',
+        'niveau.code = "PRF" OR niveau.code = "SED2F"',
     ]);
+});
+
+it('traduit M en Masculin et transmet les libellés complets tels quels', function () {
+    $mock = new MockClient([MultiSearch::class => meili([['hits' => [], 'estimatedTotalHits' => 0]])]);
+
+    ffbb($mock)->searchEngagementsFiltered(50.0, 3.0, sexes: ['M', 'Féminin']);
+    $query = $mock->getLastPendingRequest()->body()->all()['queries'][0];
+
+    expect($query['filter'])->toBe([
+        '_geoRadius(50.0, 3.0, 10000)',
+        'idCompetition.sexe = "Masculin" OR idCompetition.sexe = "Féminin"',
+    ]);
+});
+
+it('n ajoute aucun filtre de sexe ni de niveau sans critère', function () {
+    $mock = new MockClient([MultiSearch::class => meili([['hits' => [], 'estimatedTotalHits' => 0]])]);
+
+    ffbb($mock)->searchEngagementsFiltered(50.0, 3.0, sexes: [], niveauCodes: null);
+
+    expect($mock->getLastPendingRequest()->body()->all()['queries'][0]['filter'])->toBe(['_geoRadius(50.0, 3.0, 10000)']);
+});
+
+it('cherche les clubs d une commune sur commune.libelle', function () {
+    $mock = new MockClient([MultiSearch::class => meili([[
+        'indexUid' => 'ffbbserver_organismes',
+        'hits' => [['id' => '10238', 'nom' => 'LILLE BASKET', 'commune' => ['libelle' => 'LILLE', 'codePostal' => '59000']]],
+        'estimatedTotalHits' => 1,
+    ]])]);
+
+    $result = ffbb($mock)->searchOrganismesByCity('Lille');
+    $query = $mock->getLastPendingRequest()->body()->all()['queries'][0];
+
+    expect($query['filter'])->toBe(['commune.libelle = "Lille"'])
+        ->and($query['indexUid'])->toBe('ffbbserver_organismes')
+        ->and($query['limit'])->toBe(200)
+        ->and($result->hits)->toHaveCount(1);
+});
+
+it('échappe les guillemets dans les valeurs de filtre', function () {
+    $mock = new MockClient([MultiSearch::class => meili([['hits' => [], 'estimatedTotalHits' => 0]])]);
+
+    ffbb($mock)->searchOrganismesByCity('Saint "X" \\ Y');
+
+    expect($mock->getLastPendingRequest()->body()->all()['queries'][0]['filter'])->toBe(['commune.libelle = "Saint \\"X\\" \\\\ Y"']);
 });
 
 it('interroge les 13 index pour la recherche universelle', function () {

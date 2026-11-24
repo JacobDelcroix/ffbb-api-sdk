@@ -97,10 +97,12 @@ $ffbb->searchOrganismesByGeo(lat: 50.30, lng: 3.21, radiusKm: 15);
 use CoachBasket\Ffbb\Search\GeoSortOrder;
 $ffbb->searchSallesByGeo(50.30, 3.21, radiusKm: 5, geoSort: GeoSortOrder::FarthestFirst);
 
-// Équipes à moins de 30 km, féminines, niveau départemental ou régional
-$ffbb->searchEngagementsFiltered(50.30, 3.21, radiusKm: 30, sexes: ['F'], niveauCodes: ['DEP', 'REG']);
+// Équipes à moins de 30 km, féminines ou mixtes, en pré-régionale ou départementale 2 seniors
+// sexes : M, F, MI (traduits en Masculin / Féminin / Mixte, filtre sur idCompetition.sexe)
+// niveauCodes : codes exacts de niveau.code (PRF, SED2F, U13R1M…), pas de code générique « DEP » / « REG »
+$ffbb->searchEngagementsFiltered(50.30, 3.21, radiusKm: 30, sexes: ['F', 'MI'], niveauCodes: ['PRF', 'SED2F']);
 
-// Clubs d'une commune (nom exact)
+// Clubs d'une commune (nom exact, insensible à la casse, filtre sur commune.libelle)
 $ffbb->searchOrganismesByCity('Douai');
 ```
 

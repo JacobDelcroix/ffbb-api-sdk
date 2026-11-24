@@ -471,6 +471,22 @@ trait SearchesMeilisearch
         return sprintf('_geoRadius(%s, %s, %d)', self::num($lat), self::num($lng), (int) ($radiusKm * 1000));
     }
 
+    /**
+     * Filtre d'égalité Meilisearch, valeur entre guillemets échappée.
+     */
+    private static function equals(string $attribute, string $value): string
+    {
+        return sprintf('%s = "%s"', $attribute, addcslashes($value, '"\\\\'));
+    }
+
+    /**
+     * @param  list<string>  $values
+     */
+    private static function anyOf(string $attribute, array $values): string
+    {
+        return implode(' OR ', array_map(static fn (string $v): string => self::equals($attribute, $v), $values));
+    }
+
     private static function geoPoint(float $lat, float $lng, GeoSortOrder $order): string
     {
         return sprintf('_geoPoint(%s, %s):%s', self::num($lat), self::num($lng), $order->value);
@@ -527,13 +543,16 @@ trait SearchesMeilisearch
     }
 
     /**
-     * Clubs d'une commune (correspondance exacte sur le nom de la commune).
+     * Clubs d'une commune (correspondance exacte sur le nom de la commune, insensible à la casse).
+     *
+     * Filtre sur `commune.libelle` : le Python filtre sur `commune`, qui n'est pas filtrable
+     * sur l'index ffbbserver_organismes (HTTP 400 en direct).
      *
      * @return SearchResult<OrganismesHit>|null
      */
     public function searchOrganismesByCity(string $cityName, string $q = '', int $limit = 200): ?SearchResult
     {
-        return $this->searchOrganismes($q, [sprintf('commune = "%s"', $cityName)], null, $limit);
+        return $this->searchOrganismes($q, [self::equals('commune.libelle', $cityName)], null, $limit);
     }
 
     /**
@@ -559,8 +578,14 @@ trait SearchesMeilisearch
     /**
      * Équipes engagées autour d'un point, filtrées par sexe et niveau.
      *
-     * @param  list<string>|null  $sexes  ex. ['F', 'M']
-     * @param  list<string>|null  $niveauCodes  ex. ['DEP', 'REG']
+     * Les deux filtres sont appliqués côté serveur. Le sexe porte sur `idCompetition.sexe` (le Python
+     * filtre sur `sexe`, non filtrable : HTTP 400 en direct) ; les codes courts sont traduits vers les
+     * valeurs stockées (M → Masculin, F → Féminin, MI → Mixte), toute autre valeur est transmise telle quelle.
+     * Les codes de niveau sont les codes exacts de `niveau.code` (ex. PRM, SED2F, U13R1M) : il n'existe
+     * pas de code générique « départemental » ou « régional ».
+     *
+     * @param  list<string>|null  $sexes  ex. ['F', 'MI'] ou ['Féminin']
+     * @param  list<string>|null  $niveauCodes  ex. ['PRF', 'SED2F']
      * @return SearchResult<EngagementsHit>|null
      */
     public function searchEngagementsFiltered(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 5000, ?array $sexes = null, ?array $niveauCodes = null): ?SearchResult
@@ -568,11 +593,16 @@ trait SearchesMeilisearch
         $filters = [self::geoRadius($lat, $lng, $radiusKm)];
 
         if ($sexes !== null && $sexes !== []) {
-            $filters[] = implode(' OR ', array_map(static fn (string $s): string => sprintf('sexe = "%s"', $s), $sexes));
+            $filters[] = self::anyOf('idCompetition.sexe', array_map(static fn (string $s): string => match (strtoupper($s)) {
+                'M' => 'Masculin',
+                'F' => 'Féminin',
+                'MI' => 'Mixte',
+                default => $s,
+            }, $sexes));
         }
 
         if ($niveauCodes !== null && $niveauCodes !== []) {
-            $filters[] = implode(' OR ', array_map(static fn (string $n): string => sprintf('niveau.code = "%s"', $n), $niveauCodes));
+            $filters[] = self::anyOf('niveau.code', $niveauCodes);
         }
 
         return $this->searchEngagements($q, $filters, null, $limit);

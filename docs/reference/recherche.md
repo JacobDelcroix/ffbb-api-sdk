@@ -37,7 +37,7 @@ Guide avec exemples : [05-recherche](../guides/05-recherche.md)
 | [`searchGaleries()`](#searchgaleries) | `SearchResult<ContentHit>\|null` | Recherche plein texte dans les galeries photos FFBB (null si aucun nom). |
 | [`searchMultipleGaleries()`](#searchmultiplegaleries) | `list<SearchResult<ContentHit>>\|null` | Plusieurs recherches dans les galeries photos FFBB, en un seul appel multi-search (un résultat par nom). |
 | [`searchOrganismesByGeo()`](#searchorganismesbygeo) | `SearchResult<OrganismesHit>\|null` | Clubs dans un rayon autour d'un point GPS, triés par distance. |
-| [`searchOrganismesByCity()`](#searchorganismesbycity) | `SearchResult<OrganismesHit>\|null` | Clubs d'une commune (correspondance exacte sur le nom de la commune). |
+| [`searchOrganismesByCity()`](#searchorganismesbycity) | `SearchResult<OrganismesHit>\|null` | Clubs d'une commune (correspondance exacte sur le nom de la commune, insensible à la casse). |
 | [`searchSallesByGeo()`](#searchsallesbygeo) | `SearchResult<SallesHit>\|null` | Salles dans un rayon autour d'un point GPS. |
 | [`searchEngagementsByGeo()`](#searchengagementsbygeo) | `SearchResult<EngagementsHit>\|null` | Équipes engagées dans un rayon autour d'un point GPS. |
 | [`searchEngagementsFiltered()`](#searchengagementsfiltered) | `SearchResult<EngagementsHit>\|null` | Équipes engagées autour d'un point, filtrées par sexe et niveau. |
@@ -575,7 +575,10 @@ public function searchOrganismesByGeo(float $lat, float $lng, float $radiusKm = 
 
 ### `searchOrganismesByCity()`
 
-Clubs d'une commune (correspondance exacte sur le nom de la commune).
+Clubs d'une commune (correspondance exacte sur le nom de la commune, insensible à la casse).
+
+Filtre sur `commune.libelle` : le Python filtre sur `commune`, qui n'est pas filtrable
+sur l'index ffbbserver_organismes (HTTP 400 en direct).
 
 ```php
 public function searchOrganismesByCity(string $cityName, string $q = '', int $limit = 200): ?SearchResult
@@ -637,6 +640,12 @@ public function searchEngagementsByGeo(float $lat, float $lng, float $radiusKm =
 
 Équipes engagées autour d'un point, filtrées par sexe et niveau.
 
+Les deux filtres sont appliqués côté serveur. Le sexe porte sur `idCompetition.sexe` (le Python
+filtre sur `sexe`, non filtrable : HTTP 400 en direct) ; les codes courts sont traduits vers les
+valeurs stockées (M → Masculin, F → Féminin, MI → Mixte), toute autre valeur est transmise telle quelle.
+Les codes de niveau sont les codes exacts de `niveau.code` (ex. PRM, SED2F, U13R1M) : il n'existe
+pas de code générique « départemental » ou « régional ».
+
 ```php
 public function searchEngagementsFiltered(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 5000, ?array $sexes = null, ?array $niveauCodes = null): ?SearchResult
 ```
@@ -648,8 +657,8 @@ public function searchEngagementsFiltered(float $lat, float $lng, float $radiusK
 | `$radiusKm` | `float` | `10.0` | Rayon de recherche en kilomètres. |
 | `$q` | `string` | `''` | Texte recherché en plus du filtre (chaîne vide : tous). |
 | `$limit` | `?int` | `5000` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
-| `$sexes` | `list<string>\|null` | `null` | ex. ['F', 'M'] |
-| `$niveauCodes` | `list<string>\|null` | `null` | ex. ['DEP', 'REG'] |
+| `$sexes` | `list<string>\|null` | `null` | ex. ['F', 'MI'] ou ['Féminin'] |
+| `$niveauCodes` | `list<string>\|null` | `null` | ex. ['PRF', 'SED2F'] |
 
 **Retour :** `SearchResult<EngagementsHit>|null`
 
