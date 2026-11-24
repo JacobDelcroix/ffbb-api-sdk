@@ -58,7 +58,7 @@ final readonly class RencontresHit
         public ?int $numeroJournee = null,
         /** @var list<mixed>|null */
         public ?array $officiels = null,
-        public mixed $officiels_string = null,
+        public ?string $officiels_string = null,
         public ?Organisateur $organisateur = null,
         /** Champ Directus : idOrganismeEquipe1 */
         public ?IDOrganismeEquipe $organismeEquipe1 = null,
@@ -67,7 +67,8 @@ final readonly class RencontresHit
         /** Champ Directus : idPoule */
         public ?IDPoule $poule = null,
         public ?string $pratique = null,
-        public mixed $rematch_videos = null,
+        /** @var list<mixed>|null */
+        public ?array $rematch_videos = null,
         public ?int $resultatEquipe1 = null,
         public ?int $resultatEquipe2 = null,
         public ?Saison $saison = null,
@@ -108,13 +109,13 @@ final readonly class RencontresHit
             nomEquipe2: Cast::string($data['nomEquipe2'] ?? null),
             numeroJournee: Cast::int($data['numeroJournee'] ?? null),
             officiels: Cast::listOf($data['officiels'] ?? null, 'raw'),
-            officiels_string: $data['officiels_string'] ?? null,
+            officiels_string: Cast::string($data['officiels_string'] ?? null),
             organisateur: Cast::object($data['organisateur'] ?? null, Organisateur::class),
             organismeEquipe1: Cast::object($data['idOrganismeEquipe1'] ?? null, IDOrganismeEquipe::class),
             organismeEquipe2: Cast::object($data['idOrganismeEquipe2'] ?? null, IDOrganismeEquipe::class),
             poule: Cast::object($data['idPoule'] ?? null, IDPoule::class),
             pratique: Cast::string($data['pratique'] ?? null),
-            rematch_videos: $data['rematch_videos'] ?? null,
+            rematch_videos: Cast::array($data['rematch_videos'] ?? null),
             resultatEquipe1: Cast::int($data['resultatEquipe1'] ?? null),
             resultatEquipe2: Cast::int($data['resultatEquipe2'] ?? null),
             saison: Cast::object($data['saison'] ?? null, Saison::class),

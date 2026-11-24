@@ -1635,11 +1635,11 @@ Hit Meilisearch de l'index `ffbbserver_competitions` (modèle Python Competition
 
 | Propriété | Type |
 |---|---|
-| `age` | `mixed` |
+| `age` | `?string` |
 | `categorie` | `?Categorie` |
 | `code` | `?string` |
-| `codeComite` | `mixed` |
-| `codeLigue` | `mixed` |
+| `codeComite` | `?string` |
+| `codeLigue` | `?string` |
 | `compare_old_site` | `?bool` |
 | `competition_origine` | `?string` |
 | `competition_origine_niveau` | `?int` |
@@ -1658,7 +1658,7 @@ Hit Meilisearch de l'index `ffbbserver_competitions` (modèle Python Competition
 | `nom` | `?string` |
 | `ordre` | `?int` |
 | `organisateur` | `?Organisateur` |
-| `participants` | `mixed` |
+| `participants` | `?string` |
 | `phase_code` | `?string` |
 | `phases` | `list<string>\|null` |
 | `poules` | `list<Poule>\|null` |
@@ -2075,11 +2075,11 @@ Hit Meilisearch de l'index `ffbbserver_organismes` (modèle Python OrganismesHit
 | `adresseClubPro` | `?string` |
 | `cartographie` | `?Cartographie` |
 | `code` | `?string` |
-| `code_emploi` | `mixed` |
+| `code_emploi` | `?string` |
 | `commune` | `?Commune` |
 | `communeClubPro` | `?Commune` |
 | `dateAffiliation` | `?DateTimeImmutable` |
-| `engagements_codes` | `mixed` |
+| `engagements_codes` | `?string` |
 | `engagements_noms` | `?string` |
 | `id` | `?string` |
 | `labellisation` | `list<string>\|null` |
@@ -2135,7 +2135,7 @@ Hit Meilisearch de l'index `ffbbnational_pratiques` (modèle Python PratiquesHit
 | `date_inscription` | `?int` |
 | `date_updated` | `?DateTimeImmutable` |
 | `date_validation_ffbb` | `?string` |
-| `date_validation_ffbb_timestamp` | `mixed` |
+| `date_validation_ffbb_timestamp` | `?int` |
 | `description` | `?string` |
 | `email` | `?string` |
 | `engagement` | `?string` |
@@ -2202,13 +2202,13 @@ Hit Meilisearch de l'index `ffbbserver_rencontres` (modèle Python RencontresHit
 | `nomEquipe2` | `?string` |  |
 | `numeroJournee` | `?int` |  |
 | `officiels` | `list<mixed>\|null` |  |
-| `officiels_string` | `mixed` |  |
+| `officiels_string` | `?string` |  |
 | `organisateur` | `?Organisateur` |  |
 | `organismeEquipe1` | `?IDOrganismeEquipe` | `idOrganismeEquipe1` |
 | `organismeEquipe2` | `?IDOrganismeEquipe` | `idOrganismeEquipe2` |
 | `poule` | `?IDPoule` | `idPoule` |
 | `pratique` | `?string` |  |
-| `rematch_videos` | `mixed` |  |
+| `rematch_videos` | `list<mixed>\|null` |  |
 | `resultatEquipe1` | `?int` |  |
 | `resultatEquipe2` | `?int` |  |
 | `saison` | `?Saison` |  |
