@@ -1,0 +1,15 @@
+FFBB API SDK pour PHP (jacobdelcroix/ffbb-api-sdk)
+
+Ce projet est un portage en PHP de « ffbb-data-client »
+(https://github.com/nickdesi/ffbb-data-client), distribué sous licence Apache 2.0.
+
+Modifications par rapport à l'œuvre d'origine :
+- réécriture complète en PHP sur le framework HTTP Saloon ;
+- ajout d'un query builder Directus, de DTOs générés depuis la spec OpenAPI
+  et d'outils de synchronisation avec le projet d'origine.
+
+Les listes de champs Directus (src/Fields/FieldLists.php), les constantes de
+src/Config.php et les instantanés de resources/ sont dérivés du projet d'origine.
+
+« FFBB » et « Fédération Française de Basket-Ball » sont des marques de leurs
+titulaires respectifs. Ce projet n'est ni affilié à la FFBB ni approuvé par elle.

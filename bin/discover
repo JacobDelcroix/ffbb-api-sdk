@@ -1,0 +1,64 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Découverte quotidienne de l'API FFBB (miroir de scripts/discover_endpoints.py).
+ *
+ * 1. récupère la spec OpenAPI Directus et sonde chaque index Meilisearch ;
+ * 2. compare avec resources/discovery/*.json ;
+ * 3. en cas de changement : met à jour les instantanés, régénère les DTOs et la référence API,
+ *    écrit resources/discovery/summary.md et signale `changed=true` à GitHub Actions.
+ *
+ * Usage : php bin/discover [--dry-run]
+ */
+
+use CoachBasket\Ffbb\Discovery\Discoverer;
+use CoachBasket\Ffbb\Discovery\SchemaDiff;
+use CoachBasket\Ffbb\FfbbDataClient;
+
+$root = dirname(__DIR__);
+require $root.'/vendor/autoload.php';
+
+$dryRun = in_array('--dry-run', $argv, true);
+$dir = $root.'/resources/discovery';
+
+$read = static fn (string $file): array => is_file("{$dir}/{$file}")
+    ? (array) json_decode((string) file_get_contents("{$dir}/{$file}"), true)
+    : [];
+$write = static fn (string $file, array $data): int|false => file_put_contents(
+    "{$dir}/{$file}",
+    json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)."\n",
+);
+
+$discoverer = new Discoverer(FfbbDataClient::create(cacheTtl: null));
+
+$spec = $discoverer->openApi();
+
+if ($spec === null) {
+    fwrite(STDERR, "Spec OpenAPI inaccessible (WAF ou jeton) : instantané Directus inchangé.\n");
+}
+
+$indexes = $discoverer->indexes();
+
+$diff = SchemaDiff::compare($read('openapi.json'), $spec ?? $read('openapi.json'), $read('indexes.json'), $indexes);
+$summary = $diff->toMarkdown();
+
+fwrite(STDOUT, $summary);
+
+if (! $dryRun && $diff->hasChanges()) {
+    if ($spec !== null) {
+        $write('openapi.json', $spec);
+        passthru(escapeshellarg(PHP_BINARY).' '.escapeshellarg($root.'/bin/generate-dtos'));
+        passthru(escapeshellarg(PHP_BINARY).' '.escapeshellarg($root.'/bin/generate-api-reference'));
+    }
+
+    $write('indexes.json', $indexes);
+    file_put_contents("{$dir}/summary.md", $summary);
+}
+
+if ($output = getenv('GITHUB_OUTPUT')) {
+    file_put_contents($output, 'changed='.($diff->hasChanges() ? 'true' : 'false')."\n", FILE_APPEND);
+    file_put_contents($output, 'breaking='.($diff->hasBreakingChanges() ? 'true' : 'false')."\n", FILE_APPEND);
+}

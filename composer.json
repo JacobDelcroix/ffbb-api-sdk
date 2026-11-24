@@ -1,0 +1,62 @@
+{
+    "name": "jacobdelcroix/ffbb-api-sdk",
+    "description": "SDK PHP (Saloon) non officiel pour les données FFBB : clubs, compétitions, poules, classements, rencontres, salles. Portage de nickdesi/ffbb-data-client.",
+    "type": "library",
+    "license": "Apache-2.0",
+    "keywords": ["ffbb", "basket", "basketball", "saloon", "sdk", "directus", "meilisearch"],
+    "authors": [
+        {
+            "name": "Jacob"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "saloonphp/saloon": "^4.1",
+        "saloonphp/cache-plugin": "^3.3",
+        "psr/simple-cache": "^3.0"
+    },
+    "require-dev": {
+        "pestphp/pest": "^3.0 || ^4.0",
+        "laravel/pint": "^1.18",
+        "phpstan/phpstan": "^2.0"
+    },
+    "suggest": {
+        "illuminate/support": "Pour l'intégration Laravel (service provider + config publiable)"
+    },
+    "autoload": {
+        "psr-4": {
+            "CoachBasket\\Ffbb\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CoachBasket\\Ffbb\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "pest",
+        "lint": "pint",
+        "analyse": "phpstan analyse src --level=6",
+        "sync-upstream": "php bin/sync-upstream",
+        "docs": "php bin/generate-api-reference",
+        "dtos": "php bin/generate-dtos"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "CoachBasket\\Ffbb\\Laravel\\FfbbServiceProvider"
+            ],
+            "aliases": {
+                "Ffbb": "CoachBasket\\Ffbb\\Laravel\\Facades\\Ffbb"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

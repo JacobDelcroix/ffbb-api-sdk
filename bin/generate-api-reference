@@ -1,0 +1,50 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Génère docs/reference/*.md depuis le code (réflexion + docblocks).
+ *
+ * Une page par groupe de méthodes (un trait de src/Concerns = un type de données),
+ * plus le query builder Directus, les DTOs et les exceptions.
+ * tests/Unit/DocumentationTest.php échoue si la référence n'est plus à jour.
+ *
+ * Usage : php bin/generate-api-reference [--check]
+ */
+
+use CoachBasket\Ffbb\Tests\Support\ApiReference;
+
+$root = dirname(__DIR__);
+require getenv('FFBB_AUTOLOAD') ?: $root.'/vendor/autoload.php';
+
+$check = in_array('--check', $argv, true);
+$pages = ApiReference::pages($root);
+$stale = [];
+
+foreach ($pages as $file => $content) {
+    $path = $root.'/docs/reference/'.$file;
+
+    if ($check) {
+        if (! is_file($path) || file_get_contents($path) !== $content) {
+            $stale[] = $file;
+        }
+
+        continue;
+    }
+
+    @mkdir(dirname($path), 0777, true);
+    file_put_contents($path, $content);
+}
+
+if ($check) {
+    if ($stale !== []) {
+        fwrite(STDERR, "Référence API obsolète : ".implode(', ', $stale)."\nLancer : php bin/generate-api-reference\n");
+        exit(1);
+    }
+
+    fwrite(STDOUT, "Référence API à jour.\n");
+    exit(0);
+}
+
+fwrite(STDOUT, sprintf("%d pages générées dans docs/reference/\n", count($pages)));

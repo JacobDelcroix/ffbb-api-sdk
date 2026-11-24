@@ -1,0 +1,18 @@
+* text=auto eol=lf
+
+/.github            export-ignore
+/bin                export-ignore
+/docs               export-ignore
+/tests              export-ignore
+/tools              export-ignore
+/resources/discovery export-ignore
+/resources/upstream export-ignore
+/.upstream-sha      export-ignore
+/CLAUDE.md          export-ignore
+/phpunit.xml        export-ignore
+/pint.json          export-ignore
+
+src/Data/*Item.php   linguist-generated=true
+src/Data/ItemMap.php linguist-generated=true
+src/Fields/FieldLists.php linguist-generated=true
+docs/reference/** linguist-generated=true

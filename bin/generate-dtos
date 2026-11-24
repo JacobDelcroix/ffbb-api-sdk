@@ -1,0 +1,171 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Génère les DTOs de src/Data/ depuis la spec OpenAPI Directus
+ * (resources/discovery/openapi.json, rafraîchie par bin/discover).
+ *
+ * Un DTO par collection FFBB (ffbbserver_* et ffbbnational_*) :
+ *  - propriétés typées et toutes nullables (les données FFBB sont souvent partielles) ;
+ *  - relations hydratées en DTO quand Directus renvoie l'objet développé, sinon l'identifiant ;
+ *  - $raw conserve la réponse complète (champs pas encore présents dans la spec).
+ *
+ * Usage : php bin/generate-dtos [chemin/openapi.json]
+ */
+
+$root = dirname(__DIR__);
+$specPath = $argv[1] ?? $root.'/resources/discovery/openapi.json';
+$targetDir = $root.'/src/Data';
+
+$spec = json_decode((string) file_get_contents($specPath), true, flags: JSON_THROW_ON_ERROR);
+$schemas = $spec['components']['schemas'] ?? [];
+
+$prefixes = ['ItemsFfbbserver' => 'ffbbserver_', 'ItemsFfbbnational' => 'ffbbnational_'];
+
+// Schéma OpenAPI -> [classe PHP, collection Directus]
+$classes = [];
+
+foreach (array_keys($schemas) as $schemaName) {
+    foreach ($prefixes as $prefix => $collectionPrefix) {
+        if (str_starts_with($schemaName, $prefix) && strlen($schemaName) > strlen($prefix)) {
+            $base = substr($schemaName, strlen($prefix));
+            $collection = $collectionPrefix.strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $base));
+            $classes[$schemaName] = [$base.'Item', $collection];
+        }
+    }
+}
+
+ksort($classes);
+
+$refClass = static function (?string $ref) use ($classes): ?string {
+    if ($ref === null) {
+        return null;
+    }
+
+    $name = substr($ref, strrpos($ref, '/') + 1);
+
+    return $classes[$name][0] ?? null;
+};
+
+/**
+ * Analyse une propriété OpenAPI.
+ *
+ * @return array{kind: string, php: string, doc: string, class: ?string}
+ */
+$analyse = static function (array $prop) use (&$analyse, $refClass): array {
+    if (isset($prop['oneOf'])) {
+        $class = null;
+
+        foreach ($prop['oneOf'] as $option) {
+            if (isset($option['$ref'])) {
+                $class = $refClass($option['$ref']) ?? $class;
+            }
+        }
+
+        $scalarTypes = ['string', 'int'];
+
+        if ($class !== null) {
+            return ['kind' => 'relation', 'php' => implode('|', [$class, ...$scalarTypes]).'|null', 'doc' => '', 'class' => $class];
+        }
+
+        return ['kind' => 'mixed', 'php' => 'mixed', 'doc' => '', 'class' => null];
+    }
+
+    if (isset($prop['$ref'])) {
+        $class = $refClass($prop['$ref']);
+
+        return $class !== null
+            ? ['kind' => 'relation', 'php' => $class.'|string|int|null', 'doc' => '', 'class' => $class]
+            : ['kind' => 'mixed', 'php' => 'mixed', 'doc' => '', 'class' => null];
+    }
+
+    return match ($prop['type'] ?? null) {
+        'integer' => ['kind' => 'int', 'php' => '?int', 'doc' => '', 'class' => null],
+        'number' => ['kind' => 'float', 'php' => '?float', 'doc' => '', 'class' => null],
+        'boolean' => ['kind' => 'bool', 'php' => '?bool', 'doc' => '', 'class' => null],
+        'string' => ['kind' => 'string', 'php' => '?string', 'doc' => '', 'class' => null],
+        'array' => (static function () use ($prop, $analyse): array {
+            $item = isset($prop['items']) ? $analyse($prop['items']) : null;
+            $class = $item['class'] ?? null;
+            $doc = $class !== null ? "list<{$class}|string|int>|null" : 'list<mixed>|null';
+
+            return ['kind' => 'relations', 'php' => '?array', 'doc' => $doc, 'class' => $class];
+        })(),
+        // object / json / type inconnu : valeur brute conservée telle quelle
+        default => ['kind' => 'mixed', 'php' => 'mixed', 'doc' => '', 'class' => null],
+    };
+};
+
+@mkdir($targetDir, 0777, true);
+
+foreach (glob($targetDir.'/*Item.php') ?: [] as $old) {
+    unlink($old);
+}
+
+$map = [];
+
+foreach ($classes as $schemaName => [$class, $collection]) {
+    $properties = $schemas[$schemaName]['properties'] ?? [];
+    ksort($properties);
+
+    $params = [];
+    $assigns = [];
+
+    foreach ($properties as $key => $prop) {
+        if (! preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', (string) $key) || $key === 'raw') {
+            continue;
+        }
+
+        $info = $analyse($prop);
+        $doc = $info['doc'] !== '' ? "        /** @var {$info['doc']} */\n" : '';
+        $params[] = $doc."        public {$info['php']} \${$key} = null,";
+
+        $value = '$data['.var_export($key, true).'] ?? null';
+        $assigns[] = '            '.$key.': '.match ($info['kind']) {
+            'int' => "Cast::int({$value})",
+            'float' => "Cast::float({$value})",
+            'bool' => "Cast::bool({$value})",
+            'string' => "Cast::string({$value})",
+            'relation' => "Cast::relation({$value}, {$info['class']}::class)",
+            'relations' => 'Cast::relations('.$value.', '.($info['class'] !== null ? $info['class'].'::class' : 'null').')',
+            default => $value,
+        }.',';
+    }
+
+    $params[] = "        /** @var array<string, mixed> Réponse brute complète */\n        public array \$raw = [],";
+    $assigns[] = '            raw: $data,';
+
+    $code = "<?php\n\ndeclare(strict_types=1);\n\nnamespace CoachBasket\\Ffbb\\Data;\n\nuse CoachBasket\\Ffbb\\Support\\Cast;\n\n";
+    $code .= "/**\n * Collection Directus `{$collection}` (schéma OpenAPI {$schemaName}).\n *\n";
+    $code .= " * FICHIER GÉNÉRÉ par bin/generate-dtos — ne pas modifier à la main.\n */\n";
+    $code .= "final readonly class {$class}\n{\n    public const string COLLECTION = '{$collection}';\n\n";
+    $code .= "    public function __construct(\n".implode("\n", $params)."\n    ) {}\n\n";
+    $code .= "    /**\n     * @param  array<string, mixed>  \$data\n     */\n";
+    $code .= "    public static function fromArray(array \$data): self\n    {\n        return new self(\n".implode("\n", $assigns)."\n        );\n    }\n\n";
+    $code .= "    /**\n     * @param  iterable<array<string, mixed>>  \$items\n     * @return list<self>\n     */\n";
+    $code .= "    public static function collect(iterable \$items): array\n    {\n        \$out = [];\n\n        foreach (\$items as \$item) {\n            \$out[] = self::fromArray(\$item);\n        }\n\n        return \$out;\n    }\n\n";
+    $code .= "    /**\n     * @return array<string, mixed>\n     */\n    public function toArray(): array\n    {\n        return \$this->raw;\n    }\n}\n";
+
+    file_put_contents("{$targetDir}/{$class}.php", $code);
+    $map[$collection] = $class;
+}
+
+ksort($map);
+
+$mapCode = "<?php\n\ndeclare(strict_types=1);\n\nnamespace CoachBasket\\Ffbb\\Data;\n\n";
+$mapCode .= "/**\n * Collection Directus → DTO.\n *\n * FICHIER GÉNÉRÉ par bin/generate-dtos — ne pas modifier à la main.\n */\nfinal class ItemMap\n{\n";
+$mapCode .= "    /** @var array<string, class-string> */\n    public const array CLASSES = [\n";
+
+foreach ($map as $collection => $class) {
+    $mapCode .= "        '{$collection}' => {$class}::class,\n";
+}
+
+$mapCode .= "    ];\n\n    /**\n     * @return class-string|null\n     */\n    public static function for(string \$collection): ?string\n    {\n";
+$mapCode .= "        \$collection = str_starts_with(\$collection, 'items/') ? substr(\$collection, 6) : \$collection;\n\n";
+$mapCode .= "        return self::CLASSES[\$collection] ?? null;\n    }\n}\n";
+
+file_put_contents($targetDir.'/ItemMap.php', $mapCode);
+
+fwrite(STDOUT, sprintf("%d DTOs générés dans src/Data/\n", count($map)));

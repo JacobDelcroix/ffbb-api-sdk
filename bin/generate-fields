@@ -1,0 +1,46 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Génère src/Fields/FieldLists.php depuis resources/upstream/fields.json.
+ *
+ * fields.json est produit par tools/extract_fields.py, qui lit statiquement
+ * (via `ast`, sans exécuter le code) les classes *Fields du SDK Python.
+ */
+
+$root = dirname(__DIR__);
+$source = $argv[1] ?? $root.'/resources/upstream/fields.json';
+$target = $root.'/src/Fields/FieldLists.php';
+
+$data = json_decode((string) file_get_contents($source), true, flags: JSON_THROW_ON_ERROR);
+
+$constName = static function (string $key): string {
+    // "organisme.get_default_fields" -> "ORGANISME_DEFAULT"
+    [$entity, $method] = explode('.', $key, 2);
+    $method = preg_replace('/^get_(.+)_fields$/', '$1', $method);
+
+    return strtoupper($entity.'_'.$method);
+};
+
+ksort($data);
+
+$out = "<?php\n\ndeclare(strict_types=1);\n\nnamespace CoachBasket\\Ffbb\\Fields;\n\n";
+$out .= "/**\n * FICHIER GÉNÉRÉ par bin/generate-fields — ne pas modifier à la main.\n *\n";
+$out .= " * Source : ffbb_data_client/models/*_fields.py (SDK Python).\n */\nfinal class FieldLists\n{\n";
+
+foreach ($data as $key => $fields) {
+    $out .= '    /** '.$key." */\n";
+    $out .= '    public const array '.$constName($key)." = [\n";
+    foreach ($fields as $field) {
+        $out .= '        '.var_export($field, true).",\n";
+    }
+    $out .= "    ];\n\n";
+}
+
+$out = rtrim($out)."\n}\n";
+
+file_put_contents($target, $out);
+
+fwrite(STDOUT, sprintf("FieldLists.php généré (%d listes)\n", count($data)));

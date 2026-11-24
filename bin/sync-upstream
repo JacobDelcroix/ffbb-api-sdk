@@ -1,0 +1,64 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/*
+ * Synchronise les artefacts « données » depuis un clone du SDK Python.
+ *
+ * Aucun code Python du repo n'est exécuté : tools/extract_upstream.py lit les sources avec `ast`.
+ *
+ * 1. extrait config.json, methods.json, fields.json dans resources/upstream/ ;
+ * 2. régénère src/Fields/FieldLists.php ;
+ * 3. écrit resources/upstream/summary.md (commits et fichiers Python modifiés depuis .upstream-sha) ;
+ * 4. met à jour .upstream-sha.
+ *
+ * Les écarts de constantes ou de méthodes font échouer tests/Unit/UpstreamParityTest.php :
+ * c'est ce qui signale, dans la PR, ce qu'il reste à porter à la main (ou via Claude Code).
+ *
+ * Usage : php bin/sync-upstream <chemin du clone ffbb-data-client>
+ */
+
+$root = dirname(__DIR__);
+$upstream = $argv[1] ?? null;
+
+if ($upstream === null || ! is_dir($upstream.'/src/ffbb_data_client')) {
+    fwrite(STDERR, "Usage : php bin/sync-upstream <chemin du clone ffbb-data-client>\n");
+    exit(1);
+}
+
+$run = static function (string $command): string {
+    exec($command.' 2>&1', $output, $code);
+
+    if ($code !== 0) {
+        fwrite(STDERR, implode("\n", $output)."\n");
+        exit($code);
+    }
+
+    return implode("\n", $output);
+};
+
+$shaFile = $root.'/.upstream-sha';
+$previous = is_file($shaFile) ? trim((string) file_get_contents($shaFile)) : '';
+$head = trim($run('git -C '.escapeshellarg($upstream).' rev-parse HEAD'));
+
+echo $run('python3 '.escapeshellarg($root.'/tools/extract_upstream.py').' '.escapeshellarg($upstream).' '.escapeshellarg($root.'/resources/upstream')), "\n";
+echo $run(escapeshellarg(PHP_BINARY).' '.escapeshellarg($root.'/bin/generate-fields')), "\n";
+
+$summary = "# Synchronisation avec nickdesi/ffbb-data-client\n\n";
+$summary .= "- Avant : `".($previous ?: 'inconnu')."`\n- Après : `{$head}`\n\n";
+
+if ($previous !== '' && $previous !== $head) {
+    $git = 'git -C '.escapeshellarg($upstream);
+    $log = trim((string) shell_exec("{$git} log --oneline {$previous}..{$head} 2>/dev/null"));
+    $files = trim((string) shell_exec("{$git} diff --stat {$previous} {$head} -- src/ffbb_data_client 2>/dev/null"));
+
+    $summary .= "## Commits\n\n```\n".($log ?: '(historique indisponible : clone trop superficiel)')."\n```\n\n";
+    $summary .= "## Fichiers Python modifiés\n\n```\n".($files ?: 'aucun')."\n```\n\n";
+    $summary .= "Les écarts de méthodes, endpoints, User-Agents, facettes et champs sont listés par `vendor/bin/pest --filter=Upstream`.\n";
+}
+
+file_put_contents($root.'/resources/upstream/summary.md', $summary);
+file_put_contents($shaFile, $head."\n");
+
+echo "Synchronisé sur {$head}\n";

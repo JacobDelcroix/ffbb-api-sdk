@@ -1,0 +1,55 @@
+name: FFBB discovery
+
+# Détecte chaque jour les changements côté FFBB (spec OpenAPI Directus + index Meilisearch),
+# régénère les DTOs et ouvre une PR avec le résumé.
+
+on:
+  schedule:
+    - cron: '23 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ffbb-discovery
+  cancel-in-progress: true
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist
+
+      - name: Découverte
+        id: discover
+        env:
+          # Optionnels : sans eux, les jetons sont lus sur items/configuration.
+          API_FFBB_APP_BEARER_TOKEN: ${{ secrets.API_FFBB_APP_BEARER_TOKEN }}
+          MEILISEARCH_BEARER_TOKEN: ${{ secrets.MEILISEARCH_BEARER_TOKEN }}
+        run: php bin/discover
+
+      - name: Tests sur les DTOs régénérés
+        if: steps.discover.outputs.changed == 'true'
+        run: vendor/bin/pest
+
+      - name: Pull request
+        if: steps.discover.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/ffbb-discovery
+          delete-branch: true
+          commit-message: "chore: changements détectés sur l'API FFBB"
+          title: "${{ steps.discover.outputs.breaking == 'true' && '⚠️ FFBB - changements potentiellement cassants' || 'chore - changements détectés sur l''API FFBB' }}"
+          body-path: resources/discovery/summary.md
+          labels: ffbb-api, automation
+          add-paths: |
+            resources/discovery/**
+            src/Data/**
+            docs/reference/**

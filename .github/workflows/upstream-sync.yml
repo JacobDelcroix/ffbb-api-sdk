@@ -1,0 +1,95 @@
+name: Upstream sync
+
+# Suit nickdesi/ffbb-data-client (SDK Python) :
+# 1. synchronise les données (constantes, méthodes, champs) par extraction statique ;
+# 2. si du code Python a changé, demande à Claude Code de porter les changements ;
+# 3. ouvre une PR, relue par un humain avant merge.
+
+on:
+  schedule:
+    - cron: '41 5 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: upstream-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    env:
+      HAS_ANTHROPIC_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Récupérer le SDK Python
+        run: git clone --filter=blob:none https://github.com/nickdesi/ffbb-data-client upstream
+
+      - name: Du nouveau ?
+        id: upstream
+        run: |
+          last=$(cat .upstream-sha)
+          head=$(git -C upstream rev-parse HEAD)
+          echo "head=$head" >> "$GITHUB_OUTPUT"
+          if [ "$last" = "$head" ]; then echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0; fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          if git -C upstream diff --quiet "$last" "$head" -- src/ffbb_data_client ':!src/ffbb_data_client/models' ':!src/ffbb_data_client/data'; then
+            echo "code=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "code=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: shivammathur/setup-php@v2
+        if: steps.upstream.outputs.changed == 'true'
+        with:
+          php-version: '8.3'
+          coverage: none
+
+      - name: Synchroniser les données
+        if: steps.upstream.outputs.changed == 'true'
+        run: |
+          composer install --no-interaction --prefer-dist
+          php bin/sync-upstream upstream
+          php bin/generate-api-reference
+
+      # Optionnel : nécessite le secret ANTHROPIC_API_KEY (chaque exécution est facturée).
+      - name: Porter le code avec Claude Code
+        if: steps.upstream.outputs.code == 'true' && env.HAS_ANTHROPIC_KEY == 'true'
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Lis docs/prompts/upstream-sync.md et applique-le.
+            Le clone du SDK Python est dans ./upstream.
+            Ancien commit : voir le fichier resources/upstream/summary.md (ligne « Avant »).
+            Nouveau commit : ${{ steps.upstream.outputs.head }}.
+            Ne crée ni commit ni branche : la PR est ouverte par l'étape suivante.
+          claude_args: >-
+            --max-turns 40
+            --allowedTools "Read,Edit,Write,Glob,Grep,Bash(git -C upstream:*),Bash(vendor/bin/pest:*),Bash(php bin/generate-dtos:*),Bash(php bin/generate-fields:*),Bash(php bin/generate-api-reference:*)"
+
+      - name: Tests (informatifs, la PR est ouverte même en échec)
+        if: steps.upstream.outputs.changed == 'true'
+        continue-on-error: true
+        run: vendor/bin/pest
+
+      - name: Pull request
+        if: steps.upstream.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/upstream-sync
+          delete-branch: true
+          commit-message: 'chore: synchronisation avec ffbb-data-client ${{ steps.upstream.outputs.head }}'
+          title: 'chore: synchronisation avec ffbb-data-client'
+          body-path: resources/upstream/summary.md
+          labels: upstream, automation
+          add-paths: |
+            .upstream-sha
+            resources/upstream/**
+            src/**
+            tests/**
+            docs/**
