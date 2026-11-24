@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_salles` (schéma OpenAPI ItemsFfbbserverSalles).
@@ -19,10 +20,10 @@ final readonly class SallesItem
         public ?string $adresse = null,
         public ?string $adresseComplement = null,
         public ?string $capaciteSpectateur = null,
-        public CartographiesItem|string|int|null $cartographie = null,
-        public CommunesItem|string|int|null $commune = null,
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?CartographiesItem $cartographie = null,
+        public ?CommunesItem $commune = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?string $id = null,
         public ?string $libelle = null,
         public ?string $libelle2 = null,
@@ -42,10 +43,10 @@ final readonly class SallesItem
             adresse: Cast::string($data['adresse'] ?? null),
             adresseComplement: Cast::string($data['adresseComplement'] ?? null),
             capaciteSpectateur: Cast::string($data['capaciteSpectateur'] ?? null),
-            cartographie: Cast::relation($data['cartographie'] ?? null, CartographiesItem::class),
-            commune: Cast::relation($data['commune'] ?? null, CommunesItem::class),
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            cartographie: Cast::related($data['cartographie'] ?? null, CartographiesItem::class),
+            commune: Cast::related($data['commune'] ?? null, CommunesItem::class),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             id: Cast::string($data['id'] ?? null),
             libelle: Cast::string($data['libelle'] ?? null),
             libelle2: Cast::string($data['libelle2'] ?? null),
@@ -65,7 +66,9 @@ final readonly class SallesItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

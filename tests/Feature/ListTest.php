@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use CoachBasket\Ffbb\Data\Item;
 use CoachBasket\Ffbb\Data\RencontresItem;
 use CoachBasket\Ffbb\Exceptions\ValidationException;
 use CoachBasket\Ffbb\Requests\Directus\ListItems;
@@ -30,7 +31,7 @@ it('pagine listAll jusqu à la page incomplète', function () {
     $items = ffbb($mock)->listAllRencontres(pageSize: 100);
 
     expect($items)->toHaveCount(250)
-        ->and($items[249]['id'])->toBe('249')
+        ->and($items[249]->id)->toBe('249')
         ->and($calls)->toBe([[100, 0], [100, 100], [100, 200]]);
 });
 
@@ -48,7 +49,7 @@ it('itère paresseusement avec iterAll', function () {
     $ids = [];
 
     foreach (ffbb($mock)->iterAllEngagements(pageSize: 10, maxItems: 25) as $engagement) {
-        $ids[] = $engagement['id'];
+        $ids[] = $engagement->id;
     }
 
     expect($ids)->toHaveCount(25)
@@ -98,7 +99,7 @@ it('expose tous les paramètres Directus via le query builder', function () {
 
     $request = $mock->getLastPendingRequest();
 
-    expect($rencontres[0]['nomEquipe1'])->toBe('OSTREVENT')
+    expect($rencontres[0]->nomEquipe1)->toBe('OSTREVENT')
         ->and($request->getUrl())->toBe('https://api.ffbb.com/items/ffbbserver_rencontres')
         ->and($request->query()->get('sort'))->toBe('-date_rencontre')
         ->and($request->query()->get('filter'))->toBe('{"idPoule":{"_eq":900}}');
@@ -111,11 +112,24 @@ it('compte avec aggregate[count]', function () {
         ->and($mock->getLastPendingRequest()->query()->get('aggregate[count]'))->toBe('*');
 });
 
-it('renvoie des DTOs depuis le query builder', function () {
+it('accepte une classe DTO à la place du nom de collection', function () {
     $mock = new MockClient([ListItems::class => directus([['id' => 'r1', 'joue' => 1]])]);
 
-    $rencontres = ffbb($mock)->directus('ffbbserver_rencontres')->getData();
+    $rencontres = ffbb($mock)->directus(RencontresItem::class)->get();
 
     expect($rencontres[0])->toBeInstanceOf(RencontresItem::class)
-        ->and($rencontres[0]->joue)->toBeTrue();
+        ->and($rencontres[0]->joue)->toBeTrue()
+        ->and($mock->getLastPendingRequest()->getUrl())->toBe('https://api.ffbb.com/items/ffbbserver_rencontres');
+});
+
+it('renvoie un Item générique pour une collection sans DTO, et des tableaux avec getRaw()', function () {
+    $mock = new MockClient([ListItems::class => directus([['id' => 'p1', 'title' => 'FAQ', 'section' => ['nom' => 'Licences']]])]);
+    $client = ffbb($mock);
+
+    $page = $client->directus('ffbbsite_pages')->first();
+
+    expect($page)->toBeInstanceOf(Item::class)
+        ->and($page->title)->toBe('FAQ')
+        ->and($page->get('section.nom'))->toBe('Licences')
+        ->and($client->directus('ffbbsite_pages')->getRaw()[0]['id'])->toBe('p1');
 });

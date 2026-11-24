@@ -16,8 +16,8 @@ final readonly class TournoisFfbbserverTypesTournois3x3Item
     public const string COLLECTION = 'ffbbserver_tournois_ffbbserver_types_tournois3x3';
 
     public function __construct(
-        public TournoisItem|string|int|null $ffbbserver_tournois_id = null,
-        public TypesTournois3x3Item|string|int|null $ffbbserver_types_tournois_3x3_id = null,
+        public ?TournoisItem $ffbbserver_tournois_id = null,
+        public ?TypesTournois3x3Item $ffbbserver_types_tournois_3x3_id = null,
         public ?int $id = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
@@ -29,8 +29,8 @@ final readonly class TournoisFfbbserverTypesTournois3x3Item
     public static function fromArray(array $data): self
     {
         return new self(
-            ffbbserver_tournois_id: Cast::relation($data['ffbbserver_tournois_id'] ?? null, TournoisItem::class),
-            ffbbserver_types_tournois_3x3_id: Cast::relation($data['ffbbserver_types_tournois_3x3_id'] ?? null, TypesTournois3x3Item::class),
+            ffbbserver_tournois_id: Cast::related($data['ffbbserver_tournois_id'] ?? null, TournoisItem::class),
+            ffbbserver_types_tournois_3x3_id: Cast::related($data['ffbbserver_types_tournois_3x3_id'] ?? null, TypesTournois3x3Item::class),
             id: Cast::int($data['id'] ?? null),
             raw: $data,
         );
@@ -45,7 +45,9 @@ final readonly class TournoisFfbbserverTypesTournois3x3Item
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

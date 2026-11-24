@@ -17,6 +17,7 @@ use CoachBasket\Ffbb\Connectors\MeilisearchConnector;
 use CoachBasket\Ffbb\Directus\QueryBuilder;
 use CoachBasket\Ffbb\Fallback\MeilisearchFallback;
 use CoachBasket\Ffbb\Fallback\PouleCompetitionRegistry;
+use CoachBasket\Ffbb\Fields\QueryFields;
 use CoachBasket\Ffbb\Search\MeilisearchSearcher;
 use CoachBasket\Ffbb\Support\ArrayCache;
 use CoachBasket\Ffbb\Support\Validator;
@@ -101,7 +102,15 @@ final class FfbbDataClient
     /**
      * Query builder Directus complet sur n'importe quelle collection.
      *
-     *     $ffbb->directus('ffbbserver_rencontres')->where('idPoule', '_eq', 123)->sort('-date_rencontre')->get();
+     * Accepte un nom de collection ou une classe DTO (qui donne le type des résultats à l'IDE) :
+     *
+     *     $ffbb->directus(RencontresItem::class)->where('idPoule', '_eq', 900)->sort('-date_rencontre')->get();
+     *     $ffbb->directus('ffbbserver_rencontres')->where('joue', '_eq', true)->first();
+     *
+     * @template T of object
+     *
+     * @param  class-string<T>|string  $collection
+     * @return QueryBuilder<T>
      */
     public function directus(string $collection): QueryBuilder
     {
@@ -113,8 +122,8 @@ final class FfbbDataClient
      */
     public function warmOrganismeCache(int|string $organismeId): void
     {
-        $this->getOrganisme($organismeId);
-        $this->getEquipes($organismeId);
+        $this->fetchOrganisme($organismeId);
+        $this->fetchOrganisme($organismeId, QueryFields::equipes());
     }
 
     /**
@@ -122,7 +131,7 @@ final class FfbbDataClient
      */
     public function warmCompetitionCache(int|string $competitionId): void
     {
-        $competition = $this->getCompetition($competitionId);
+        $competition = $this->fetchCompetition($competitionId);
 
         if ($competition === null) {
             return;
@@ -148,7 +157,7 @@ final class FfbbDataClient
         sort($ids);
 
         foreach ($ids as $pouleId) {
-            $this->getPoule($pouleId);
+            $this->fetchPoule($pouleId);
         }
     }
 

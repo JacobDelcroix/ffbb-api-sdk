@@ -69,7 +69,7 @@ final class Discoverer
     }
 
     /**
-     * @return array{available: bool, attributes: list<string>, estimatedTotalHits: ?int}
+     * @return array{available: bool, attributes: list<string>, estimatedTotalHits: ?int, types?: array<string, string>}
      */
     private function probe(string $uid): array
     {
@@ -84,22 +84,49 @@ final class Discoverer
             return ['available' => false, 'attributes' => [], 'estimatedTotalHits' => null];
         }
 
-        $keys = [];
+        $types = [];
 
         foreach ((array) ($result['hits'] ?? []) as $hit) {
-            if (is_array($hit)) {
-                $keys += array_flip(array_map('strval', array_keys($hit)));
+            if (! is_array($hit)) {
+                continue;
+            }
+
+            foreach ($hit as $key => $value) {
+                $key = (string) $key;
+                $type = self::jsonType($value);
+
+                if (! isset($types[$key]) || $types[$key] === 'null') {
+                    $types[$key] = $type;
+                } elseif ($type !== 'null' && $type !== $types[$key]) {
+                    $types[$key] = $types[$key] === 'int' && $type === 'float' ? 'float' : 'mixed';
+                }
             }
         }
 
-        $attributes = array_keys($keys);
-        sort($attributes);
+        ksort($types);
 
         return [
             'available' => true,
-            'attributes' => $attributes,
+            'attributes' => array_keys($types),
             'estimatedTotalHits' => is_int($result['estimatedTotalHits'] ?? null) ? $result['estimatedTotalHits'] : null,
+            'types' => $types,
         ];
+    }
+
+    /**
+     * Type JSON d'une valeur observée : string, int, float, bool, object, array ou null.
+     */
+    private static function jsonType(mixed $value): string
+    {
+        return match (true) {
+            $value === null => 'null',
+            is_bool($value) => 'bool',
+            is_int($value) => 'int',
+            is_float($value) => 'float',
+            is_string($value) => 'string',
+            is_array($value) && ($value === [] || array_is_list($value)) => 'array',
+            default => 'object',
+        };
     }
 
     /**

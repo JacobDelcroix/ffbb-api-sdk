@@ -27,7 +27,9 @@ extraites dans `resources/upstream/` par `bin/sync-upstream`.
    - constantes → `src/Config.php` (et `src/Search/Index.php` pour les facettes) ;
    - méthodes → le trait de `src/Concerns/` qui correspond au mixin Python, nom camelCase
      (`aiter_all_x` → `iterAllX`), mêmes paramètres et mêmes valeurs par défaut ;
-   - logique de retry / WAF → `src/Connectors/` ; repli Meilisearch → `src/Fallback/`.
+   - logique de retry / WAF → `src/Connectors/` ; repli Meilisearch → `src/Fallback/` ;
+   - nouvelle ressource répétitive (getter, liste, recherche) → tables de `tools/generate_concerns.py`, puis relancer le script ;
+   - les méthodes publiques renvoient toujours des DTOs (`src/Data`, `src/Data/Models`), jamais des tableaux.
 4. Ajoute ou adapte un test Pest (`tests/Feature`, avec `MockClient`) pour chaque comportement porté.
 5. Documente chaque méthode ajoutée (docblock : une phrase de résumé, puis les détails), complète le guide
    concerné dans `docs/guides/` si le comportement est nouveau, puis lance `php bin/generate-api-reference`.

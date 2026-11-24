@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_saisons` (schéma OpenAPI ItemsFfbbserverSaisons).
@@ -18,11 +19,11 @@ final readonly class SaisonsItem
     public function __construct(
         public ?bool $actif = null,
         public ?string $code = null,
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
-        public ?string $debut = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
+        public ?DateTimeImmutable $debut = null,
         public ?bool $enCours = null,
-        public ?string $fin = null,
+        public ?DateTimeImmutable $fin = null,
         public ?string $id = null,
         public ?string $libelle = null,
         /** @var array<string, mixed> Réponse brute complète */
@@ -37,11 +38,11 @@ final readonly class SaisonsItem
         return new self(
             actif: Cast::bool($data['actif'] ?? null),
             code: Cast::string($data['code'] ?? null),
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
-            debut: Cast::string($data['debut'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
+            debut: Cast::dateTime($data['debut'] ?? null),
             enCours: Cast::bool($data['enCours'] ?? null),
-            fin: Cast::string($data['fin'] ?? null),
+            fin: Cast::dateTime($data['fin'] ?? null),
             id: Cast::string($data['id'] ?? null),
             libelle: Cast::string($data['libelle'] ?? null),
             raw: $data,
@@ -57,7 +58,9 @@ final readonly class SaisonsItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

@@ -9,7 +9,7 @@ declare(strict_types=1);
  * Aucun code Python du repo n'est exécuté : tools/extract_upstream.py lit les sources avec `ast`.
  *
  * 1. extrait config.json, methods.json, fields.json dans resources/upstream/ ;
- * 2. régénère src/Fields/FieldLists.php ;
+ * 2. extrait les modèles de réponse (models.json), régénère src/Fields/FieldLists.php et les DTOs ;
  * 3. écrit resources/upstream/summary.md (commits et fichiers Python modifiés depuis .upstream-sha) ;
  * 4. met à jour .upstream-sha.
  *
@@ -43,7 +43,9 @@ $previous = is_file($shaFile) ? trim((string) file_get_contents($shaFile)) : '';
 $head = trim($run('git -C '.escapeshellarg($upstream).' rev-parse HEAD'));
 
 echo $run('python3 '.escapeshellarg($root.'/tools/extract_upstream.py').' '.escapeshellarg($upstream).' '.escapeshellarg($root.'/resources/upstream')), "\n";
+echo $run('python3 '.escapeshellarg($root.'/tools/extract_models.py').' '.escapeshellarg($upstream).' '.escapeshellarg($root.'/resources/upstream/models.json')), "\n";
 echo $run(escapeshellarg(PHP_BINARY).' '.escapeshellarg($root.'/bin/generate-fields')), "\n";
+echo $run(escapeshellarg(PHP_BINARY).' '.escapeshellarg($root.'/bin/generate-dtos')), "\n";
 
 $summary = "# Synchronisation avec nickdesi/ffbb-data-client\n\n";
 $summary .= "- Avant : `".($previous ?: 'inconnu')."`\n- Après : `{$head}`\n\n";

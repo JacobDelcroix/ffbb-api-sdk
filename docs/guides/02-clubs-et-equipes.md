@@ -16,17 +16,21 @@ Pour passer du code à l'identifiant, cherche le nom du club puis garde le hit d
 ```php
 $code = 'HDF0059038'; // depuis https://competitions.ffbb.com/ligues/hdf/comites/0059/clubs/hdf0059038
 
-$hits = $ffbb->searchOrganismes('Ostrevent')['hits'] ?? [];
-$club = array_values(array_filter($hits, fn (array $h) => $h['code'] === strtoupper($code)))[0] ?? null;
+$hits = $ffbb->searchOrganismes('Ostrevent')?->hits ?? [];
+$club = array_values(array_filter($hits, fn ($h) => $h->code === strtoupper($code)))[0] ?? null;
 
-$clubId = (int) $club['id']; // 10238
+$clubId = (int) $club->id; // 10238
 ```
 
 ## Trouver des clubs
 
 ```php
 // Par nom (filtrage côté client : le texte doit apparaître dans le nom, la commune ou le département)
-$ffbb->searchOrganismes('Monchecourt');
+$resultat = $ffbb->searchOrganismes('Monchecourt');   // ?SearchResult<OrganismesHit>
+
+foreach ($resultat->hits as $club) {
+    echo $club->nom.' — '.$club->commune?->libelle.PHP_EOL;
+}
 
 // Tous les clubs d'une commune (nom exact)
 $ffbb->searchOrganismesByCity('Douai');
@@ -41,11 +45,12 @@ $ffbb->searchOrganismesByGeo(lat: 50.30, lng: 3.21, radiusKm: 15);
 ## Détail d'un club
 
 ```php
-$club = $ffbb->getOrganisme(10238);
+$club = $ffbb->getOrganisme(10238);   // ?OrganismesItem
 
-$club['nom'];               // OSTREVENT BASKET BALL EAA MONCHECOURT
-$club['commune']['libelle'];
-$club['engagements'];       // équipes engagées, avec compétition et poule
+$club->nom;                 // OSTREVENT BASKET BALL EAA MONCHECOURT
+$club->commune?->libelle;   // CommunesItem
+$club->mail;
+$club->engagements;         // list<EngagementsItem>, avec compétition et poule
 ```
 
 Par défaut, 77 champs sont demandés (le même jeu que le SDK Python). Pour un usage léger :
@@ -58,13 +63,13 @@ $ffbb->getOrganisme(10238, ['id', 'nom', 'code']); // champs choisis
 ## Équipes engagées
 
 ```php
-$equipes = $ffbb->getEquipes(10238);
+$equipes = $ffbb->getEquipes(10238);   // list<EngagementsItem>
 
 foreach ($equipes as $equipe) {
-    echo $equipe['idCompetition']['nom'];   // ex. « U15 Féminine Départementale 2 »
-    echo $equipe['idCompetition']['sexe'];  // F / M
-    echo $equipe['idPoule']['nom'];         // ex. « Poule A »
-    echo $equipe['numeroEquipe'];           // 1, 2… si le club a plusieurs équipes
+    echo $equipe->idCompetition?->nom;   // ex. « U15 Féminine Départementale 2 »
+    echo $equipe->idCompetition?->sexe;  // F / M
+    echo $equipe->idPoule?->nom;         // ex. « Poule A »
+    echo $equipe->numeroEquipe;          // 1, 2… si le club a plusieurs équipes
 }
 ```
 
@@ -82,6 +87,7 @@ Pour les équipes d'une poule (tous clubs confondus) : `listEngagementsByPoule(9
 ```php
 $contacts = $ffbb->getClubContacts(10238);
 
+$contacts->organisme->nom;               // OrganismesItem
 $contacts->clubContact?->email;          // contact du club
 foreach ($contacts->membres as $membre) { // ContactInfo : nom, prenom, email, telephone, role
     echo "{$membre->prenom} {$membre->nom} ({$membre->role})";

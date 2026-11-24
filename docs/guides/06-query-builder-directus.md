@@ -6,11 +6,16 @@ Les méthodes reprises du SDK Python couvrent les usages courants. Pour tout le 
 à **tous les paramètres de l'API Items de Directus** sur n'importe quelle collection.
 
 ```php
-$q = $ffbb->directus('ffbbserver_rencontres');   // ou 'items/ffbbserver_rencontres'
+use CoachBasket\Ffbb\Data\RencontresItem;
+
+$q = $ffbb->directus(RencontresItem::class);    // recommandé : l'IDE connaît le type des résultats
+$q = $ffbb->directus('ffbbserver_rencontres');  // équivalent (ou 'items/ffbbserver_rencontres')
 ```
 
-Les collections disponibles sont listées dans [DTOs](../reference/dtos.md) (une par DTO) et, de façon
-exhaustive, dans `resources/discovery/openapi.json`.
+Les résultats sont hydratés dans le DTO de la collection (`RencontresItem`…). Une collection sans DTO
+(ex. `ffbbsite_pages`) renvoie des `Item` génériques : `$page->title`, `$page->get('section.nom')`.
+Les collections disponibles sont listées dans la [référence DTOs](../reference/dtos.md#réponses-directus) et,
+de façon exhaustive, dans `resources/discovery/openapi.json`.
 
 ## Champs
 
@@ -55,10 +60,14 @@ $q->search('Monchecourt');    // plein texte sur les champs texte
 ## Relations imbriquées (`deep`)
 
 ```php
-$ffbb->directus('ffbbserver_poules')
+use CoachBasket\Ffbb\Data\PoulesItem;
+
+$poule = $ffbb->directus(PoulesItem::class)
     ->fields(['id', 'nom', 'rencontres.*'])
     ->deep('rencontres', ['_limit' => 5, '_sort' => ['-date_rencontre']])
-    ->find(900);
+    ->find(900);   // ?PoulesItem
+
+$poule->rencontres[0]->nomEquipe1;   // RencontresItem
 ```
 
 ## Agrégats
@@ -67,25 +76,26 @@ $ffbb->directus('ffbbserver_poules')
 // Nombre d'équipes dans une poule
 $ffbb->directus('ffbbserver_engagements')->where('idPoule', '_eq', 900)->count();
 
-// Nombre de rencontres par poule d'une compétition
+// Nombre de rencontres par poule d'une compétition : les lignes d'agrégat ne sont pas des rencontres,
+// on les lit en tableaux avec getRaw()
 $ffbb->directus('ffbbserver_rencontres')
     ->where('competitionId', '_eq', 500)
     ->aggregate('count', '*')
     ->groupBy('idPoule')
-    ->get();   // [['idPoule' => '900', 'count' => '56'], ...]
+    ->getRaw();   // [['idPoule' => '900', 'count' => '56'], ...]
 ```
 
 ## Exécuter
 
 | Méthode | Renvoie |
 |---|---|
-| `get()` | `list<array>` |
-| `first()` | `array\|null` |
-| `find($id)` | `array\|null` (seuls `fields`, `deep` et `alias` s'appliquent) |
+| `get()` | liste de DTOs (`list<RencontresItem>`…) |
+| `first()` | DTO ou `null` |
+| `find($id)` | DTO ou `null` (seuls `fields`, `deep` et `alias` s'appliquent) |
+| `cursor($pageSize = 100)` | générateur de DTOs sur tous les résultats, page par page |
 | `count()` | `int` |
-| `cursor($pageSize = 100)` | générateur sur tous les résultats, page par page |
+| `getRaw()` / `firstRaw()` / `findRaw($id)` | les mêmes résultats en tableaux Directus (agrégats, débogage) |
 | `raw()` | réponse brute `['data' => …, 'meta' => …]` (avec `withMeta()`) |
-| `getData()` / `findData($id)` | DTOs (voir [guide 07](07-dtos.md)) |
 | `toQuery()` | paramètres envoyés, sans requête (débogage) |
 
 ```php

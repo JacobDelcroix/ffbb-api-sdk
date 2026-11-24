@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_communes` (schéma OpenAPI ItemsFfbbserverCommunes).
@@ -18,8 +19,8 @@ final readonly class CommunesItem
     public function __construct(
         public ?string $codeInsee = null,
         public ?string $codePostal = null,
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?string $departement = null,
         public ?string $id = null,
         public ?string $libelle = null,
@@ -35,8 +36,8 @@ final readonly class CommunesItem
         return new self(
             codeInsee: Cast::string($data['codeInsee'] ?? null),
             codePostal: Cast::string($data['codePostal'] ?? null),
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             departement: Cast::string($data['departement'] ?? null),
             id: Cast::string($data['id'] ?? null),
             libelle: Cast::string($data['libelle'] ?? null),
@@ -53,7 +54,9 @@ final readonly class CommunesItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

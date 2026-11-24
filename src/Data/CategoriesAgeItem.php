@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_categories_age` (schéma OpenAPI ItemsFfbbserverCategoriesAge).
@@ -19,8 +20,8 @@ final readonly class CategoriesAgeItem
         public ?int $ageMaxi = null,
         public ?int $ageMini = null,
         public ?string $code = null,
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?string $id = null,
         public ?string $libelle = null,
         public ?string $sexe = null,
@@ -37,8 +38,8 @@ final readonly class CategoriesAgeItem
             ageMaxi: Cast::int($data['ageMaxi'] ?? null),
             ageMini: Cast::int($data['ageMini'] ?? null),
             code: Cast::string($data['code'] ?? null),
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             id: Cast::string($data['id'] ?? null),
             libelle: Cast::string($data['libelle'] ?? null),
             sexe: Cast::string($data['sexe'] ?? null),
@@ -55,7 +56,9 @@ final readonly class CategoriesAgeItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

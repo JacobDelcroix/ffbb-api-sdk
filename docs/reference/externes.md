@@ -8,24 +8,24 @@ Guide avec exemples : [04-rencontres-et-listes](../guides/04-rencontres-et-liste
 
 | Méthode | Retour | Description |
 |---|---|---|
-| [`getGeniusSportMatch()`](#getgeniussportmatch) | `array<string, mixed>\|null` | Un match Genius Sports (statistiques live). |
-| [`getRematchVideo()`](#getrematchvideo) | `array<string, mixed>\|null` | Une vidéo Rematch. |
-| [`getEdfMatch()`](#getedfmatch) | `array<string, mixed>\|null` | Un match d'une équipe de France. |
-| [`getEdfPlayer()`](#getedfplayer) | `array<string, mixed>\|null` | Un joueur ou une joueuse des équipes de France. |
-| [`listGeniusSportMatches()`](#listgeniussportmatches) | `list<array<string, mixed>>` | Matchs Genius Sports (statistiques live). |
-| [`listGeniusSportsLiveLogs()`](#listgeniussportslivelogs) | `list<array<string, mixed>>` | Journal des événements live Genius Sports. |
-| [`listRematchVideos()`](#listrematchvideos) | `list<array<string, mixed>>` | Vidéos Rematch. |
-| [`listEdfMatches()`](#listedfmatches) | `list<array<string, mixed>>` | Matchs des équipes de France. |
-| [`listEdfPlayers()`](#listedfplayers) | `list<array<string, mixed>>` | Joueurs et joueuses des équipes de France. |
-| [`listEdfTeams()`](#listedfteams) | `list<array<string, mixed>>` | Équipes de France. |
-| [`listEdfRosters()`](#listedfrosters) | `list<array<string, mixed>>` | Effectifs des équipes de France. |
+| [`getGeniusSportMatch()`](#getgeniussportmatch) | `?GeniusSportMatchesItem` | Un match Genius Sports (statistiques live). |
+| [`getRematchVideo()`](#getrematchvideo) | `?RematchVideosItem` | Une vidéo Rematch. |
+| [`getEdfMatch()`](#getedfmatch) | `?EdfMatchesItem` | Un match d'une équipe de France. |
+| [`getEdfPlayer()`](#getedfplayer) | `?EdfPlayersItem` | Un joueur ou une joueuse des équipes de France. |
+| [`listGeniusSportMatches()`](#listgeniussportmatches) | `list<GeniusSportMatchesItem>` | Matchs Genius Sports (statistiques live). |
+| [`listGeniusSportsLiveLogs()`](#listgeniussportslivelogs) | `list<GeniusSportsLiveLogsItem>` | Journal des événements live Genius Sports. |
+| [`listRematchVideos()`](#listrematchvideos) | `list<RematchVideosItem>` | Vidéos Rematch. |
+| [`listEdfMatches()`](#listedfmatches) | `list<EdfMatchesItem>` | Matchs des équipes de France. |
+| [`listEdfPlayers()`](#listedfplayers) | `list<EdfPlayersItem>` | Joueurs et joueuses des équipes de France. |
+| [`listEdfTeams()`](#listedfteams) | `list<EdfTeamsItem>` | Équipes de France. |
+| [`listEdfRosters()`](#listedfrosters) | `list<EdfRostersItem>` | Effectifs des équipes de France. |
 
 ### `getGeniusSportMatch()`
 
 Un match Genius Sports (statistiques live).
 
 ```php
-public function getGeniusSportMatch(int|string $id, ?array $fields = null): ?array
+public function getGeniusSportMatch(int|string $id, ?array $fields = null): ?GeniusSportMatchesItem
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -33,7 +33,7 @@ public function getGeniusSportMatch(int|string $id, ?array $fields = null): ?arr
 | `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?GeniusSportMatchesItem`
 
 Équivalent Python : `get_genius_sport_match`
 
@@ -42,7 +42,7 @@ public function getGeniusSportMatch(int|string $id, ?array $fields = null): ?arr
 Une vidéo Rematch.
 
 ```php
-public function getRematchVideo(int|string $id, ?array $fields = null): ?array
+public function getRematchVideo(int|string $id, ?array $fields = null): ?RematchVideosItem
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -50,7 +50,7 @@ public function getRematchVideo(int|string $id, ?array $fields = null): ?array
 | `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?RematchVideosItem`
 
 Équivalent Python : `get_rematch_video`
 
@@ -59,7 +59,7 @@ public function getRematchVideo(int|string $id, ?array $fields = null): ?array
 Un match d'une équipe de France.
 
 ```php
-public function getEdfMatch(int|string $id, ?array $fields = null): ?array
+public function getEdfMatch(int|string $id, ?array $fields = null): ?EdfMatchesItem
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -67,7 +67,7 @@ public function getEdfMatch(int|string $id, ?array $fields = null): ?array
 | `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?EdfMatchesItem`
 
 Équivalent Python : `get_edf_match`
 
@@ -76,7 +76,7 @@ public function getEdfMatch(int|string $id, ?array $fields = null): ?array
 Un joueur ou une joueuse des équipes de France.
 
 ```php
-public function getEdfPlayer(int|string $id, ?array $fields = null): ?array
+public function getEdfPlayer(int|string $id, ?array $fields = null): ?EdfPlayersItem
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -84,7 +84,7 @@ public function getEdfPlayer(int|string $id, ?array $fields = null): ?array
 | `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?EdfPlayersItem`
 
 Équivalent Python : `get_edf_player`
 
@@ -103,7 +103,7 @@ public function listGeniusSportMatches(int $limit = 10, ?array $fields = null, ?
 | `$filterCriteria` | `?string` | `null` | Filtre Directus en JSON, ex. `{"idPoule":{"_eq":900}}`. |
 | `$sort` | `string\|list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 
-**Retour :** `list<array<string, mixed>>`
+**Retour :** `list<GeniusSportMatchesItem>`
 
 Équivalent Python : `list_genius_sport_matches`
 
@@ -122,7 +122,7 @@ public function listGeniusSportsLiveLogs(int $limit = 10, ?array $fields = null,
 | `$filterCriteria` | `?string` | `null` | Filtre Directus en JSON, ex. `{"idPoule":{"_eq":900}}`. |
 | `$sort` | `string\|list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 
-**Retour :** `list<array<string, mixed>>`
+**Retour :** `list<GeniusSportsLiveLogsItem>`
 
 Équivalent Python : `list_genius_sports_live_logs`
 
@@ -141,7 +141,7 @@ public function listRematchVideos(int $limit = 10, ?array $fields = null, ?strin
 | `$filterCriteria` | `?string` | `null` | Filtre Directus en JSON, ex. `{"idPoule":{"_eq":900}}`. |
 | `$sort` | `string\|list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 
-**Retour :** `list<array<string, mixed>>`
+**Retour :** `list<RematchVideosItem>`
 
 Équivalent Python : `list_rematch_videos`
 
@@ -160,7 +160,7 @@ public function listEdfMatches(int $limit = 10, ?array $fields = null, ?string $
 | `$filterCriteria` | `?string` | `null` | Filtre Directus en JSON, ex. `{"idPoule":{"_eq":900}}`. |
 | `$sort` | `string\|list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 
-**Retour :** `list<array<string, mixed>>`
+**Retour :** `list<EdfMatchesItem>`
 
 Équivalent Python : `list_edf_matches`
 
@@ -179,7 +179,7 @@ public function listEdfPlayers(int $limit = 10, ?array $fields = null, ?string $
 | `$filterCriteria` | `?string` | `null` | Filtre Directus en JSON, ex. `{"idPoule":{"_eq":900}}`. |
 | `$sort` | `string\|list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 
-**Retour :** `list<array<string, mixed>>`
+**Retour :** `list<EdfPlayersItem>`
 
 Équivalent Python : `list_edf_players`
 
@@ -198,7 +198,7 @@ public function listEdfTeams(int $limit = 10, ?array $fields = null, ?string $fi
 | `$filterCriteria` | `?string` | `null` | Filtre Directus en JSON, ex. `{"idPoule":{"_eq":900}}`. |
 | `$sort` | `string\|list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 
-**Retour :** `list<array<string, mixed>>`
+**Retour :** `list<EdfTeamsItem>`
 
 Équivalent Python : `list_edf_teams`
 
@@ -217,6 +217,6 @@ public function listEdfRosters(int $limit = 10, ?array $fields = null, ?string $
 | `$filterCriteria` | `?string` | `null` | Filtre Directus en JSON, ex. `{"idPoule":{"_eq":900}}`. |
 | `$sort` | `string\|list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 
-**Retour :** `list<array<string, mixed>>`
+**Retour :** `list<EdfRostersItem>`
 
 Équivalent Python : `list_edf_rosters`

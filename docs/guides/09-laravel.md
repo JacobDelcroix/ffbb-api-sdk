@@ -36,7 +36,7 @@ final class ClassementController
 {
     public function __invoke(FfbbDataClient $ffbb, int $pouleId)
     {
-        return view('classement', ['lignes' => $ffbb->getClassement($pouleId) ?? []]);
+        return view('classement', ['lignes' => $ffbb->getClassement($pouleId) ?? []]);   // list<PoulesClassementsItem>
     }
 }
 ```
@@ -56,6 +56,7 @@ Isoler chaque usage du SDK dans une Action garde le reste de l'appli indépendan
 ```php
 namespace App\Actions\Ffbb;
 
+use CoachBasket\Ffbb\Data\PoulesClassementsItem;
 use CoachBasket\Ffbb\FfbbDataClient;
 
 final readonly class GetTeamStanding
@@ -64,13 +65,11 @@ final readonly class GetTeamStanding
 
     /**
      * Ligne de classement d'un club dans une poule, ou null.
-     *
-     * @return array<string, mixed>|null
      */
-    public function handle(int $pouleId, int $organismeId): ?array
+    public function handle(int $pouleId, int $organismeId): ?PoulesClassementsItem
     {
         foreach ($this->ffbb->getClassement($pouleId) ?? [] as $ligne) {
-            if ((int) ($ligne['organisme']['id'] ?? 0) === $organismeId) {
+            if ((int) $ligne->organisme?->id === $organismeId) {
                 return $ligne;
             }
         }
@@ -128,10 +127,11 @@ beforeEach(function () {
 it('trouve la ligne de classement du club', function () {
     $ligne = app(GetTeamStanding::class)->handle(900, 10238);
 
-    expect($ligne['position'])->toBe(1);
+    expect($ligne->position)->toBe(1);
 });
 ```
 
+Dans un test, on décrit les réponses FFBB en tableaux (comme l'API les renvoie) : le SDK les hydrate en DTOs.
 Les classes de requêtes à simuler : `GetItem`, `ListItems`, `GetLives`, `GetConfiguration`, `GetOpenApiSpec`
 (Directus), `MultiSearch`, `SearchIndex` (Meilisearch). `Saloon\Config::preventStrayRequests()` garantit
 qu'aucune requête réelle ne part pendant les tests.

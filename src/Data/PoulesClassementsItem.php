@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_poules_classements` (schéma OpenAPI ItemsFfbbserverPoulesClassements).
@@ -16,21 +17,21 @@ final readonly class PoulesClassementsItem
     public const string COLLECTION = 'ffbbserver_poules_classements';
 
     public function __construct(
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?int $difference = null,
         public ?int $gagnes = null,
         public ?bool $horsClassement = null,
         public ?string $id = null,
-        public CompetitionsItem|string|int|null $idCompetition = null,
-        public EngagementsItem|string|int|null $idEngagement = null,
-        public PoulesItem|string|int|null $idPoule = null,
+        public ?CompetitionsItem $idCompetition = null,
+        public ?EngagementsItem $idEngagement = null,
+        public ?PoulesItem $idPoule = null,
         public ?int $matchJoues = null,
         public ?int $match_joues = null,
         public ?int $nombreDefauts = null,
         public ?int $nombreForfaits = null,
         public ?int $nuls = null,
-        public OrganismesItem|string|int|null $organisme = null,
+        public ?OrganismesItem $organisme = null,
         public ?string $organisme_nom = null,
         public ?int $paniersEncaisses = null,
         public ?int $paniersMarques = null,
@@ -54,21 +55,21 @@ final readonly class PoulesClassementsItem
     public static function fromArray(array $data): self
     {
         return new self(
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             difference: Cast::int($data['difference'] ?? null),
             gagnes: Cast::int($data['gagnes'] ?? null),
             horsClassement: Cast::bool($data['horsClassement'] ?? null),
             id: Cast::string($data['id'] ?? null),
-            idCompetition: Cast::relation($data['idCompetition'] ?? null, CompetitionsItem::class),
-            idEngagement: Cast::relation($data['idEngagement'] ?? null, EngagementsItem::class),
-            idPoule: Cast::relation($data['idPoule'] ?? null, PoulesItem::class),
+            idCompetition: Cast::related($data['idCompetition'] ?? null, CompetitionsItem::class),
+            idEngagement: Cast::related($data['idEngagement'] ?? null, EngagementsItem::class),
+            idPoule: Cast::related($data['idPoule'] ?? null, PoulesItem::class),
             matchJoues: Cast::int($data['matchJoues'] ?? null),
             match_joues: Cast::int($data['match_joues'] ?? null),
             nombreDefauts: Cast::int($data['nombreDefauts'] ?? null),
             nombreForfaits: Cast::int($data['nombreForfaits'] ?? null),
             nuls: Cast::int($data['nuls'] ?? null),
-            organisme: Cast::relation($data['organisme'] ?? null, OrganismesItem::class),
+            organisme: Cast::related($data['organisme'] ?? null, OrganismesItem::class),
             organisme_nom: Cast::string($data['organisme_nom'] ?? null),
             paniersEncaisses: Cast::int($data['paniersEncaisses'] ?? null),
             paniersMarques: Cast::int($data['paniersMarques'] ?? null),
@@ -95,7 +96,9 @@ final readonly class PoulesClassementsItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

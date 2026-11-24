@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_labellisations_organismes` (schéma OpenAPI ItemsFfbbserverLabellisationsOrganismes).
@@ -16,13 +17,13 @@ final readonly class LabellisationsOrganismesItem
     public const string COLLECTION = 'ffbbserver_labellisations_organismes';
 
     public function __construct(
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
-        public ?string $debut = null,
-        public ?string $fin = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
+        public ?DateTimeImmutable $debut = null,
+        public ?DateTimeImmutable $fin = null,
         public ?string $id = null,
-        public LabellisationProgrammeItem|string|int|null $idLabellisationProgramme = null,
-        public OrganismesItem|string|int|null $idOrganisme = null,
+        public ?LabellisationProgrammeItem $idLabellisationProgramme = null,
+        public ?OrganismesItem $idOrganisme = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
     ) {}
@@ -33,13 +34,13 @@ final readonly class LabellisationsOrganismesItem
     public static function fromArray(array $data): self
     {
         return new self(
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
-            debut: Cast::string($data['debut'] ?? null),
-            fin: Cast::string($data['fin'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
+            debut: Cast::dateTime($data['debut'] ?? null),
+            fin: Cast::dateTime($data['fin'] ?? null),
             id: Cast::string($data['id'] ?? null),
-            idLabellisationProgramme: Cast::relation($data['idLabellisationProgramme'] ?? null, LabellisationProgrammeItem::class),
-            idOrganisme: Cast::relation($data['idOrganisme'] ?? null, OrganismesItem::class),
+            idLabellisationProgramme: Cast::related($data['idLabellisationProgramme'] ?? null, LabellisationProgrammeItem::class),
+            idOrganisme: Cast::related($data['idOrganisme'] ?? null, OrganismesItem::class),
             raw: $data,
         );
     }
@@ -53,7 +54,9 @@ final readonly class LabellisationsOrganismesItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

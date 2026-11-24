@@ -5,12 +5,19 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Concerns;
 
 use CoachBasket\Ffbb\Config;
+use CoachBasket\Ffbb\Data\EdfMatchesItem;
+use CoachBasket\Ffbb\Data\EdfPlayersItem;
+use CoachBasket\Ffbb\Data\EdfRostersItem;
+use CoachBasket\Ffbb\Data\EdfTeamsItem;
+use CoachBasket\Ffbb\Data\GeniusSportMatchesItem;
+use CoachBasket\Ffbb\Data\GeniusSportsLiveLogsItem;
+use CoachBasket\Ffbb\Data\RematchVideosItem;
 
 /**
  * Intégrations externes exposées par Directus : Genius Sports, Rematch, équipes de France
  * (miroir de ExternalMixin).
  *
- * Méthodes volontairement explicites (une par ressource) pour l'autocomplétion et PHPStan.
+ * FICHIER GÉNÉRÉ par tools/generate_concerns.py — modifier le générateur plutôt que ce fichier.
  */
 trait ManagesExternalResources
 {
@@ -18,44 +25,40 @@ trait ManagesExternalResources
      * Un match Genius Sports (statistiques live).
      *
      * @param  list<string>|null  $fields
-     * @return array<string, mixed>|null
      */
-    public function getGeniusSportMatch(int|string $id, ?array $fields = null): ?array
+    public function getGeniusSportMatch(int|string $id, ?array $fields = null): ?GeniusSportMatchesItem
     {
-        return $this->getDirectusItem(Config::ENDPOINT_GENIUS_SPORT_MATCHES, $id, $fields);
+        return self::hydrateOne($this->getDirectusItem(Config::ENDPOINT_GENIUS_SPORT_MATCHES, $id, $fields), GeniusSportMatchesItem::class);
     }
 
     /**
      * Une vidéo Rematch.
      *
      * @param  list<string>|null  $fields
-     * @return array<string, mixed>|null
      */
-    public function getRematchVideo(int|string $id, ?array $fields = null): ?array
+    public function getRematchVideo(int|string $id, ?array $fields = null): ?RematchVideosItem
     {
-        return $this->getDirectusItem(Config::ENDPOINT_REMATCH_VIDEOS, $id, $fields);
+        return self::hydrateOne($this->getDirectusItem(Config::ENDPOINT_REMATCH_VIDEOS, $id, $fields), RematchVideosItem::class);
     }
 
     /**
      * Un match d'une équipe de France.
      *
      * @param  list<string>|null  $fields
-     * @return array<string, mixed>|null
      */
-    public function getEdfMatch(int|string $id, ?array $fields = null): ?array
+    public function getEdfMatch(int|string $id, ?array $fields = null): ?EdfMatchesItem
     {
-        return $this->getDirectusItem(Config::ENDPOINT_EDF_MATCHES, $id, $fields);
+        return self::hydrateOne($this->getDirectusItem(Config::ENDPOINT_EDF_MATCHES, $id, $fields), EdfMatchesItem::class);
     }
 
     /**
      * Un joueur ou une joueuse des équipes de France.
      *
      * @param  list<string>|null  $fields
-     * @return array<string, mixed>|null
      */
-    public function getEdfPlayer(int|string $id, ?array $fields = null): ?array
+    public function getEdfPlayer(int|string $id, ?array $fields = null): ?EdfPlayersItem
     {
-        return $this->getDirectusItem(Config::ENDPOINT_EDF_PLAYERS, $id, $fields);
+        return self::hydrateOne($this->getDirectusItem(Config::ENDPOINT_EDF_PLAYERS, $id, $fields), EdfPlayersItem::class);
     }
 
     /**
@@ -63,11 +66,11 @@ trait ManagesExternalResources
      *
      * @param  list<string>|null  $fields
      * @param  string|list<string>|null  $sort
-     * @return list<array<string, mixed>>
+     * @return list<GeniusSportMatchesItem>
      */
     public function listGeniusSportMatches(int $limit = 10, ?array $fields = null, ?string $filterCriteria = null, string|array|null $sort = null): array
     {
-        return $this->listDirectusItems(Config::ENDPOINT_GENIUS_SPORT_MATCHES, $limit, $fields, $filterCriteria, $sort);
+        return GeniusSportMatchesItem::collect($this->listDirectusItems(Config::ENDPOINT_GENIUS_SPORT_MATCHES, $limit, $fields, $filterCriteria, $sort));
     }
 
     /**
@@ -75,11 +78,11 @@ trait ManagesExternalResources
      *
      * @param  list<string>|null  $fields
      * @param  string|list<string>|null  $sort
-     * @return list<array<string, mixed>>
+     * @return list<GeniusSportsLiveLogsItem>
      */
     public function listGeniusSportsLiveLogs(int $limit = 10, ?array $fields = null, ?string $filterCriteria = null, string|array|null $sort = null): array
     {
-        return $this->listDirectusItems(Config::ENDPOINT_GENIUS_SPORTS_LIVE_LOGS, $limit, $fields, $filterCriteria, $sort);
+        return GeniusSportsLiveLogsItem::collect($this->listDirectusItems(Config::ENDPOINT_GENIUS_SPORTS_LIVE_LOGS, $limit, $fields, $filterCriteria, $sort));
     }
 
     /**
@@ -87,11 +90,11 @@ trait ManagesExternalResources
      *
      * @param  list<string>|null  $fields
      * @param  string|list<string>|null  $sort
-     * @return list<array<string, mixed>>
+     * @return list<RematchVideosItem>
      */
     public function listRematchVideos(int $limit = 10, ?array $fields = null, ?string $filterCriteria = null, string|array|null $sort = null): array
     {
-        return $this->listDirectusItems(Config::ENDPOINT_REMATCH_VIDEOS, $limit, $fields, $filterCriteria, $sort);
+        return RematchVideosItem::collect($this->listDirectusItems(Config::ENDPOINT_REMATCH_VIDEOS, $limit, $fields, $filterCriteria, $sort));
     }
 
     /**
@@ -99,11 +102,11 @@ trait ManagesExternalResources
      *
      * @param  list<string>|null  $fields
      * @param  string|list<string>|null  $sort
-     * @return list<array<string, mixed>>
+     * @return list<EdfMatchesItem>
      */
     public function listEdfMatches(int $limit = 10, ?array $fields = null, ?string $filterCriteria = null, string|array|null $sort = null): array
     {
-        return $this->listDirectusItems(Config::ENDPOINT_EDF_MATCHES, $limit, $fields, $filterCriteria, $sort);
+        return EdfMatchesItem::collect($this->listDirectusItems(Config::ENDPOINT_EDF_MATCHES, $limit, $fields, $filterCriteria, $sort));
     }
 
     /**
@@ -111,11 +114,11 @@ trait ManagesExternalResources
      *
      * @param  list<string>|null  $fields
      * @param  string|list<string>|null  $sort
-     * @return list<array<string, mixed>>
+     * @return list<EdfPlayersItem>
      */
     public function listEdfPlayers(int $limit = 10, ?array $fields = null, ?string $filterCriteria = null, string|array|null $sort = null): array
     {
-        return $this->listDirectusItems(Config::ENDPOINT_EDF_PLAYERS, $limit, $fields, $filterCriteria, $sort);
+        return EdfPlayersItem::collect($this->listDirectusItems(Config::ENDPOINT_EDF_PLAYERS, $limit, $fields, $filterCriteria, $sort));
     }
 
     /**
@@ -123,11 +126,11 @@ trait ManagesExternalResources
      *
      * @param  list<string>|null  $fields
      * @param  string|list<string>|null  $sort
-     * @return list<array<string, mixed>>
+     * @return list<EdfTeamsItem>
      */
     public function listEdfTeams(int $limit = 10, ?array $fields = null, ?string $filterCriteria = null, string|array|null $sort = null): array
     {
-        return $this->listDirectusItems(Config::ENDPOINT_EDF_TEAMS, $limit, $fields, $filterCriteria, $sort);
+        return EdfTeamsItem::collect($this->listDirectusItems(Config::ENDPOINT_EDF_TEAMS, $limit, $fields, $filterCriteria, $sort));
     }
 
     /**
@@ -135,10 +138,10 @@ trait ManagesExternalResources
      *
      * @param  list<string>|null  $fields
      * @param  string|list<string>|null  $sort
-     * @return list<array<string, mixed>>
+     * @return list<EdfRostersItem>
      */
     public function listEdfRosters(int $limit = 10, ?array $fields = null, ?string $filterCriteria = null, string|array|null $sort = null): array
     {
-        return $this->listDirectusItems(Config::ENDPOINT_EDF_ROSTERS, $limit, $fields, $filterCriteria, $sort);
+        return EdfRostersItem::collect($this->listDirectusItems(Config::ENDPOINT_EDF_ROSTERS, $limit, $fields, $filterCriteria, $sort));
     }
 }

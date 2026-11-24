@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_tournois` (schéma OpenAPI ItemsFfbbserverTournois).
@@ -20,17 +21,17 @@ final readonly class TournoisItem
         public ?string $adresseComplement = null,
         public ?int $ageMax = null,
         public ?int $ageMin = null,
-        public CartographiesItem|string|int|null $cartographie = null,
+        public ?CartographiesItem $cartographie = null,
         public ?string $categorieChampionnat3x3Id = null,
         public ?string $categorieChampionnat3x3Libelle = null,
         public ?string $code = null,
-        public CommunesItem|string|int|null $commune = null,
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
-        public ?string $debut = null,
+        public ?CommunesItem $commune = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
+        public ?DateTimeImmutable $debut = null,
         public ?string $description = null,
         public mixed $document_flyer = null,
-        public ?string $fin = null,
+        public ?DateTimeImmutable $fin = null,
         public ?string $id = null,
         public ?string $mailOrganisateur = null,
         public ?int $nbParticipantPrevu = null,
@@ -40,8 +41,8 @@ final readonly class TournoisItem
         public ?string $siteChoisi = null,
         public ?string $tarifOrganisateur = null,
         public ?string $telephoneOrganisateur = null,
-        public TypesTournoisItem|string|int|null $tournoiType = null,
-        /** @var list<TournoisFfbbserverTypesTournois3x3Item|string|int>|null */
+        public ?TypesTournoisItem $tournoiType = null,
+        /** @var list<TournoisFfbbserverTypesTournois3x3Item>|null */
         public ?array $tournoiTypes3x3 = null,
         public ?string $urlOrganisateur = null,
         /** @var array<string, mixed> Réponse brute complète */
@@ -58,17 +59,17 @@ final readonly class TournoisItem
             adresseComplement: Cast::string($data['adresseComplement'] ?? null),
             ageMax: Cast::int($data['ageMax'] ?? null),
             ageMin: Cast::int($data['ageMin'] ?? null),
-            cartographie: Cast::relation($data['cartographie'] ?? null, CartographiesItem::class),
+            cartographie: Cast::related($data['cartographie'] ?? null, CartographiesItem::class),
             categorieChampionnat3x3Id: Cast::string($data['categorieChampionnat3x3Id'] ?? null),
             categorieChampionnat3x3Libelle: Cast::string($data['categorieChampionnat3x3Libelle'] ?? null),
             code: Cast::string($data['code'] ?? null),
-            commune: Cast::relation($data['commune'] ?? null, CommunesItem::class),
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
-            debut: Cast::string($data['debut'] ?? null),
+            commune: Cast::related($data['commune'] ?? null, CommunesItem::class),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
+            debut: Cast::dateTime($data['debut'] ?? null),
             description: Cast::string($data['description'] ?? null),
             document_flyer: $data['document_flyer'] ?? null,
-            fin: Cast::string($data['fin'] ?? null),
+            fin: Cast::dateTime($data['fin'] ?? null),
             id: Cast::string($data['id'] ?? null),
             mailOrganisateur: Cast::string($data['mailOrganisateur'] ?? null),
             nbParticipantPrevu: Cast::int($data['nbParticipantPrevu'] ?? null),
@@ -78,8 +79,8 @@ final readonly class TournoisItem
             siteChoisi: Cast::string($data['siteChoisi'] ?? null),
             tarifOrganisateur: Cast::string($data['tarifOrganisateur'] ?? null),
             telephoneOrganisateur: Cast::string($data['telephoneOrganisateur'] ?? null),
-            tournoiType: Cast::relation($data['tournoiType'] ?? null, TypesTournoisItem::class),
-            tournoiTypes3x3: Cast::relations($data['tournoiTypes3x3'] ?? null, TournoisFfbbserverTypesTournois3x3Item::class),
+            tournoiType: Cast::related($data['tournoiType'] ?? null, TypesTournoisItem::class),
+            tournoiTypes3x3: Cast::relatedList($data['tournoiTypes3x3'] ?? null, TournoisFfbbserverTypesTournois3x3Item::class),
             urlOrganisateur: Cast::string($data['urlOrganisateur'] ?? null),
             raw: $data,
         );
@@ -94,7 +95,9 @@ final readonly class TournoisItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

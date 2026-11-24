@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbnational_pratiques` (schéma OpenAPI ItemsFfbbnationalPratiques).
@@ -23,17 +24,17 @@ final readonly class PratiquesItem
         public mixed $affiche = null,
         public ?string $affiche_externe = null,
         public ?string $assurance = null,
-        public CartographiesItem|string|int|null $cartographie = null,
+        public ?CartographiesItem $cartographie = null,
         public ?string $code = null,
         public ?string $code_structure = null,
         public ?string $cp_salle = null,
-        public ?string $date_created = null,
-        public ?string $date_debut = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_debut = null,
         public ?int $date_demande = null,
-        public ?string $date_fin = null,
+        public ?DateTimeImmutable $date_fin = null,
         public ?string $date_inscription = null,
-        public ?string $date_updated = null,
-        public ?string $date_validation_ffbb = null,
+        public ?DateTimeImmutable $date_updated = null,
+        public ?DateTimeImmutable $date_validation_ffbb = null,
         public ?string $description = null,
         public ?string $email = null,
         public ?string $engagement = null,
@@ -78,17 +79,17 @@ final readonly class PratiquesItem
             affiche: $data['affiche'] ?? null,
             affiche_externe: Cast::string($data['affiche_externe'] ?? null),
             assurance: Cast::string($data['assurance'] ?? null),
-            cartographie: Cast::relation($data['cartographie'] ?? null, CartographiesItem::class),
+            cartographie: Cast::related($data['cartographie'] ?? null, CartographiesItem::class),
             code: Cast::string($data['code'] ?? null),
             code_structure: Cast::string($data['code_structure'] ?? null),
             cp_salle: Cast::string($data['cp_salle'] ?? null),
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_debut: Cast::string($data['date_debut'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_debut: Cast::dateTime($data['date_debut'] ?? null),
             date_demande: Cast::int($data['date_demande'] ?? null),
-            date_fin: Cast::string($data['date_fin'] ?? null),
+            date_fin: Cast::dateTime($data['date_fin'] ?? null),
             date_inscription: Cast::string($data['date_inscription'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
-            date_validation_ffbb: Cast::string($data['date_validation_ffbb'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
+            date_validation_ffbb: Cast::dateTime($data['date_validation_ffbb'] ?? null),
             description: Cast::string($data['description'] ?? null),
             email: Cast::string($data['email'] ?? null),
             engagement: Cast::string($data['engagement'] ?? null),
@@ -129,7 +130,9 @@ final readonly class PratiquesItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

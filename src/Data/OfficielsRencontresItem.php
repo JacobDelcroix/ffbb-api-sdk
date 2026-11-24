@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_officiels_rencontres` (schéma OpenAPI ItemsFfbbserverOfficielsRencontres).
@@ -16,16 +17,16 @@ final readonly class OfficielsRencontresItem
     public const string COLLECTION = 'ffbbserver_officiels_rencontres';
 
     public function __construct(
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?float $distanceKm = null,
-        public FonctionsOfficielsItem|string|int|null $fonction = null,
+        public ?FonctionsOfficielsItem $fonction = null,
         public ?string $id = null,
         public ?float $indemnite = null,
         public OfficielsItem|string|int|null $officiel = null,
         public ?int $ordre = null,
         public ?string $presence = null,
-        public RencontresItem|string|int|null $rencontre = null,
+        public ?RencontresItem $rencontre = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
     ) {}
@@ -36,16 +37,16 @@ final readonly class OfficielsRencontresItem
     public static function fromArray(array $data): self
     {
         return new self(
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             distanceKm: Cast::float($data['distanceKm'] ?? null),
-            fonction: Cast::relation($data['fonction'] ?? null, FonctionsOfficielsItem::class),
+            fonction: Cast::related($data['fonction'] ?? null, FonctionsOfficielsItem::class),
             id: Cast::string($data['id'] ?? null),
             indemnite: Cast::float($data['indemnite'] ?? null),
             officiel: Cast::relation($data['officiel'] ?? null, OfficielsItem::class),
             ordre: Cast::int($data['ordre'] ?? null),
             presence: Cast::string($data['presence'] ?? null),
-            rencontre: Cast::relation($data['rencontre'] ?? null, RencontresItem::class),
+            rencontre: Cast::related($data['rencontre'] ?? null, RencontresItem::class),
             raw: $data,
         );
     }
@@ -59,7 +60,9 @@ final readonly class OfficielsRencontresItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

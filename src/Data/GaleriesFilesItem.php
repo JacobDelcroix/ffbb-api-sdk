@@ -17,7 +17,7 @@ final readonly class GaleriesFilesItem
 
     public function __construct(
         public mixed $directus_files_id = null,
-        public GaleriesItem|string|int|null $ffbbnational_galeries_id = null,
+        public ?GaleriesItem $ffbbnational_galeries_id = null,
         public ?int $id = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
@@ -30,7 +30,7 @@ final readonly class GaleriesFilesItem
     {
         return new self(
             directus_files_id: $data['directus_files_id'] ?? null,
-            ffbbnational_galeries_id: Cast::relation($data['ffbbnational_galeries_id'] ?? null, GaleriesItem::class),
+            ffbbnational_galeries_id: Cast::related($data['ffbbnational_galeries_id'] ?? null, GaleriesItem::class),
             id: Cast::int($data['id'] ?? null),
             raw: $data,
         );
@@ -45,7 +45,9 @@ final readonly class GaleriesFilesItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

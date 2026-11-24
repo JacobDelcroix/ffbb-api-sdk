@@ -1,45 +1,37 @@
 # 07 — DTOs
 
-Référence : [DTOs](../reference/dtos.md) (47 classes et leurs propriétés)
+Référence : [DTOs](../reference/dtos.md) (toutes les classes et leurs propriétés)
 
-Les DTOs de `src/Data/` sont **générés** depuis la spec OpenAPI de Directus (`php bin/generate-dtos`) et
-régénérés automatiquement quand la FFBB change son schéma (voir [maintenance](../maintenance.md)).
-Une classe par collection : `ffbbserver_rencontres` → `RencontresItem`, `ffbbserver_poules_classements` →
-`PoulesClassementsItem`, etc.
+Toutes les méthodes du SDK renvoient des objets typés. Il y en a de deux familles, toutes deux **générées**
+par `php bin/generate-dtos` et régénérées automatiquement quand la FFBB ou le SDK Python changent
+(voir [maintenance](../maintenance.md)).
 
-## Hydrater
+| Famille | Namespace | Source | Exemples |
+|---|---|---|---|
+| Collections Directus | `CoachBasket\Ffbb\Data` | spec OpenAPI de Directus | `OrganismesItem`, `RencontresItem`, `PoulesClassementsItem` |
+| Réponses Meilisearch et lives | `CoachBasket\Ffbb\Data\Models` | modèles du SDK Python + attributs observés | `SearchResult`, `OrganismesHit`, `RencontresHit`, `Live` |
 
-```php
-use CoachBasket\Ffbb\Data\OrganismesItem;
-use CoachBasket\Ffbb\Data\RencontresItem;
-
-$club = OrganismesItem::fromArray($ffbb->getOrganisme(10238));
-$rencontres = RencontresItem::collect($ffbb->listRencontresByPoule(900));
-
-// Ou directement depuis le query builder
-$rencontres = $ffbb->directus('ffbbserver_rencontres')->where('idPoule', '_eq', 900)->getData();
-$poule = $ffbb->directus('ffbbserver_poules')->findData(900);
-```
-
-## Ce que font les DTOs
+## Ce que garantissent les DTOs
 
 - **Toutes les propriétés sont nullables** : les données FFBB sont souvent partielles.
 - **Conversions tolérantes** : `"1"` → `true`, `"12"` → `12`, `"3.5"` → `3.5`.
-- **Relations** : un objet DTO quand Directus a développé la relation, sinon l'identifiant brut.
+- **Dates en `DateTimeImmutable`** : `$match->date_rencontre?->format('d/m/Y H:i')`.
+- **Relations toujours en objets** : `$equipe->idPoule` est un `PoulesItem`. Quand Directus ne développe pas
+  la relation, seul l'identifiant est rempli :
 
   ```php
-  $match = RencontresItem::fromArray($ffbb->getPoule(900)['rencontres'][0]);
+  $equipe = $ffbb->getEngagement($id);
 
-  if ($match->idPoule instanceof \CoachBasket\Ffbb\Data\PoulesItem) {
-      $match->idPoule->nom;
-  } else {
-      $match->idPoule;   // '900'
-  }
+  $equipe->idPoule->id;    // toujours renseigné
+  $equipe->idPoule->nom;   // null si le champ idPoule.nom n'a pas été demandé
   ```
 
-- **`$raw`** garde la réponse complète, y compris les champs absents de la spec ; `toArray()` la renvoie.
+- **`$raw` garde la réponse complète**, y compris les champs absents de la spec ; `toArray()` la renvoie.
 
-## Trouver le DTO d'une collection
+## Collections Directus
+
+Une classe par collection : `ffbbserver_rencontres` → `RencontresItem`, `ffbbserver_poules_classements` →
+`PoulesClassementsItem`, `edf_players` → `EdfPlayersItem`, `configuration` → `ConfigurationItem`…
 
 ```php
 use CoachBasket\Ffbb\Data\ItemMap;
@@ -48,6 +40,47 @@ ItemMap::for('ffbbserver_engagements'); // EngagementsItem::class
 ItemMap::CLASSES;                       // toutes les correspondances
 ```
 
+Une collection sans DTO (ex. `ffbbsite_*`) renvoie un `Item` générique depuis le query builder :
+
+```php
+$page = $ffbb->directus('ffbbsite_pages')->first();   // Item
+
+$page->title;               // lecture comme une propriété
+$page->get('section.nom');  // notation pointée
+```
+
+## Réponses Meilisearch
+
+Chaque recherche renvoie un `SearchResult` : `hits`, `estimatedTotalHits`, `facetDistribution`, `facetStats`,
+`processingTimeMs`, plus `first()`, `count()`, `isEmpty()` et `facet($nom)`.
+
+Les hits sont typés selon l'index (`OrganismesHit`, `SallesHit`…) avec leurs objets imbriqués
+(`Commune`, `Geo`, `Logo`, `Organisateur`…). Ils sont générés depuis les modèles Python, puis complétés par les
+attributs réellement observés dans l'index : les DTOs PHP en savent donc plus que le SDK Python
+(ex. `RencontresHit::$joue`, `$resultatEquipe1`, `$resultatEquipe2`).
+
 > [!NOTE]
-> Les résultats Meilisearch (`search*`) n'ont pas de DTO : leurs documents n'ont pas exactement la même forme
-> que les collections Directus. Ils restent des tableaux.
+> Le SDK Python inverse les modèles `TerrainsHit` et `TournoisHit`. Le générateur choisit, pour chaque index,
+> le modèle qui correspond aux attributs observés : en PHP, `TerrainsHit` contient bien les terrains.
+
+Les index de contenu (actualités, vidéos, RSS, galeries) changent souvent de schéma : leurs hits sont des
+`ContentHit` (champs communs typés, le reste dans `$raw`, lisible avec `get('champ')`).
+
+## Matchs en direct
+
+```php
+foreach ($ffbb->getLives() ?? [] as $live) {   // list<Live>
+    $live->teamName_home;
+    $live->score_home;
+    $live->currentPeriod;
+    $live->clock;          // ex. « 05:12 »
+}
+```
+
+## Revenir aux tableaux
+
+```php
+$club->toArray();                                 // réponse brute d'un DTO
+$resultat->toArray();                             // réponse Meilisearch brute
+$ffbb->directus('ffbbserver_salles')->getRaw();   // tableaux Directus depuis le query builder
+```

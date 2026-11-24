@@ -23,6 +23,9 @@ Certaines méthodes ont un **repli** plutôt qu'une exception, comme dans le SDK
 | `getSaisons()` | saison en cours codée en dur |
 | `getConfiguration()`, `getOpenapiSpec()` | `null` |
 
+Les données reconstruites depuis Meilisearch sont hydratées dans les mêmes DTOs que les réponses Directus
+(`OrganismesItem`, `PoulesItem`…) : le code appelant n'a pas à faire la différence.
+
 ## Attraper les erreurs
 
 ```php

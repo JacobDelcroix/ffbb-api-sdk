@@ -210,32 +210,106 @@ final class ApiReference
     private static function dtosPage(): string
     {
         $md = self::header('DTOs');
-        $md .= "Classes générées par `bin/generate-dtos` depuis la spec OpenAPI Directus (`resources/discovery/openapi.json`).\n";
-        $md .= "Toutes les propriétés sont nullables. Une relation vaut l'objet DTO quand Directus la développe (`fields=relation.*`), sinon son identifiant. `\$raw` conserve la réponse complète.\n\n";
-        $md .= "```php\nuse CoachBasket\\Ffbb\\Data\\RencontresItem;\n\n\$rencontre = RencontresItem::fromArray(\$ffbb->getRencontre(\$id));\n\$liste = RencontresItem::collect(\$ffbb->listRencontresByPoule(900));\n```\n\n";
+        $md .= "Toutes les méthodes renvoient des objets typés. Toutes les propriétés sont nullables (les données FFBB sont souvent partielles), les dates sont des `DateTimeImmutable`, et `\$raw` / `toArray()` conservent la réponse complète.\n\n";
         $md .= "Guide avec exemples : [07-dtos](../guides/07-dtos.md)\n\n";
+        $md .= "- [Réponses Directus](#réponses-directus) : un DTO par collection, généré depuis la spec OpenAPI\n";
+        $md .= "- [Réponses Meilisearch et lives](#réponses-meilisearch-et-lives) : hits par index, objets imbriqués, matchs en direct\n\n";
+
+        $md .= "## Réponses Directus\n\n";
+        $md .= "Générées par `bin/generate-dtos` depuis `resources/discovery/openapi.json`. Une relation vaut le DTO lié quand Directus la développe (`fields=relation.*`), sinon son identifiant. Une collection sans DTO renvoie un `Item` générique (`\$item->champ`, `\$item->get('a.b')`).\n\n";
         $md .= "| Collection Directus | DTO | Propriétés |\n|---|---|---|\n";
 
         foreach (ItemMap::CLASSES as $collection => $class) {
             $short = self::short($class);
-            $count = count((new ReflectionClass($class))->getConstructor()?->getParameters() ?? []) - 1;
-            $md .= "| `{$collection}` | [`{$short}`](#".strtolower($short).") | {$count} |\n";
+            $md .= "| `{$collection}` | [`{$short}`](#".strtolower($short).') | '.self::propertyCount($class)." |\n";
         }
 
-        foreach (ItemMap::CLASSES as $collection => $class) {
-            $short = self::short($class);
-            $md .= "\n## {$short}\n\nCollection `{$collection}`.\n\n| Propriété | Type |\n|---|---|\n";
+        $models = self::modelClasses();
 
-            foreach ((new ReflectionClass($class))->getConstructor()?->getParameters() ?? [] as $param) {
-                if ($param->getName() === 'raw') {
-                    continue;
-                }
+        $md .= "\n## Réponses Meilisearch et lives\n\n";
+        $md .= "Chaque recherche renvoie un `SearchResult` dont les `hits` sont typés selon l'index. Les DTOs de hits sont générés depuis les modèles du SDK Python, complétés par les attributs réellement observés dans chaque index.\n\n";
+        $md .= "| DTO | Rôle | Propriétés |\n|---|---|---|\n";
 
-                $md .= sprintf("| `%s` | `%s` |\n", $param->getName(), self::escapeCell(self::typeOf($param)));
-            }
+        foreach ($models as $class) {
+            $reflection = new ReflectionClass($class);
+            $md .= sprintf("| [`%s`](#%s) | %s | %d |\n", $reflection->getShortName(), strtolower($reflection->getShortName()), self::escapeCell(self::firstSentence(self::docOf((string) $reflection->getDocComment())['summary'])), self::propertyCount($class));
+        }
+
+        foreach ([...array_values(ItemMap::CLASSES), ...$models] as $class) {
+            $md .= self::propertiesSection($class);
         }
 
         return $md;
+    }
+
+    /**
+     * @return list<class-string>
+     */
+    private static function modelClasses(): array
+    {
+        $classes = [];
+
+        foreach (glob(dirname(__DIR__, 2).'/src/Data/Models/*.php') ?: [] as $file) {
+            $classes[] = 'CoachBasket\\Ffbb\\Data\\Models\\'.basename($file, '.php');
+        }
+
+        sort($classes);
+
+        return $classes;
+    }
+
+    /**
+     * @param  class-string  $class
+     */
+    private static function propertyCount(string $class): int
+    {
+        $params = (new ReflectionClass($class))->getConstructor()?->getParameters() ?? [];
+
+        return count(array_filter($params, static fn (ReflectionParameter $p): bool => $p->getName() !== 'raw'));
+    }
+
+    /**
+     * @param  class-string  $class
+     */
+    private static function propertiesSection(string $class): string
+    {
+        $reflection = new ReflectionClass($class);
+        $constructor = $reflection->getConstructor();
+        $doc = self::docOf((string) $constructor?->getDocComment());
+        $md = "\n### {$reflection->getShortName()}\n\n";
+        $summary = self::firstSentence(self::docOf((string) $reflection->getDocComment())['summary']);
+
+        if ($summary !== '') {
+            $md .= $summary."\n\n";
+        }
+
+        $md .= "| Propriété | Type |\n|---|---|\n";
+
+        foreach ($constructor?->getParameters() ?? [] as $param) {
+            if ($param->getName() === 'raw') {
+                continue;
+            }
+
+            $type = $doc['params'][$param->getName()]['type'] ?? self::propertyDocType($param) ?? self::typeOf($param);
+            $md .= sprintf("| `%s` | `%s` |\n", $param->getName(), self::escapeCell($type));
+        }
+
+        return $md;
+    }
+
+    /**
+     * Type précisé par un « @var » placé devant la propriété promue (listes typées).
+     */
+    private static function propertyDocType(ReflectionParameter $param): ?string
+    {
+        $class = $param->getDeclaringClass();
+        $property = $class?->hasProperty($param->getName()) ? $class->getProperty($param->getName()) : null;
+
+        if ($property !== null && preg_match('/@var\s+(\S+)/', (string) $property->getDocComment(), $m)) {
+            return self::shortType($m[1]);
+        }
+
+        return null;
     }
 
     private static function exceptionsPage(): string
@@ -286,7 +360,7 @@ final class ApiReference
             $md .= "- [{$title}]({$file}) — ".count($methods)." méthodes\n";
         }
 
-        $md .= "\nEt aussi :\n\n- [Query builder Directus](query-builder.md)\n- [DTOs](dtos.md) — ".count(ItemMap::CLASSES)." classes\n- [Exceptions](exceptions.md)\n\n";
+        $md .= "\nEt aussi :\n\n- [Query builder Directus](query-builder.md)\n- [DTOs](dtos.md) — ".count(ItemMap::CLASSES).' DTOs Directus, '.count(self::modelClasses())." DTOs de réponse Meilisearch / lives\n- [Exceptions](exceptions.md)\n\n";
         $md .= "## Toutes les méthodes\n\n| Méthode | Groupe | Description |\n|---|---|---|\n";
 
         $rows = [];

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_membres` (schéma OpenAPI ItemsFfbbserverMembres).
@@ -21,11 +22,11 @@ final readonly class MembresItem
         public ?string $adresse2 = null,
         public ?string $codeFonction = null,
         public ?string $codePostal = null,
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?string $id = null,
         public ?string $idLicence = null,
-        public OrganismesItem|string|int|null $idOrganisme = null,
+        public ?OrganismesItem $idOrganisme = null,
         public ?string $libelleFonction = null,
         public ?string $mail = null,
         public ?string $nom = null,
@@ -48,11 +49,11 @@ final readonly class MembresItem
             adresse2: Cast::string($data['adresse2'] ?? null),
             codeFonction: Cast::string($data['codeFonction'] ?? null),
             codePostal: Cast::string($data['codePostal'] ?? null),
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             id: Cast::string($data['id'] ?? null),
             idLicence: Cast::string($data['idLicence'] ?? null),
-            idOrganisme: Cast::relation($data['idOrganisme'] ?? null, OrganismesItem::class),
+            idOrganisme: Cast::related($data['idOrganisme'] ?? null, OrganismesItem::class),
             libelleFonction: Cast::string($data['libelleFonction'] ?? null),
             mail: Cast::string($data['mail'] ?? null),
             nom: Cast::string($data['nom'] ?? null),
@@ -73,7 +74,9 @@ final readonly class MembresItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

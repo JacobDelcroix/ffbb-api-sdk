@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_engagements` (schéma OpenAPI ItemsFfbbserverEngagements).
@@ -17,28 +18,28 @@ final readonly class EngagementsItem
 
     public function __construct(
         public ?string $adresseCorrespondantEquipe = null,
-        /** @var list<PoulesClassementsItem|string|int>|null */
+        /** @var list<PoulesClassementsItem>|null */
         public ?array $classement = null,
         public ?bool $clubPro = null,
         public ?string $codeAbrege = null,
         public ?string $communeCorrespondantEquipe = null,
         public ?string $complementAdresseCorrespondantEquipe = null,
-        public ?string $creation = null,
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $creation = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?string $emailCorrespondantEquipe = null,
         public EntraineursItem|string|int|null $entraineur = null,
         public EntraineursItem|string|int|null $entraineurAdjoint = null,
         public ?bool $forfaitGeneral = null,
         public ?string $id = null,
-        public CompetitionsItem|string|int|null $idCompetition = null,
-        public OrganismesItem|string|int|null $idOrganisme = null,
-        public OrganismesItem|string|int|null $idOrganismeCtc = null,
-        public PoulesItem|string|int|null $idPoule = null,
+        public ?CompetitionsItem $idCompetition = null,
+        public ?OrganismesItem $idOrganisme = null,
+        public ?OrganismesItem $idOrganismeCtc = null,
+        public ?PoulesItem $idPoule = null,
         public mixed $logo = null,
         public ?string $logo_genius = null,
-        public ?string $modification = null,
-        public TypesDivisionsItem|string|int|null $niveau = null,
+        public ?DateTimeImmutable $modification = null,
+        public ?TypesDivisionsItem $niveau = null,
         public ?string $nom = null,
         public ?string $nomCorrespondantEquipe = null,
         public ?string $nomCtc = null,
@@ -52,9 +53,9 @@ final readonly class EngagementsItem
         public ?int $position_n1 = null,
         public mixed $positions = null,
         public ?string $pouleId = null,
-        /** @var list<RencontresItem|string|int>|null */
+        /** @var list<RencontresItem>|null */
         public ?array $rencontres_domiciles = null,
-        /** @var list<RencontresItem|string|int>|null */
+        /** @var list<RencontresItem>|null */
         public ?array $rencontres_exterieur = null,
         public ?string $telephoneFixeCorrespondantEquipe = null,
         public ?string $telephonePortableCorrespondantEquipe = null,
@@ -73,27 +74,27 @@ final readonly class EngagementsItem
     {
         return new self(
             adresseCorrespondantEquipe: Cast::string($data['adresseCorrespondantEquipe'] ?? null),
-            classement: Cast::relations($data['classement'] ?? null, PoulesClassementsItem::class),
+            classement: Cast::relatedList($data['classement'] ?? null, PoulesClassementsItem::class),
             clubPro: Cast::bool($data['clubPro'] ?? null),
             codeAbrege: Cast::string($data['codeAbrege'] ?? null),
             communeCorrespondantEquipe: Cast::string($data['communeCorrespondantEquipe'] ?? null),
             complementAdresseCorrespondantEquipe: Cast::string($data['complementAdresseCorrespondantEquipe'] ?? null),
-            creation: Cast::string($data['creation'] ?? null),
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            creation: Cast::dateTime($data['creation'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             emailCorrespondantEquipe: Cast::string($data['emailCorrespondantEquipe'] ?? null),
             entraineur: Cast::relation($data['entraineur'] ?? null, EntraineursItem::class),
             entraineurAdjoint: Cast::relation($data['entraineurAdjoint'] ?? null, EntraineursItem::class),
             forfaitGeneral: Cast::bool($data['forfaitGeneral'] ?? null),
             id: Cast::string($data['id'] ?? null),
-            idCompetition: Cast::relation($data['idCompetition'] ?? null, CompetitionsItem::class),
-            idOrganisme: Cast::relation($data['idOrganisme'] ?? null, OrganismesItem::class),
-            idOrganismeCtc: Cast::relation($data['idOrganismeCtc'] ?? null, OrganismesItem::class),
-            idPoule: Cast::relation($data['idPoule'] ?? null, PoulesItem::class),
+            idCompetition: Cast::related($data['idCompetition'] ?? null, CompetitionsItem::class),
+            idOrganisme: Cast::related($data['idOrganisme'] ?? null, OrganismesItem::class),
+            idOrganismeCtc: Cast::related($data['idOrganismeCtc'] ?? null, OrganismesItem::class),
+            idPoule: Cast::related($data['idPoule'] ?? null, PoulesItem::class),
             logo: $data['logo'] ?? null,
             logo_genius: Cast::string($data['logo_genius'] ?? null),
-            modification: Cast::string($data['modification'] ?? null),
-            niveau: Cast::relation($data['niveau'] ?? null, TypesDivisionsItem::class),
+            modification: Cast::dateTime($data['modification'] ?? null),
+            niveau: Cast::related($data['niveau'] ?? null, TypesDivisionsItem::class),
             nom: Cast::string($data['nom'] ?? null),
             nomCorrespondantEquipe: Cast::string($data['nomCorrespondantEquipe'] ?? null),
             nomCtc: Cast::string($data['nomCtc'] ?? null),
@@ -107,8 +108,8 @@ final readonly class EngagementsItem
             position_n1: Cast::int($data['position_n1'] ?? null),
             positions: $data['positions'] ?? null,
             pouleId: Cast::string($data['pouleId'] ?? null),
-            rencontres_domiciles: Cast::relations($data['rencontres_domiciles'] ?? null, RencontresItem::class),
-            rencontres_exterieur: Cast::relations($data['rencontres_exterieur'] ?? null, RencontresItem::class),
+            rencontres_domiciles: Cast::relatedList($data['rencontres_domiciles'] ?? null, RencontresItem::class),
+            rencontres_exterieur: Cast::relatedList($data['rencontres_exterieur'] ?? null, RencontresItem::class),
             telephoneFixeCorrespondantEquipe: Cast::string($data['telephoneFixeCorrespondantEquipe'] ?? null),
             telephonePortableCorrespondantEquipe: Cast::string($data['telephonePortableCorrespondantEquipe'] ?? null),
             telephoneTravailCorrespondantEquipe: Cast::string($data['telephoneTravailCorrespondantEquipe'] ?? null),
@@ -128,7 +129,9 @@ final readonly class EngagementsItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

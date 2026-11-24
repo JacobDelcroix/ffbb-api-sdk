@@ -16,8 +16,8 @@ final readonly class RssFfbbnationalTagsItem
     public const string COLLECTION = 'ffbbnational_rss_ffbbnational_tags';
 
     public function __construct(
-        public RssItem|string|int|null $ffbbnational_rss_id = null,
-        public TagsItem|string|int|null $ffbbnational_tags_id = null,
+        public ?RssItem $ffbbnational_rss_id = null,
+        public ?TagsItem $ffbbnational_tags_id = null,
         public ?int $id = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
@@ -29,8 +29,8 @@ final readonly class RssFfbbnationalTagsItem
     public static function fromArray(array $data): self
     {
         return new self(
-            ffbbnational_rss_id: Cast::relation($data['ffbbnational_rss_id'] ?? null, RssItem::class),
-            ffbbnational_tags_id: Cast::relation($data['ffbbnational_tags_id'] ?? null, TagsItem::class),
+            ffbbnational_rss_id: Cast::related($data['ffbbnational_rss_id'] ?? null, RssItem::class),
+            ffbbnational_tags_id: Cast::related($data['ffbbnational_tags_id'] ?? null, TagsItem::class),
             id: Cast::int($data['id'] ?? null),
             raw: $data,
         );
@@ -45,7 +45,9 @@ final readonly class RssFfbbnationalTagsItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

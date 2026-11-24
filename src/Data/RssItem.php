@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbnational_rss` (schéma OpenAPI ItemsFfbbnationalRss).
@@ -16,14 +17,14 @@ final readonly class RssItem
     public const string COLLECTION = 'ffbbnational_rss';
 
     public function __construct(
-        /** @var list<RssFfbbnationalCategoriesItem|string|int>|null */
+        /** @var list<RssFfbbnationalCategoriesItem>|null */
         public ?array $categories = null,
         public ?string $chapo = null,
         public mixed $cover = null,
         public ?string $creator = null,
-        public ?string $date = null,
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $date = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?bool $highlight = null,
         public ?string $id = null,
         public ?string $img = null,
@@ -32,7 +33,7 @@ final readonly class RssItem
         public ?string $link = null,
         public ?string $match_id = null,
         public ?string $surtitle = null,
-        /** @var list<RssFfbbnationalTagsItem|string|int>|null */
+        /** @var list<RssFfbbnationalTagsItem>|null */
         public ?array $tags = null,
         public mixed $text = null,
         public ?string $texte = null,
@@ -47,13 +48,13 @@ final readonly class RssItem
     public static function fromArray(array $data): self
     {
         return new self(
-            categories: Cast::relations($data['categories'] ?? null, RssFfbbnationalCategoriesItem::class),
+            categories: Cast::relatedList($data['categories'] ?? null, RssFfbbnationalCategoriesItem::class),
             chapo: Cast::string($data['chapo'] ?? null),
             cover: $data['cover'] ?? null,
             creator: Cast::string($data['creator'] ?? null),
-            date: Cast::string($data['date'] ?? null),
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            date: Cast::dateTime($data['date'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             highlight: Cast::bool($data['highlight'] ?? null),
             id: Cast::string($data['id'] ?? null),
             img: Cast::string($data['img'] ?? null),
@@ -62,7 +63,7 @@ final readonly class RssItem
             link: Cast::string($data['link'] ?? null),
             match_id: Cast::string($data['match_id'] ?? null),
             surtitle: Cast::string($data['surtitle'] ?? null),
-            tags: Cast::relations($data['tags'] ?? null, RssFfbbnationalTagsItem::class),
+            tags: Cast::relatedList($data['tags'] ?? null, RssFfbbnationalTagsItem::class),
             text: $data['text'] ?? null,
             texte: Cast::string($data['texte'] ?? null),
             title: Cast::string($data['title'] ?? null),
@@ -79,7 +80,9 @@ final readonly class RssItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

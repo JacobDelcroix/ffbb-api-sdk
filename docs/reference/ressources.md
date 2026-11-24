@@ -8,49 +8,51 @@ Guide avec exemples : [04-rencontres-et-listes](../guides/04-rencontres-et-liste
 
 | Méthode | Retour | Description |
 |---|---|---|
-| [`getConfiguration()`](#getconfiguration) | `array<string, mixed>\|null` | Configuration publique de l'app (jetons key_dh / key_ms, versions iOS / Android). |
-| [`getLives()`](#getlives) | `list<array<string, mixed>>\|null` | Matchs suivis en direct. |
-| [`getOpenapiSpec()`](#getopenapispec) | `array<string, mixed>\|null` | Spécification OpenAPI exposée par Directus (null en cas d'erreur). |
-| [`getRencontre()`](#getrencontre) | `array<string, mixed>\|null` | Détail d'une rencontre (match) : équipes, date, score, salle, officiels (null si introuvable). |
-| [`getEngagement()`](#getengagement) | `array<string, mixed>\|null` | Détail d'un engagement : une équipe d'un club dans une compétition / poule (null si introuvable). |
-| [`getFormation()`](#getformation) | `array<string, mixed>\|null` | Détail d'une formation (null si introuvable). |
-| [`getEntraineur()`](#getentraineur) | `array<string, mixed>\|null` | Détail d'un entraîneur (par numéro de licence) (null si introuvable). |
-| [`getCommune()`](#getcommune) | `array<string, mixed>\|null` | Détail d'une commune (null si introuvable). |
-| [`getOfficiel()`](#getofficiel) | `array<string, mixed>\|null` | Détail d'un officiel (arbitre, OTM) (null si introuvable). |
-| [`getSalle()`](#getsalle) | `array<string, mixed>\|null` | Détail d'une salle : nom, adresse, commune, coordonnées (null si introuvable). |
-| [`getTerrain()`](#getterrain) | `array<string, mixed>\|null` | Détail d'un terrain (3x3 / extérieur) (null si introuvable). |
-| [`getTournoi()`](#gettournoi) | `array<string, mixed>\|null` | Détail d'un tournoi (null si introuvable). |
-| [`getPratique()`](#getpratique) | `array<string, mixed>\|null` | Détail d'une offre de pratique (null si introuvable). |
-| [`getSession()`](#getsession) | `array<string, mixed>\|null` | Une session de formation (null si introuvable). |
-| [`listSessions()`](#listsessions) | `list<array<string, mixed>>` | Sessions de formation. |
+| [`getConfiguration()`](#getconfiguration) | `?ConfigurationItem` | Configuration publique de l'app : jetons key_dh / key_ms, versions iOS / Android (null en cas d'erreur). |
+| [`getLives()`](#getlives) | `list<Live>\|null` | Matchs suivis en direct (jamais mis en cache). |
+| [`getOpenapiSpec()`](#getopenapispec) | `array<string, mixed>\|null` | Spécification OpenAPI exposée par Directus, en tableau (null en cas d'erreur). |
+| [`getRencontre()`](#getrencontre) | `?RencontresItem` | Détail d'une rencontre (match) : équipes, date, score, salle, officiels (null si introuvable). |
+| [`getEngagement()`](#getengagement) | `?EngagementsItem` | Détail d'un engagement : une équipe d'un club dans une compétition / poule (null si introuvable). |
+| [`getFormation()`](#getformation) | `?FormationsItem` | Détail d'une formation (null si introuvable). |
+| [`getEntraineur()`](#getentraineur) | `?EntraineursItem` | Détail d'un entraîneur (par numéro de licence) (null si introuvable). |
+| [`getCommune()`](#getcommune) | `?CommunesItem` | Détail d'une commune (null si introuvable). |
+| [`getOfficiel()`](#getofficiel) | `?OfficielsItem` | Détail d'un officiel (arbitre, OTM) (null si introuvable). |
+| [`getSalle()`](#getsalle) | `?SallesItem` | Détail d'une salle : nom, adresse, commune, coordonnées (null si introuvable). |
+| [`getTerrain()`](#getterrain) | `?TerrainsItem` | Détail d'un terrain (3x3 / extérieur) (null si introuvable). |
+| [`getTournoi()`](#gettournoi) | `?TournoisItem` | Détail d'un tournoi (null si introuvable). |
+| [`getPratique()`](#getpratique) | `?PratiquesItem` | Détail d'une offre de pratique (null si introuvable). |
+| [`getSession()`](#getsession) | `?SessionsItem` | Une session de formation (null si introuvable). |
+| [`listSessions()`](#listsessions) | `list<SessionsItem>` | Sessions de formation. |
 
 ### `getConfiguration()`
 
-Configuration publique de l'app (jetons key_dh / key_ms, versions iOS / Android).
+Configuration publique de l'app : jetons key_dh / key_ms, versions iOS / Android (null en cas d'erreur).
 
 ```php
-public function getConfiguration(): ?array
+public function getConfiguration(): ?ConfigurationItem
 ```
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?ConfigurationItem`
 
 Équivalent Python : `get_configuration`
 
 ### `getLives()`
 
-Matchs suivis en direct.
+Matchs suivis en direct (jamais mis en cache).
 
 ```php
 public function getLives(): ?array
 ```
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<Live>|null`
 
 Équivalent Python : `get_lives`
 
 ### `getOpenapiSpec()`
 
-Spécification OpenAPI exposée par Directus (null en cas d'erreur).
+Spécification OpenAPI exposée par Directus, en tableau (null en cas d'erreur).
+
+C'est un document de description d'API, pas une donnée FFBB : il n'a pas de DTO.
 
 ```php
 public function getOpenapiSpec(): ?array
@@ -65,14 +67,14 @@ public function getOpenapiSpec(): ?array
 Détail d'une rencontre (match) : équipes, date, score, salle, officiels (null si introuvable).
 
 ```php
-public function getRencontre(int|string $id): ?array
+public function getRencontre(int|string $id): ?RencontresItem
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
 | `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?RencontresItem`
 
 Équivalent Python : `get_rencontre`
 
@@ -81,14 +83,14 @@ public function getRencontre(int|string $id): ?array
 Détail d'un engagement : une équipe d'un club dans une compétition / poule (null si introuvable).
 
 ```php
-public function getEngagement(int|string $id): ?array
+public function getEngagement(int|string $id): ?EngagementsItem
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
 | `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?EngagementsItem`
 
 Équivalent Python : `get_engagement`
 
@@ -97,14 +99,14 @@ public function getEngagement(int|string $id): ?array
 Détail d'une formation (null si introuvable).
 
 ```php
-public function getFormation(int|string $id): ?array
+public function getFormation(int|string $id): ?FormationsItem
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
 | `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?FormationsItem`
 
 Équivalent Python : `get_formation`
 
@@ -113,14 +115,14 @@ public function getFormation(int|string $id): ?array
 Détail d'un entraîneur (par numéro de licence) (null si introuvable).
 
 ```php
-public function getEntraineur(int|string $id): ?array
+public function getEntraineur(int|string $id): ?EntraineursItem
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
 | `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?EntraineursItem`
 
 Équivalent Python : `get_entraineur`
 
@@ -129,14 +131,14 @@ public function getEntraineur(int|string $id): ?array
 Détail d'une commune (null si introuvable).
 
 ```php
-public function getCommune(int|string $id): ?array
+public function getCommune(int|string $id): ?CommunesItem
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
 | `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?CommunesItem`
 
 Équivalent Python : `get_commune`
 
@@ -145,14 +147,14 @@ public function getCommune(int|string $id): ?array
 Détail d'un officiel (arbitre, OTM) (null si introuvable).
 
 ```php
-public function getOfficiel(int|string $id): ?array
+public function getOfficiel(int|string $id): ?OfficielsItem
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
 | `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?OfficielsItem`
 
 Équivalent Python : `get_officiel`
 
@@ -161,14 +163,14 @@ public function getOfficiel(int|string $id): ?array
 Détail d'une salle : nom, adresse, commune, coordonnées (null si introuvable).
 
 ```php
-public function getSalle(int|string $id): ?array
+public function getSalle(int|string $id): ?SallesItem
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
 | `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?SallesItem`
 
 Équivalent Python : `get_salle`
 
@@ -177,14 +179,14 @@ public function getSalle(int|string $id): ?array
 Détail d'un terrain (3x3 / extérieur) (null si introuvable).
 
 ```php
-public function getTerrain(int|string $id): ?array
+public function getTerrain(int|string $id): ?TerrainsItem
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
 | `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?TerrainsItem`
 
 Équivalent Python : `get_terrain`
 
@@ -193,14 +195,14 @@ public function getTerrain(int|string $id): ?array
 Détail d'un tournoi (null si introuvable).
 
 ```php
-public function getTournoi(int|string $id): ?array
+public function getTournoi(int|string $id): ?TournoisItem
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
 | `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?TournoisItem`
 
 Équivalent Python : `get_tournoi`
 
@@ -209,14 +211,14 @@ public function getTournoi(int|string $id): ?array
 Détail d'une offre de pratique (null si introuvable).
 
 ```php
-public function getPratique(int|string $id): ?array
+public function getPratique(int|string $id): ?PratiquesItem
 ```
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
 | `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?PratiquesItem`
 
 Équivalent Python : `get_pratique`
 
@@ -225,7 +227,7 @@ public function getPratique(int|string $id): ?array
 Une session de formation (null si introuvable).
 
 ```php
-public function getSession(int|string $id, ?array $fields = null): ?array
+public function getSession(int|string $id, ?array $fields = null): ?SessionsItem
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -233,7 +235,7 @@ public function getSession(int|string $id, ?array $fields = null): ?array
 | `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?SessionsItem`
 
 Équivalent Python : `get_session`
 
@@ -252,6 +254,6 @@ public function listSessions(int $limit = 10, ?array $fields = null, ?string $fi
 | `$filterCriteria` | `?string` | `null` | Filtre Directus en JSON, ex. `{"idPoule":{"_eq":900}}`. |
 | `$sort` | `string\|list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 
-**Retour :** `list<array<string, mixed>>`
+**Retour :** `list<SessionsItem>`
 
 Équivalent Python : `list_sessions`

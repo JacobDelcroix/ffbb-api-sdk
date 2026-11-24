@@ -10,7 +10,7 @@ Guide avec exemples : [01-demarrage](../guides/01-demarrage.md)
 |---|---|---|
 | [`create()`](#create) | `self` | Crée un client prêt à l'emploi. |
 | [`withMockClient()`](#withmockclient) | `self` | Branche un MockClient Saloon sur les deux connectors (tests). |
-| [`directus()`](#directus) | `QueryBuilder` | Query builder Directus complet sur n'importe quelle collection. |
+| [`directus()`](#directus) | `QueryBuilder<T>` | Query builder Directus complet sur n'importe quelle collection. |
 | [`warmOrganismeCache()`](#warmorganismecache) | `void` | Pré-charge un organisme et ses équipes dans le cache. |
 | [`warmCompetitionCache()`](#warmcompetitioncache) | `void` | Pré-charge une compétition et toutes ses poules dans le cache. |
 | [`close()`](#close) | `void` | Rien à fermer côté PHP (pas de session persistante) ; présent pour la parité d'API. |
@@ -54,8 +54,11 @@ public function withMockClient(MockClient $mockClient): self
 
 Query builder Directus complet sur n'importe quelle collection.
 
+Accepte un nom de collection ou une classe DTO (qui donne le type des résultats à l'IDE) :
+
 ```php
-$ffbb->directus('ffbbserver_rencontres')->where('idPoule', '_eq', 123)->sort('-date_rencontre')->get();
+$ffbb->directus(RencontresItem::class)->where('idPoule', '_eq', 900)->sort('-date_rencontre')->get();
+$ffbb->directus('ffbbserver_rencontres')->where('joue', '_eq', true)->first();
 ```
 
 ```php
@@ -64,9 +67,9 @@ public function directus(string $collection): QueryBuilder
 
 | Paramètre | Type | Défaut | Description |
 |---|---|---|---|
-| `$collection` | `string` | — | Collection Directus, ex. `ffbbserver_rencontres` (le préfixe `items/` est optionnel). |
+| `$collection` | `class-string<T>\|string` | — | Collection Directus, ex. `ffbbserver_rencontres` (le préfixe `items/` est optionnel). |
 
-**Retour :** `QueryBuilder`
+**Retour :** `QueryBuilder<T>`
 
 ### `warmOrganismeCache()`
 

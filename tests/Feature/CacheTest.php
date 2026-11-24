@@ -52,6 +52,6 @@ it('met en cache les recherches Meilisearch', function () {
     $client->searchOrganismes('Ostrevent');
     $result = $client->searchOrganismes('Ostrevent');
 
-    expect($result['hits'])->toHaveCount(1)
+    expect($result->hits)->toHaveCount(1)
         ->and($mock->getRecordedResponses())->toHaveCount(1);
 });

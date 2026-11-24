@@ -21,7 +21,9 @@ it('hydrate une rencontre avec conversions tolérantes', function () {
         ->and($rencontre->handicap1)->toBe(0)
         ->and($rencontre->idPoule)->toBeInstanceOf(PoulesItem::class)
         ->and($rencontre->idPoule->nom)->toBe('Poule A')
-        ->and($rencontre->idOrganismeEquipe1)->toBe('10238')
+        ->and($rencontre->idOrganismeEquipe1)->toBeInstanceOf(OrganismesItem::class)
+        ->and($rencontre->idOrganismeEquipe1->id)->toBe('10238')
+        ->and($rencontre->idOrganismeEquipe1->nom)->toBeNull()
         ->and($rencontre->raw['champInconnu'])->toBe('gardé');
 });
 

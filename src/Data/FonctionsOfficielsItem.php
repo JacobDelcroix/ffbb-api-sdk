@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_fonctions_officiels` (schéma OpenAPI ItemsFfbbserverFonctionsOfficiels).
@@ -20,8 +21,8 @@ final readonly class FonctionsOfficielsItem
         public ?bool $attribuer = null,
         public ?bool $certificatMedical = null,
         public ?string $code = null,
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?bool $designation = null,
         public ?bool $emarque = null,
         public ?string $id = null,
@@ -43,8 +44,8 @@ final readonly class FonctionsOfficielsItem
             attribuer: Cast::bool($data['attribuer'] ?? null),
             certificatMedical: Cast::bool($data['certificatMedical'] ?? null),
             code: Cast::string($data['code'] ?? null),
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             designation: Cast::bool($data['designation'] ?? null),
             emarque: Cast::bool($data['emarque'] ?? null),
             id: Cast::string($data['id'] ?? null),
@@ -65,7 +66,9 @@ final readonly class FonctionsOfficielsItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

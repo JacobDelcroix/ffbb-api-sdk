@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_sessions` (schéma OpenAPI ItemsFfbbserverSessions).
@@ -16,12 +17,12 @@ final readonly class SessionsItem
     public const string COLLECTION = 'ffbbserver_sessions';
 
     public function __construct(
-        public ?string $date_created = null,
-        public ?string $date_end = null,
-        public ?string $date_start = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_end = null,
+        public ?DateTimeImmutable $date_start = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?string $entity = null,
-        public FormationsItem|string|int|null $formations = null,
+        public ?FormationsItem $formations = null,
         public ?string $id = null,
         public ?string $idOrigin = null,
         public ?string $place = null,
@@ -43,12 +44,12 @@ final readonly class SessionsItem
     public static function fromArray(array $data): self
     {
         return new self(
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_end: Cast::string($data['date_end'] ?? null),
-            date_start: Cast::string($data['date_start'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_end: Cast::dateTime($data['date_end'] ?? null),
+            date_start: Cast::dateTime($data['date_start'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             entity: Cast::string($data['entity'] ?? null),
-            formations: Cast::relation($data['formations'] ?? null, FormationsItem::class),
+            formations: Cast::related($data['formations'] ?? null, FormationsItem::class),
             id: Cast::string($data['id'] ?? null),
             idOrigin: Cast::string($data['idOrigin'] ?? null),
             place: Cast::string($data['place'] ?? null),
@@ -73,7 +74,9 @@ final readonly class SessionsItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

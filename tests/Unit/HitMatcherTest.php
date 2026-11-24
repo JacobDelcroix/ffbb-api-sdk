@@ -37,3 +37,9 @@ it('envoie les facettes par défaut de l index', function () {
         'offset' => 0,
     ]);
 });
+
+it('applique les règles terrains et tournois aux bons index (inversées dans le SDK Python)', function () {
+    expect(HitMatcher::matches(Index::Terrains, ['nom' => 'City stade', 'rue' => 'Rue Jean Jaurès'], 'jaurès'))->toBeTrue()
+        ->and(HitMatcher::matches(Index::Tournois, ['nom' => 'Open 3x3', 'nomOrganisateur' => 'Ostrevent Basket'], 'ostrevent'))->toBeTrue()
+        ->and(HitMatcher::matches(Index::Terrains, ['nom' => 'City stade', 'commune' => ['libelle' => 'Monchecourt']], 'monchecourt'))->toBeTrue();
+});

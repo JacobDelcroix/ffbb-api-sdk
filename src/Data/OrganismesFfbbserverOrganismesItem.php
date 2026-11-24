@@ -16,9 +16,9 @@ final readonly class OrganismesFfbbserverOrganismesItem
     public const string COLLECTION = 'ffbbserver_organismes_ffbbserver_organismes';
 
     public function __construct(
-        public OrganismesItem|string|int|null $ffbbserver_organismes_id = null,
+        public ?OrganismesItem $ffbbserver_organismes_id = null,
         public ?int $id = null,
-        public OrganismesItem|string|int|null $related_ffbbserver_organismes_id = null,
+        public ?OrganismesItem $related_ffbbserver_organismes_id = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
     ) {}
@@ -29,9 +29,9 @@ final readonly class OrganismesFfbbserverOrganismesItem
     public static function fromArray(array $data): self
     {
         return new self(
-            ffbbserver_organismes_id: Cast::relation($data['ffbbserver_organismes_id'] ?? null, OrganismesItem::class),
+            ffbbserver_organismes_id: Cast::related($data['ffbbserver_organismes_id'] ?? null, OrganismesItem::class),
             id: Cast::int($data['id'] ?? null),
-            related_ffbbserver_organismes_id: Cast::relation($data['related_ffbbserver_organismes_id'] ?? null, OrganismesItem::class),
+            related_ffbbserver_organismes_id: Cast::related($data['related_ffbbserver_organismes_id'] ?? null, OrganismesItem::class),
             raw: $data,
         );
     }
@@ -45,7 +45,9 @@ final readonly class OrganismesFfbbserverOrganismesItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

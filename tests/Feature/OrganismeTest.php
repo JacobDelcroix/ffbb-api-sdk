@@ -15,7 +15,7 @@ it('demande les 77 champs par défaut pour un organisme', function () {
     $club = ffbb($mock)->getOrganisme(10238);
     $fields = explode(',', $mock->getLastPendingRequest()->query()->get('fields'));
 
-    expect($club['nom'])->toBe('OSTREVENT BASKET BALL EAA MONCHECOURT')
+    expect($club->nom)->toBe('OSTREVENT BASKET BALL EAA MONCHECOURT')
         ->and($fields)->toHaveCount(77)
         ->and($fields)->toBe(FieldLists::ORGANISME_DEFAULT);
 });
@@ -32,7 +32,8 @@ it('renvoie uniquement les équipes engagées', function () {
     $equipes = $client->getEquipes(10238);
 
     expect($equipes)->toHaveCount(1)
-        ->and($equipes[0]['idCompetition']['nom'])->toBe('U15 Féminine D2')
+        ->and($equipes[0]->idCompetition->nom)->toBe('U15 Féminine D2')
+        ->and($equipes[0]->idPoule->nom)->toBe('Poule A')
         ->and($client->registry->get('900'))->toBe(['competitionId' => '500', 'pouleNom' => 'Poule A']);
 });
 
@@ -51,9 +52,9 @@ it('reconstruit l organisme depuis Meilisearch quand Directus est bloqué', func
 
     $club = ffbb($mock)->getOrganisme(10238);
 
-    expect($club['code'])->toBe('HDF0059038')
-        ->and($club['engagements'])->toHaveCount(1)
-        ->and($club['engagements'][0]['id'])->toBe('e1');
+    expect($club->code)->toBe('HDF0059038')
+        ->and($club->engagements)->toHaveCount(1)
+        ->and($club->engagements[0]->id)->toBe('e1');
 });
 
 it('extrait les contacts du club et des dirigeants', function () {

@@ -20,7 +20,8 @@ it('passe par le listing filtré quand Directus refuse l accès direct (saison a
     $competition = ffbb($mock)->getCompetition(500);
     $query = $mock->getLastPendingRequest()->query()->all();
 
-    expect($competition['nom'])->toBe('U15 F D2')
+    expect($competition)->toBeInstanceOf(\CoachBasket\Ffbb\Data\CompetitionsItem::class)
+        ->and($competition->nom)->toBe('U15 F D2')
         ->and($query['filter[id][_eq]'])->toBe('500')
         ->and($query['limit'])->toBe('1');
 });
@@ -44,7 +45,12 @@ it('envoie la limite deep des rencontres', function () {
 it('renvoie la saison de repli quand Directus est indisponible', function () {
     $mock = new MockClient([ListItems::class => MockResponse::make('', 503)]);
 
-    expect(ffbb($mock)->getSaisons())->toBe([Config::FALLBACK_SAISON]);
+    $saisons = ffbb($mock)->getSaisons();
+
+    expect($saisons)->toHaveCount(1)
+        ->and($saisons[0]->libelle)->toBe(Config::FALLBACK_SAISON['libelle'])
+        ->and($saisons[0]->enCours)->toBeTrue()
+        ->and($saisons[0]->actif)->toBeTrue();
 });
 
 it('recalcule le classement depuis les rencontres Meilisearch', function () {
@@ -67,17 +73,18 @@ it('recalcule le classement depuis les rencontres Meilisearch', function () {
     $client->registry->register('900', '500', 'Poule A');
 
     $poule = $client->getPoule(900);
-    $classement = $poule['classements'];
+    $classement = $client->getClassement(900);
 
-    expect($poule['nom'])->toBe('Poule A')
-        ->and($poule['rencontres'])->toHaveCount(2)
+    expect($poule->nom)->toBe('Poule A')
+        ->and($poule->rencontres)->toHaveCount(2)
+        ->and($poule->rencontres[0])->toBeInstanceOf(\CoachBasket\Ffbb\Data\RencontresItem::class)
         // DOUAI : 1 victoire + 1 défaite = 3 pts ; OSTREVENT : 1 victoire = 2 pts ; LENS : 1 défaite = 1 pt.
-        ->and($classement[0]['organisme']['nom'])->toBe('DOUAI')
-        ->and($classement[0]['points'])->toBe(3)
-        ->and($classement[1]['organisme']['nom'])->toBe('OSTREVENT')
-        ->and($classement[1]['points'])->toBe(2)
-        ->and($classement[1]['difference'])->toBe(20)
-        ->and($classement[1]['quotient'])->toBe(1.5)
-        ->and($classement[2]['organisme']['nom'])->toBe('LENS')
+        ->and($classement[0]->organisme->nom)->toBe('DOUAI')
+        ->and($classement[0]->points)->toBe(3)
+        ->and($classement[1]->organisme->nom)->toBe('OSTREVENT')
+        ->and($classement[1]->points)->toBe(2)
+        ->and($classement[1]->difference)->toBe(20)
+        ->and($classement[1]->quotient)->toBe(1.5)
+        ->and($classement[2]->organisme->nom)->toBe('LENS')
         ->and($classement)->toHaveCount(3);
 });

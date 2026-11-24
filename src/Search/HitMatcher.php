@@ -26,10 +26,13 @@ final class HitMatcher
             Index::Rencontres => self::any($hit, $lowerQuery, ['gsId', 'id', 'nomEquipe1', 'nomEquipe2'])
                 || self::officielsMatch($hit, $lowerQuery)
                 || self::any(self::sub($hit, 'salle'), $lowerQuery, ['adresse', 'adresseComplement', 'libelle']),
-            Index::Terrains => self::any($hit, $lowerQuery, ['nom', 'adresse', 'description', 'code', 'nomOrganisateur', 'siteChoisi']),
+            // Le SDK Python inverse les règles terrains / tournois (TerrainsHit modélise les tournois) :
+            // on les applique ici aux bons index.
+            Index::Terrains => self::any($hit, $lowerQuery, ['nom', 'rue'])
+                || self::communeMatches($hit, $lowerQuery),
             Index::Salles => self::any($hit, $lowerQuery, ['adresse', 'adresseComplement', 'libelle', 'libelle2'])
                 || self::communeMatches($hit, $lowerQuery),
-            Index::Tournois => self::any($hit, $lowerQuery, ['nom', 'rue'])
+            Index::Tournois => self::any($hit, $lowerQuery, ['nom', 'adresse', 'description', 'code', 'nomOrganisateur', 'siteChoisi'])
                 || self::communeMatches($hit, $lowerQuery),
             Index::Pratiques => self::any($hit, $lowerQuery, [
                 'titre', 'adresse', 'description', 'site_web', 'action',

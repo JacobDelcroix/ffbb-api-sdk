@@ -17,7 +17,7 @@ Référence complète générée depuis le code. Pour des exemples commentés, v
 Et aussi :
 
 - [Query builder Directus](query-builder.md)
-- [DTOs](dtos.md) — 47 classes
+- [DTOs](dtos.md) — 68 DTOs Directus, 46 DTOs de réponse Meilisearch / lives
 - [Exceptions](exceptions.md)
 
 ## Toutes les méthodes
@@ -27,23 +27,23 @@ Et aussi :
 | [`close()`](client.md#close) | Client | Rien à fermer côté PHP (pas de session persistante) ; présent pour la parité d'API. |
 | [`create()`](client.md#create) | Client | Crée un client prêt à l'emploi. |
 | [`directus()`](client.md#directus) | Client | Query builder Directus complet sur n'importe quelle collection. |
-| [`getClassement()`](competitions.md#getclassement) | Compétitions, poules et classements | Uniquement le classement d'une poule. |
-| [`getClubContacts()`](organismes.md#getclubcontacts) | Clubs et organismes | Contacts d'un club : contact du club + membres (dirigeants). |
+| [`getClassement()`](competitions.md#getclassement) | Compétitions, poules et classements | Uniquement le classement d'une poule, trié comme le renvoie la FFBB. |
+| [`getClubContacts()`](organismes.md#getclubcontacts) | Clubs et organismes | Contacts d'un club : contact du club et membres (dirigeants). |
 | [`getCommune()`](ressources.md#getcommune) | Ressources unitaires | Détail d'une commune (null si introuvable). |
 | [`getCompetition()`](competitions.md#getcompetition) | Compétitions, poules et classements | Détail d'une compétition avec phases, poules et rencontres imbriquées. |
-| [`getConfiguration()`](ressources.md#getconfiguration) | Ressources unitaires | Configuration publique de l'app (jetons key_dh / key_ms, versions iOS / Android). |
+| [`getConfiguration()`](ressources.md#getconfiguration) | Ressources unitaires | Configuration publique de l'app : jetons key_dh / key_ms, versions iOS / Android (null en cas d'erreur). |
 | [`getEdfMatch()`](externes.md#getedfmatch) | Intégrations externes | Un match d'une équipe de France. |
 | [`getEdfPlayer()`](externes.md#getedfplayer) | Intégrations externes | Un joueur ou une joueuse des équipes de France. |
 | [`getEngagement()`](ressources.md#getengagement) | Ressources unitaires | Détail d'un engagement : une équipe d'un club dans une compétition / poule (null si introuvable). |
 | [`getEngagementContacts()`](organismes.md#getengagementcontacts) | Clubs et organismes | Contacts d'une équipe engagée : correspondant, entraîneur et adjoint. |
 | [`getEntraineur()`](ressources.md#getentraineur) | Ressources unitaires | Détail d'un entraîneur (par numéro de licence) (null si introuvable). |
-| [`getEquipes()`](organismes.md#getequipes) | Clubs et organismes | Uniquement les équipes engagées d'un club. |
+| [`getEquipes()`](organismes.md#getequipes) | Clubs et organismes | Uniquement les équipes engagées d'un club, avec leur compétition et leur poule. |
 | [`getFormation()`](ressources.md#getformation) | Ressources unitaires | Détail d'une formation (null si introuvable). |
 | [`getGeniusSportMatch()`](externes.md#getgeniussportmatch) | Intégrations externes | Un match Genius Sports (statistiques live). |
-| [`getLives()`](ressources.md#getlives) | Ressources unitaires | Matchs suivis en direct. |
+| [`getLives()`](ressources.md#getlives) | Ressources unitaires | Matchs suivis en direct (jamais mis en cache). |
 | [`getOfficiel()`](ressources.md#getofficiel) | Ressources unitaires | Détail d'un officiel (arbitre, OTM) (null si introuvable). |
-| [`getOpenapiSpec()`](ressources.md#getopenapispec) | Ressources unitaires | Spécification OpenAPI exposée par Directus (null en cas d'erreur). |
-| [`getOrganisme()`](organismes.md#getorganisme) | Clubs et organismes | Détail d'un organisme (77 champs par défaut). |
+| [`getOpenapiSpec()`](ressources.md#getopenapispec) | Ressources unitaires | Spécification OpenAPI exposée par Directus, en tableau (null en cas d'erreur). |
+| [`getOrganisme()`](organismes.md#getorganisme) | Clubs et organismes | Détail d'un organisme : club, comité ou ligue (77 champs par défaut). |
 | [`getOrganismeForSearch()`](organismes.md#getorganismeforsearch) | Clubs et organismes | Version allégée de getOrganisme() pour les contextes de recherche (31 champs). |
 | [`getPoule()`](competitions.md#getpoule) | Compétitions, poules et classements | Détail d'une poule avec rencontres et classements. |
 | [`getPratique()`](ressources.md#getpratique) | Ressources unitaires | Détail d'une offre de pratique (null si introuvable). |
@@ -75,7 +75,7 @@ Et aussi :
 | [`listAllTerrains()`](listes.md#listallterrains) | Listes et pagination | Toutes les terrains 3x3 / extérieurs correspondant au filtre, toutes pages confondues (20 pages max). |
 | [`listAllTournois()`](listes.md#listalltournois) | Listes et pagination | Toutes les tournois (dont 3x3) correspondant au filtre, toutes pages confondues (20 pages max). |
 | [`listCommunes()`](listes.md#listcommunes) | Listes et pagination | Une page de communes. |
-| [`listCompetitions()`](organismes.md#listcompetitions) | Clubs et organismes | Liste de compétitions (par défaut : id + nom). |
+| [`listCompetitions()`](organismes.md#listcompetitions) | Clubs et organismes | Liste de compétitions (par défaut : id et nom). |
 | [`listEdfMatches()`](externes.md#listedfmatches) | Intégrations externes | Matchs des équipes de France. |
 | [`listEdfPlayers()`](externes.md#listedfplayers) | Intégrations externes | Joueurs et joueuses des équipes de France. |
 | [`listEdfRosters()`](externes.md#listedfrosters) | Intégrations externes | Effectifs des équipes de France. |
@@ -99,7 +99,7 @@ Et aussi :
 | [`listSessions()`](ressources.md#listsessions) | Ressources unitaires | Sessions de formation. |
 | [`listTerrains()`](listes.md#listterrains) | Listes et pagination | Une page de terrains 3x3 / extérieurs. |
 | [`listTournois()`](listes.md#listtournois) | Listes et pagination | Une page de tournois (dont 3x3). |
-| [`multiSearch()`](recherche.md#multisearch) | Recherche (Meilisearch) | Recherche universelle sur les 13 index (1 hit par index et par page). |
+| [`multiSearch()`](recherche.md#multisearch) | Recherche (Meilisearch) | Recherche universelle sur les 13 index (un résultat par index, dans l'ordre de l'enum Index). |
 | [`searchCompetitions()`](recherche.md#searchcompetitions) | Recherche (Meilisearch) | Recherche plein texte dans les compétitions (null si aucun nom). |
 | [`searchEngagements()`](recherche.md#searchengagements) | Recherche (Meilisearch) | Recherche plein texte dans les équipes engagées (null si aucun nom). |
 | [`searchEngagementsByGeo()`](recherche.md#searchengagementsbygeo) | Recherche (Meilisearch) | Équipes engagées dans un rayon autour d'un point GPS. |

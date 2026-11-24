@@ -159,6 +159,20 @@ trait InteractsWithDirectus
     }
 
     /**
+     * Hydrate un élément dans son DTO (null si absent).
+     *
+     * @template T of object
+     *
+     * @param  array<string, mixed>|null  $data
+     * @param  class-string<T>  $class
+     * @return T|null
+     */
+    protected static function hydrateOne(?array $data, string $class): ?object
+    {
+        return $data === null || $data === [] ? null : $class::fromArray($data);
+    }
+
+    /**
      * @param  array<mixed>  $data
      * @return list<array<string, mixed>>
      */

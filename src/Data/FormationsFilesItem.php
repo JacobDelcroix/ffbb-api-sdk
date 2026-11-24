@@ -17,7 +17,7 @@ final readonly class FormationsFilesItem
 
     public function __construct(
         public mixed $directus_files_id = null,
-        public FormationsItem|string|int|null $ffbbserver_formations_id = null,
+        public ?FormationsItem $ffbbserver_formations_id = null,
         public ?int $id = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
@@ -30,7 +30,7 @@ final readonly class FormationsFilesItem
     {
         return new self(
             directus_files_id: $data['directus_files_id'] ?? null,
-            ffbbserver_formations_id: Cast::relation($data['ffbbserver_formations_id'] ?? null, FormationsItem::class),
+            ffbbserver_formations_id: Cast::related($data['ffbbserver_formations_id'] ?? null, FormationsItem::class),
             id: Cast::int($data['id'] ?? null),
             raw: $data,
         );
@@ -45,7 +45,9 @@ final readonly class FormationsFilesItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

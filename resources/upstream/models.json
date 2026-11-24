@@ -1,0 +1,2913 @@
+{
+ "Affiche": {
+  "file": "affiche.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "affiche_id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "gradient_color",
+    "kind": "string",
+    "key": "gradient_color"
+   },
+   {
+    "attr": "width",
+    "kind": "int",
+    "key": "width"
+   },
+   {
+    "attr": "height",
+    "kind": "int",
+    "key": "height"
+   }
+  ]
+ },
+ "Cartographie": {
+  "file": "cartographie.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "adresse",
+    "kind": "string",
+    "key": "adresse"
+   },
+   {
+    "attr": "code_postal",
+    "kind": "string",
+    "key": "codePostal"
+   },
+   {
+    "attr": "coordonnees",
+    "kind": "object",
+    "class": "Coordonnees",
+    "key": "coordonnees"
+   },
+   {
+    "attr": "date_created",
+    "kind": "datetime",
+    "key": "date_created"
+   },
+   {
+    "attr": "date_updated",
+    "kind": "datetime",
+    "key": "date_updated"
+   },
+   {
+    "attr": "cartographie_id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "latitude",
+    "kind": "float",
+    "key": "latitude"
+   },
+   {
+    "attr": "longitude",
+    "kind": "float",
+    "key": "longitude"
+   },
+   {
+    "attr": "title",
+    "kind": "string",
+    "key": "title"
+   },
+   {
+    "attr": "ville",
+    "kind": "string",
+    "key": "ville"
+   },
+   {
+    "attr": "status",
+    "kind": "string",
+    "key": "status"
+   }
+  ]
+ },
+ "Categorie": {
+  "file": "categorie.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "code",
+    "kind": "string",
+    "key": "code"
+   },
+   {
+    "attr": "date_created",
+    "kind": "datetime",
+    "key": "date_created"
+   },
+   {
+    "attr": "date_updated",
+    "kind": "datetime",
+    "key": "date_updated"
+   },
+   {
+    "attr": "categorie_id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "libelle",
+    "kind": "string",
+    "key": "libelle"
+   },
+   {
+    "attr": "ordre",
+    "kind": "int",
+    "key": "ordre"
+   }
+  ]
+ },
+ "Commune": {
+  "file": "commune.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "code_insee",
+    "kind": "string",
+    "key": "codeInsee"
+   },
+   {
+    "attr": "code_postal",
+    "kind": "string",
+    "key": "codePostal"
+   },
+   {
+    "attr": "date_created",
+    "kind": "datetime",
+    "key": "date_created"
+   },
+   {
+    "attr": "date_updated",
+    "kind": "datetime",
+    "key": "date_updated"
+   },
+   {
+    "attr": "commune_id",
+    "kind": "raw",
+    "key": "id"
+   },
+   {
+    "attr": "libelle",
+    "kind": "string",
+    "key": "libelle"
+   },
+   {
+    "attr": "departement",
+    "kind": "string",
+    "key": "departement"
+   }
+  ]
+ },
+ "CompetitionID": {
+  "file": "competition_id.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "nom",
+    "kind": "string",
+    "key": "nom"
+   },
+   {
+    "attr": "competition_origine_nom",
+    "kind": "string",
+    "key": "competition_origine_nom"
+   },
+   {
+    "attr": "code",
+    "kind": "string",
+    "key": "code"
+   },
+   {
+    "attr": "creation_en_cours",
+    "kind": "bool",
+    "key": "creationEnCours"
+   },
+   {
+    "attr": "live_stat",
+    "kind": "bool",
+    "key": "liveStat"
+   },
+   {
+    "attr": "publication_internet",
+    "kind": "string",
+    "key": "publicationInternet"
+   },
+   {
+    "attr": "sexe",
+    "kind": "string",
+    "key": "sexe"
+   },
+   {
+    "attr": "type_competition",
+    "kind": "string",
+    "key": "typeCompetition"
+   },
+   {
+    "attr": "pro",
+    "kind": "bool",
+    "key": "pro"
+   },
+   {
+    "attr": "logo",
+    "kind": "object",
+    "class": "Logo",
+    "key": "logo"
+   },
+   {
+    "attr": "categorie",
+    "kind": "object",
+    "class": "CompetitionIDCategorie",
+    "key": "categorie"
+   },
+   {
+    "attr": "type_competition_generique",
+    "kind": "object",
+    "class": "CompetitionIDTypeCompetitionGenerique",
+    "key": "typeCompetitionGenerique"
+   },
+   {
+    "attr": "competition_origine",
+    "kind": "object",
+    "class": "CompetitionOrigine",
+    "key": "competition_origine"
+   },
+   {
+    "attr": "nom_extended",
+    "kind": "string",
+    "key": "nomExtended"
+   }
+  ]
+ },
+ "CompetitionIDCategorie": {
+  "file": "competition_id_categorie.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "code",
+    "kind": "string",
+    "key": "code"
+   },
+   {
+    "attr": "libelle",
+    "kind": "string",
+    "key": "libelle"
+   },
+   {
+    "attr": "ordre",
+    "kind": "int",
+    "key": "ordre"
+   }
+  ]
+ },
+ "CompetitionIDTypeCompetitionGenerique": {
+  "file": "competition_id_type_competition_generique.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "logo",
+    "kind": "object",
+    "class": "IDOrganismeEquipe1Logo",
+    "key": "logo"
+   }
+  ]
+ },
+ "CompetitionOrigine": {
+  "file": "competition_origine.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "code",
+    "kind": "string",
+    "key": "code"
+   },
+   {
+    "attr": "nom",
+    "kind": "string",
+    "key": "nom"
+   },
+   {
+    "attr": "type_competition",
+    "kind": "raw",
+    "key": "typeCompetition"
+   },
+   {
+    "attr": "categorie",
+    "kind": "object",
+    "class": "CompetitionOrigineCategorie",
+    "key": "categorie"
+   },
+   {
+    "attr": "type_competition_generique",
+    "kind": "object",
+    "class": "CompetitionOrigineTypeCompetitionGenerique",
+    "key": "typeCompetitionGenerique"
+   }
+  ]
+ },
+ "CompetitionOrigineCategorie": {
+  "file": "competition_origine_categorie.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "ordre",
+    "kind": "int",
+    "key": "ordre"
+   }
+  ]
+ },
+ "CompetitionOrigineTypeCompetitionGenerique": {
+  "file": "competition_origine_type_competition_generique.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "logo",
+    "kind": "object",
+    "class": "PurpleLogo",
+    "key": "logo"
+   }
+  ]
+ },
+ "CompetitionsHit": {
+  "file": "competitions_hit.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "nom",
+    "kind": "string",
+    "key": "nom"
+   },
+   {
+    "attr": "code",
+    "kind": "string",
+    "key": "code"
+   },
+   {
+    "attr": "niveau",
+    "kind": "string",
+    "key": "niveau"
+   },
+   {
+    "attr": "type_competition",
+    "kind": "string",
+    "key": "typeCompetition"
+   },
+   {
+    "attr": "sexe",
+    "kind": "string",
+    "key": "sexe"
+   },
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "creation_en_cours",
+    "kind": "bool",
+    "key": "creationEnCours"
+   },
+   {
+    "attr": "date_created",
+    "kind": "datetime",
+    "key": "date_created"
+   },
+   {
+    "attr": "date_updated",
+    "kind": "datetime",
+    "key": "date_updated"
+   },
+   {
+    "attr": "emarque_v2",
+    "kind": "bool",
+    "key": "emarqueV2"
+   },
+   {
+    "attr": "live_stat",
+    "kind": "bool",
+    "key": "liveStat"
+   },
+   {
+    "attr": "publication_internet",
+    "kind": "string",
+    "key": "publicationInternet"
+   },
+   {
+    "attr": "pro",
+    "kind": "bool",
+    "key": "pro"
+   },
+   {
+    "attr": "competition_origine",
+    "kind": "string",
+    "key": "competition_origine"
+   },
+   {
+    "attr": "competition_origine_niveau",
+    "kind": "int",
+    "key": "competition_origine_niveau"
+   },
+   {
+    "attr": "phase_code",
+    "kind": "string",
+    "key": "phase_code"
+   },
+   {
+    "attr": "competition_origine_nom",
+    "kind": "string",
+    "key": "competition_origine_nom"
+   },
+   {
+    "attr": "etat",
+    "kind": "string",
+    "key": "etat"
+   },
+   {
+    "attr": "poules",
+    "kind": "list",
+    "class": "Poule",
+    "key": "poules"
+   },
+   {
+    "attr": "phases",
+    "kind": "list",
+    "of": "string",
+    "key": "phases"
+   },
+   {
+    "attr": "categorie",
+    "kind": "object",
+    "class": "Categorie",
+    "key": "categorie"
+   },
+   {
+    "attr": "id_competition_pere",
+    "kind": "string",
+    "key": "idCompetitionPere"
+   },
+   {
+    "attr": "organisateur",
+    "kind": "object",
+    "class": "Organisateur",
+    "key": "organisateur"
+   },
+   {
+    "attr": "saison",
+    "kind": "object",
+    "class": "Saison",
+    "key": "saison"
+   },
+   {
+    "attr": "logo",
+    "kind": "object",
+    "class": "Logo",
+    "key": "logo"
+   },
+   {
+    "attr": "type_competition_generique",
+    "kind": "object",
+    "class": "TypeCompetitionGenerique",
+    "key": "typeCompetitionGenerique"
+   },
+   {
+    "attr": "thumbnail",
+    "kind": "string",
+    "key": "thumbnail"
+   },
+   {
+    "attr": "niveau_nb",
+    "kind": "int",
+    "key": "niveau_nb"
+   }
+  ]
+ },
+ "Coordonnees": {
+  "file": "coordonnees.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "type",
+    "kind": "string",
+    "key": "type"
+   },
+   {
+    "attr": "coordinates",
+    "kind": "list",
+    "of": "float",
+    "key": "coordinates"
+   }
+  ]
+ },
+ "DocumentFlyer": {
+  "file": "document_flyer.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "storage",
+    "kind": "string",
+    "key": "storage"
+   },
+   {
+    "attr": "filename_disk",
+    "kind": "string",
+    "key": "filename_disk"
+   },
+   {
+    "attr": "filename_download",
+    "kind": "string",
+    "key": "filename_download"
+   },
+   {
+    "attr": "title",
+    "kind": "string",
+    "key": "title"
+   },
+   {
+    "attr": "type",
+    "kind": "string",
+    "key": "type"
+   },
+   {
+    "attr": "uploaded_on",
+    "kind": "datetime",
+    "key": "uploaded_on"
+   },
+   {
+    "attr": "modified_on",
+    "kind": "datetime",
+    "key": "modified_on"
+   },
+   {
+    "attr": "charset",
+    "kind": "string",
+    "key": "charset"
+   },
+   {
+    "attr": "filesize",
+    "kind": "int",
+    "key": "filesize"
+   },
+   {
+    "attr": "width",
+    "kind": "int",
+    "key": "width"
+   },
+   {
+    "attr": "height",
+    "kind": "int",
+    "key": "height"
+   },
+   {
+    "attr": "duration",
+    "kind": "int",
+    "key": "duration"
+   },
+   {
+    "attr": "embed",
+    "kind": "string",
+    "key": "embed"
+   },
+   {
+    "attr": "description",
+    "kind": "string",
+    "key": "description"
+   },
+   {
+    "attr": "location",
+    "kind": "string",
+    "key": "location"
+   },
+   {
+    "attr": "tags",
+    "kind": "string",
+    "key": "tags"
+   },
+   {
+    "attr": "metadata",
+    "kind": "object",
+    "class": "FacetStats",
+    "key": "metadata"
+   },
+   {
+    "attr": "source",
+    "kind": "string",
+    "key": "source"
+   },
+   {
+    "attr": "credits",
+    "kind": "string",
+    "key": "credits"
+   },
+   {
+    "attr": "gradient_color",
+    "kind": "string",
+    "key": "gradient_color"
+   },
+   {
+    "attr": "md5",
+    "kind": "string",
+    "key": "md5"
+   },
+   {
+    "attr": "newsbridge_media_id",
+    "kind": "string",
+    "key": "newsbridge_media_id"
+   },
+   {
+    "attr": "newsbridge_metadatas",
+    "kind": "string",
+    "key": "newsbridge_metadatas"
+   },
+   {
+    "attr": "newsbridge_name",
+    "kind": "string",
+    "key": "newsbridge_name"
+   },
+   {
+    "attr": "newsbridge_recorded_at",
+    "kind": "datetime",
+    "key": "newsbridge_recorded_at"
+   },
+   {
+    "attr": "focal_point_x",
+    "kind": "float",
+    "key": "focal_point_x"
+   },
+   {
+    "attr": "focal_point_y",
+    "kind": "float",
+    "key": "focal_point_y"
+   },
+   {
+    "attr": "newsbridge_labels",
+    "kind": "list",
+    "of": "raw",
+    "key": "newsbridge_labels"
+   },
+   {
+    "attr": "newsbridge_persons",
+    "kind": "list",
+    "of": "raw",
+    "key": "newsbridge_persons"
+   },
+   {
+    "attr": "folder",
+    "kind": "object",
+    "class": "Folder",
+    "key": "folder"
+   },
+   {
+    "attr": "uploaded_by",
+    "kind": "string",
+    "key": "uploaded_by"
+   },
+   {
+    "attr": "modified_by",
+    "kind": "string",
+    "key": "modified_by"
+   },
+   {
+    "attr": "newsbridge_mission",
+    "kind": "string",
+    "key": "newsbridge_mission"
+   }
+  ]
+ },
+ "Engagement": {
+  "file": "rencontres_engagement.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   }
+  ]
+ },
+ "EngagementsHit": {
+  "file": "engagements_hit.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "nom",
+    "kind": "string",
+    "key": "nom"
+   },
+   {
+    "attr": "age",
+    "kind": "string",
+    "key": "age"
+   },
+   {
+    "attr": "sexe",
+    "kind": "string",
+    "key": "sexe"
+   },
+   {
+    "attr": "club_pro",
+    "kind": "bool",
+    "key": "clubPro"
+   },
+   {
+    "attr": "code_abrege",
+    "kind": "string",
+    "key": "codeAbrege"
+   },
+   {
+    "attr": "code_club",
+    "kind": "string",
+    "key": "codeClub"
+   },
+   {
+    "attr": "code_comite",
+    "kind": "string",
+    "key": "codeComite"
+   },
+   {
+    "attr": "code_ligue",
+    "kind": "string",
+    "key": "codeLigue"
+   },
+   {
+    "attr": "competitions_url",
+    "kind": "string",
+    "key": "competitionsUrl"
+   },
+   {
+    "attr": "id_competition",
+    "kind": "object",
+    "class": "CompetitionOrigine",
+    "key": "idCompetition"
+   },
+   {
+    "attr": "id_poule",
+    "kind": "object",
+    "class": "Poule",
+    "key": "idPoule"
+   },
+   {
+    "attr": "logo",
+    "kind": "string",
+    "key": "logo"
+   },
+   {
+    "attr": "niveau",
+    "kind": "object",
+    "class": "Categorie",
+    "key": "niveau"
+   },
+   {
+    "attr": "categorie",
+    "kind": "object",
+    "class": "Categorie",
+    "key": "categorie"
+   },
+   {
+    "attr": "nom_club",
+    "kind": "string",
+    "key": "nomClub"
+   },
+   {
+    "attr": "nom_club_pro",
+    "kind": "string",
+    "key": "nomClubPro"
+   },
+   {
+    "attr": "nom_comite",
+    "kind": "string",
+    "key": "nomComite"
+   },
+   {
+    "attr": "nom_ctc",
+    "kind": "string",
+    "key": "nomCtc"
+   },
+   {
+    "attr": "nom_equipe",
+    "kind": "string",
+    "key": "nomEquipe"
+   },
+   {
+    "attr": "nom_ligue",
+    "kind": "string",
+    "key": "nomLigue"
+   },
+   {
+    "attr": "nom_officiel",
+    "kind": "string",
+    "key": "nomOfficiel"
+   },
+   {
+    "attr": "nom_organisme",
+    "kind": "string",
+    "key": "nomOrganisme"
+   },
+   {
+    "attr": "nom_usuel",
+    "kind": "string",
+    "key": "nomUsuel"
+   },
+   {
+    "attr": "numero_equipe",
+    "kind": "string",
+    "key": "numeroEquipe"
+   },
+   {
+    "attr": "thumbnail",
+    "kind": "string",
+    "key": "thumbnail"
+   },
+   {
+    "attr": "gradient_color",
+    "kind": "string",
+    "key": "gradient_color"
+   },
+   {
+    "attr": "geo",
+    "kind": "object",
+    "class": "Geo",
+    "key": "_geo"
+   }
+  ]
+ },
+ "ExternalCompetitionID": {
+  "file": "external_competition_id.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "code",
+    "kind": "string",
+    "key": "code"
+   },
+   {
+    "attr": "nom",
+    "kind": "string",
+    "key": "nom"
+   },
+   {
+    "attr": "sexe",
+    "kind": "string",
+    "key": "sexe"
+   },
+   {
+    "attr": "type_competition",
+    "kind": "string",
+    "key": "typeCompetition"
+   }
+  ]
+ },
+ "ExternalID": {
+  "file": "external_id.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "nom_equipe1",
+    "kind": "string",
+    "key": "nomEquipe1"
+   },
+   {
+    "attr": "nom_equipe2",
+    "kind": "string",
+    "key": "nomEquipe2"
+   },
+   {
+    "attr": "numero_journee",
+    "kind": "int",
+    "key": "numeroJournee"
+   },
+   {
+    "attr": "competition_id",
+    "kind": "object",
+    "class": "ExternalCompetitionID",
+    "key": "competitionId"
+   },
+   {
+    "attr": "id_organisme_equipe1",
+    "kind": "object",
+    "class": "IDOrganismeEquipe",
+    "key": "idOrganismeEquipe1"
+   },
+   {
+    "attr": "id_organisme_equipe2",
+    "kind": "object",
+    "class": "IDOrganismeEquipe",
+    "key": "idOrganismeEquipe2"
+   },
+   {
+    "attr": "salle",
+    "kind": "object",
+    "class": "Salle",
+    "key": "salle"
+   },
+   {
+    "attr": "id_poule",
+    "kind": "object",
+    "class": "IDPoule",
+    "key": "idPoule"
+   }
+  ]
+ },
+ "Folder": {
+  "file": "folder.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "name",
+    "kind": "string",
+    "key": "name"
+   },
+   {
+    "attr": "parent",
+    "kind": "string",
+    "key": "parent"
+   }
+  ]
+ },
+ "FormationSession": {
+  "file": "formation_session.py",
+  "doc": "A session within a formation (MeiliSearch denormalized data).",
+  "fields": [
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "title",
+    "kind": "string",
+    "key": "title"
+   },
+   {
+    "attr": "date_start",
+    "kind": "datetime",
+    "key": "date_start"
+   },
+   {
+    "attr": "date_end",
+    "kind": "datetime",
+    "key": "date_end"
+   },
+   {
+    "attr": "place",
+    "kind": "string",
+    "key": "place"
+   },
+   {
+    "attr": "postal_code",
+    "kind": "string",
+    "key": "postal_code"
+   },
+   {
+    "attr": "reference",
+    "kind": "string",
+    "key": "reference"
+   },
+   {
+    "attr": "entity",
+    "kind": "string",
+    "key": "entity"
+   },
+   {
+    "attr": "subscribe_btn",
+    "kind": "string",
+    "key": "subscribeBtn"
+   }
+  ]
+ },
+ "FormationsHit": {
+  "file": "formations_hit.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "title",
+    "kind": "string",
+    "key": "title"
+   },
+   {
+    "attr": "type",
+    "kind": "string",
+    "key": "type"
+   },
+   {
+    "attr": "mode",
+    "kind": "string",
+    "key": "mode"
+   },
+   {
+    "attr": "domain",
+    "kind": "string",
+    "key": "domain"
+   },
+   {
+    "attr": "theme",
+    "kind": "string",
+    "key": "theme"
+   },
+   {
+    "attr": "description",
+    "kind": "string",
+    "key": "description"
+   },
+   {
+    "attr": "goals",
+    "kind": "string",
+    "key": "goals"
+   },
+   {
+    "attr": "public",
+    "kind": "string",
+    "key": "public"
+   },
+   {
+    "attr": "prerequisites",
+    "kind": "string",
+    "key": "prerequisites"
+   },
+   {
+    "attr": "content",
+    "kind": "string",
+    "key": "content"
+   },
+   {
+    "attr": "pedagogy",
+    "kind": "string",
+    "key": "pedagogy"
+   },
+   {
+    "attr": "certification",
+    "kind": "string",
+    "key": "certification"
+   },
+   {
+    "attr": "results",
+    "kind": "string",
+    "key": "results"
+   },
+   {
+    "attr": "modalities",
+    "kind": "string",
+    "key": "modalities"
+   },
+   {
+    "attr": "level",
+    "kind": "string",
+    "key": "level"
+   },
+   {
+    "attr": "reference",
+    "kind": "string",
+    "key": "reference"
+   },
+   {
+    "attr": "program_id_fbi",
+    "kind": "string",
+    "key": "programIdFbi"
+   },
+   {
+    "attr": "duration_hours",
+    "kind": "raw",
+    "key": "duration_hours"
+   },
+   {
+    "attr": "sessions",
+    "kind": "list",
+    "class": "FormationSession",
+    "key": "sessions"
+   },
+   {
+    "attr": "files",
+    "kind": "list",
+    "of": "raw",
+    "key": "files"
+   },
+   {
+    "attr": "image",
+    "kind": "string",
+    "key": "image"
+   },
+   {
+    "attr": "thumbnail",
+    "kind": "string",
+    "key": "thumbnail"
+   },
+   {
+    "attr": "mode_hidden",
+    "kind": "string",
+    "key": "mode_hidden"
+   },
+   {
+    "attr": "postal_codes",
+    "kind": "list",
+    "of": "string",
+    "key": "postal_codes"
+   },
+   {
+    "attr": "places",
+    "kind": "list",
+    "of": "string",
+    "key": "places"
+   },
+   {
+    "attr": "id_origin_hash",
+    "kind": "string",
+    "key": "id_origin_hash"
+   },
+   {
+    "attr": "date_end",
+    "kind": "datetime",
+    "key": "date_end"
+   },
+   {
+    "attr": "date_end_formatted",
+    "kind": "int",
+    "key": "date_end_formatted"
+   },
+   {
+    "attr": "date_start",
+    "kind": "datetime",
+    "key": "date_start"
+   },
+   {
+    "attr": "date_start_formatted",
+    "kind": "int",
+    "key": "date_start_formatted"
+   },
+   {
+    "attr": "entity",
+    "kind": "string",
+    "key": "entity"
+   },
+   {
+    "attr": "formation_domain",
+    "kind": "string",
+    "key": "formation_domain"
+   },
+   {
+    "attr": "formation_duration_hours",
+    "kind": "string",
+    "key": "formation_duration_hours"
+   },
+   {
+    "attr": "formation_id",
+    "kind": "string",
+    "key": "formation_id"
+   },
+   {
+    "attr": "formation_image",
+    "kind": "string",
+    "key": "formation_image"
+   },
+   {
+    "attr": "formation_mode",
+    "kind": "string",
+    "key": "formation_mode"
+   },
+   {
+    "attr": "formation_theme",
+    "kind": "string",
+    "key": "formation_theme"
+   },
+   {
+    "attr": "formation_thumbnail",
+    "kind": "string",
+    "key": "formation_thumbnail"
+   },
+   {
+    "attr": "formation_title",
+    "kind": "string",
+    "key": "formation_title"
+   },
+   {
+    "attr": "place",
+    "kind": "string",
+    "key": "place"
+   },
+   {
+    "attr": "postal_code",
+    "kind": "string",
+    "key": "postal_code"
+   },
+   {
+    "attr": "reference_hidden",
+    "kind": "string",
+    "key": "reference_hidden"
+   },
+   {
+    "attr": "subscribe_btn",
+    "kind": "string",
+    "key": "subscribeBtn"
+   },
+   {
+    "attr": "subscribe_button",
+    "kind": "string",
+    "key": "subscribe_button"
+   }
+  ]
+ },
+ "Geo": {
+  "file": "geo.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "lat",
+    "kind": "float",
+    "key": "lat"
+   },
+   {
+    "attr": "lng",
+    "kind": "float",
+    "key": "lng"
+   }
+  ]
+ },
+ "IDEngagementEquipe": {
+  "file": "id_engagement_equipe.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "nom_usuel",
+    "kind": "string",
+    "key": "nomUsuel"
+   },
+   {
+    "attr": "logo",
+    "kind": "object",
+    "class": "Logo",
+    "key": "logo"
+   }
+  ]
+ },
+ "IDOrganismeEquipe": {
+  "file": "id_organisme_equipe.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "nom",
+    "kind": "string",
+    "key": "nom"
+   },
+   {
+    "attr": "nom_simple",
+    "kind": "string",
+    "key": "nom_simple"
+   },
+   {
+    "attr": "code",
+    "kind": "string",
+    "key": "code"
+   },
+   {
+    "attr": "nom_club_pro",
+    "kind": "string",
+    "key": "nomClubPro"
+   },
+   {
+    "attr": "logo",
+    "kind": "object",
+    "class": "IDOrganismeEquipe1Logo",
+    "key": "logo"
+   }
+  ]
+ },
+ "IDOrganismeEquipe1Logo": {
+  "file": "id_organisme_equipe1_logo.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "gradient_color",
+    "kind": "string",
+    "key": "gradient_color"
+   }
+  ]
+ },
+ "IDPoule": {
+  "file": "id_poule.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "nom",
+    "kind": "string",
+    "key": "nom"
+   }
+  ]
+ },
+ "Live": {
+  "file": "live.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "match_id",
+    "kind": "int",
+    "key": "matchId"
+   },
+   {
+    "attr": "match_time",
+    "kind": "datetime",
+    "key": "matchTime"
+   },
+   {
+    "attr": "competition_abg_name",
+    "kind": "string",
+    "key": "competitionAbgName"
+   },
+   {
+    "attr": "score_q1_home",
+    "kind": "int",
+    "key": "score_q1_home"
+   },
+   {
+    "attr": "score_q2_home",
+    "kind": "int",
+    "key": "score_q2_home"
+   },
+   {
+    "attr": "score_q3_home",
+    "kind": "int",
+    "key": "score_q3_home"
+   },
+   {
+    "attr": "score_q4_home",
+    "kind": "int",
+    "key": "score_q4_home"
+   },
+   {
+    "attr": "score_q1_out",
+    "kind": "int",
+    "key": "score_q1_out"
+   },
+   {
+    "attr": "score_q2_out",
+    "kind": "int",
+    "key": "score_q2_out"
+   },
+   {
+    "attr": "score_q3_out",
+    "kind": "int",
+    "key": "score_q3_out"
+   },
+   {
+    "attr": "score_q4_out",
+    "kind": "int",
+    "key": "score_q4_out"
+   },
+   {
+    "attr": "score_ot1_home",
+    "kind": "int",
+    "key": "score_ot1_home"
+   },
+   {
+    "attr": "score_ot2_home",
+    "kind": "int",
+    "key": "score_ot2_home"
+   },
+   {
+    "attr": "score_ot1_out",
+    "kind": "int",
+    "key": "score_ot1_out"
+   },
+   {
+    "attr": "score_ot2_out",
+    "kind": "int",
+    "key": "score_ot2_out"
+   },
+   {
+    "attr": "score_home",
+    "kind": "int",
+    "key": "score_home"
+   },
+   {
+    "attr": "score_out",
+    "kind": "int",
+    "key": "score_out"
+   },
+   {
+    "attr": "clock",
+    "kind": "raw",
+    "key": "clock"
+   },
+   {
+    "attr": "competition_name",
+    "kind": "string",
+    "key": "competitionName"
+   },
+   {
+    "attr": "current_status",
+    "kind": "string",
+    "key": "currentStatus"
+   },
+   {
+    "attr": "current_period",
+    "kind": "string",
+    "key": "currentPeriod"
+   },
+   {
+    "attr": "match_status",
+    "kind": "string",
+    "key": "matchStatus"
+   },
+   {
+    "attr": "team_name_home",
+    "kind": "string",
+    "key": "teamName_home"
+   },
+   {
+    "attr": "team_name_out",
+    "kind": "string",
+    "key": "teamName_out"
+   },
+   {
+    "attr": "external_id",
+    "kind": "object",
+    "class": "ExternalID",
+    "key": "externalId"
+   },
+   {
+    "attr": "team_engagement_home",
+    "kind": "object",
+    "class": "TeamEngagement",
+    "key": "teamEngagement_home"
+   },
+   {
+    "attr": "team_engagement_out",
+    "kind": "object",
+    "class": "TeamEngagement",
+    "key": "teamEngagement_out"
+   }
+  ]
+ },
+ "Logo": {
+  "file": "logo.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "gradient_color",
+    "kind": "string",
+    "key": "gradient_color"
+   }
+  ]
+ },
+ "NatureSol": {
+  "file": "nature_sol.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "code",
+    "kind": "string",
+    "key": "code"
+   },
+   {
+    "attr": "date_created",
+    "kind": "datetime",
+    "key": "date_created"
+   },
+   {
+    "attr": "date_updated",
+    "kind": "datetime",
+    "key": "date_updated"
+   },
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "libelle",
+    "kind": "string",
+    "key": "libelle"
+   },
+   {
+    "attr": "terrain",
+    "kind": "bool",
+    "key": "terrain"
+   }
+  ]
+ },
+ "Organisateur": {
+  "file": "organisateur.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "adresse",
+    "kind": "string",
+    "key": "adresse"
+   },
+   {
+    "attr": "adresse_club_pro",
+    "kind": "string",
+    "key": "adresseClubPro"
+   },
+   {
+    "attr": "cartographie",
+    "kind": "string",
+    "key": "cartographie"
+   },
+   {
+    "attr": "code",
+    "kind": "string",
+    "key": "code"
+   },
+   {
+    "attr": "commune",
+    "kind": "string",
+    "key": "commune"
+   },
+   {
+    "attr": "commune_club_pro",
+    "kind": "string",
+    "key": "communeClubPro"
+   },
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "mail",
+    "kind": "string",
+    "key": "mail"
+   },
+   {
+    "attr": "nom",
+    "kind": "string",
+    "key": "nom"
+   },
+   {
+    "attr": "nom_club_pro",
+    "kind": "string",
+    "key": "nomClubPro"
+   },
+   {
+    "attr": "organisme_id_pere",
+    "kind": "object",
+    "class": "OrganismeIDPere",
+    "key": "organisme_id_pere"
+   },
+   {
+    "attr": "salle",
+    "kind": "string",
+    "key": "salle"
+   },
+   {
+    "attr": "telephone",
+    "kind": "string",
+    "key": "telephone"
+   },
+   {
+    "attr": "type",
+    "kind": "string",
+    "key": "type"
+   },
+   {
+    "attr": "type_association",
+    "kind": "string",
+    "key": "type_association"
+   },
+   {
+    "attr": "url_site_web",
+    "kind": "string",
+    "key": "urlSiteWeb"
+   },
+   {
+    "attr": "logo",
+    "kind": "string",
+    "key": "logo"
+   },
+   {
+    "attr": "nom_simple",
+    "kind": "string",
+    "key": "nom_simple"
+   },
+   {
+    "attr": "date_affiliation",
+    "kind": "datetime",
+    "key": "dateAffiliation"
+   },
+   {
+    "attr": "saison_en_cours",
+    "kind": "bool",
+    "key": "saison_en_cours"
+   },
+   {
+    "attr": "entreprise",
+    "kind": "bool",
+    "key": "entreprise"
+   },
+   {
+    "attr": "handibasket",
+    "kind": "bool",
+    "key": "handibasket"
+   },
+   {
+    "attr": "omnisport",
+    "kind": "bool",
+    "key": "omnisport"
+   },
+   {
+    "attr": "hors_association",
+    "kind": "bool",
+    "key": "horsAssociation"
+   },
+   {
+    "attr": "offres_pratiques",
+    "kind": "list",
+    "of": "raw",
+    "key": "offresPratiques"
+   },
+   {
+    "attr": "engagements",
+    "kind": "list",
+    "of": "raw",
+    "key": "engagements"
+   },
+   {
+    "attr": "labellisation",
+    "kind": "list",
+    "of": "raw",
+    "key": "labellisation"
+   },
+   {
+    "attr": "membres",
+    "kind": "list",
+    "of": "int",
+    "key": "membres"
+   },
+   {
+    "attr": "date_created",
+    "kind": "datetime",
+    "key": "date_created"
+   },
+   {
+    "attr": "date_updated",
+    "kind": "datetime",
+    "key": "date_updated"
+   },
+   {
+    "attr": "logo_base64",
+    "kind": "string",
+    "key": "logo_base64"
+   },
+   {
+    "attr": "competitions",
+    "kind": "list",
+    "of": "string",
+    "key": "competitions"
+   },
+   {
+    "attr": "organismes_fils",
+    "kind": "list",
+    "of": "int",
+    "key": "organismes_fils"
+   }
+  ]
+ },
+ "OrganismeIDPere": {
+  "file": "organisme_id_pere.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "adresse",
+    "kind": "string",
+    "key": "adresse"
+   },
+   {
+    "attr": "adresse_club_pro",
+    "kind": "string",
+    "key": "adresseClubPro"
+   },
+   {
+    "attr": "cartographie",
+    "kind": "string",
+    "key": "cartographie"
+   },
+   {
+    "attr": "code",
+    "kind": "string",
+    "key": "code"
+   },
+   {
+    "attr": "commune",
+    "kind": "int",
+    "key": "commune"
+   },
+   {
+    "attr": "commune_club_pro",
+    "kind": "string",
+    "key": "communeClubPro"
+   },
+   {
+    "attr": "date_created",
+    "kind": "datetime",
+    "key": "date_created"
+   },
+   {
+    "attr": "date_updated",
+    "kind": "datetime",
+    "key": "date_updated"
+   },
+   {
+    "attr": "id",
+    "kind": "int",
+    "key": "id"
+   },
+   {
+    "attr": "mail",
+    "kind": "string",
+    "key": "mail"
+   },
+   {
+    "attr": "nom",
+    "kind": "string",
+    "key": "nom"
+   },
+   {
+    "attr": "nom_club_pro",
+    "kind": "string",
+    "key": "nomClubPro"
+   },
+   {
+    "attr": "organisme_id_pere",
+    "kind": "object",
+    "class": "OrganismeIDPere",
+    "key": "organisme_id_pere"
+   },
+   {
+    "attr": "salle",
+    "kind": "string",
+    "key": "salle"
+   },
+   {
+    "attr": "telephone",
+    "kind": "string",
+    "key": "telephone"
+   },
+   {
+    "attr": "type",
+    "kind": "string",
+    "key": "type"
+   },
+   {
+    "attr": "type_association",
+    "kind": "string",
+    "key": "type_association"
+   },
+   {
+    "attr": "url_site_web",
+    "kind": "string",
+    "key": "urlSiteWeb"
+   },
+   {
+    "attr": "logo",
+    "kind": "string",
+    "key": "logo"
+   },
+   {
+    "attr": "nom_simple",
+    "kind": "string",
+    "key": "nom_simple"
+   },
+   {
+    "attr": "date_affiliation",
+    "kind": "datetime",
+    "key": "dateAffiliation"
+   },
+   {
+    "attr": "saison_en_cours",
+    "kind": "bool",
+    "key": "saison_en_cours"
+   },
+   {
+    "attr": "entreprise",
+    "kind": "bool",
+    "key": "entreprise"
+   },
+   {
+    "attr": "handibasket",
+    "kind": "bool",
+    "key": "handibasket"
+   },
+   {
+    "attr": "omnisport",
+    "kind": "bool",
+    "key": "omnisport"
+   },
+   {
+    "attr": "hors_association",
+    "kind": "bool",
+    "key": "horsAssociation"
+   },
+   {
+    "attr": "offres_pratiques",
+    "kind": "list",
+    "of": "raw",
+    "key": "offresPratiques"
+   },
+   {
+    "attr": "engagements",
+    "kind": "list",
+    "of": "raw",
+    "key": "engagements"
+   },
+   {
+    "attr": "labellisation",
+    "kind": "list",
+    "of": "raw",
+    "key": "labellisation"
+   }
+  ]
+ },
+ "OrganismesHit": {
+  "file": "organismes_hit.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "nom_club_pro",
+    "kind": "string",
+    "key": "nomClubPro"
+   },
+   {
+    "attr": "nom",
+    "kind": "string",
+    "key": "nom"
+   },
+   {
+    "attr": "adresse",
+    "kind": "string",
+    "key": "adresse"
+   },
+   {
+    "attr": "adresse_club_pro",
+    "kind": "string",
+    "key": "adresseClubPro"
+   },
+   {
+    "attr": "code",
+    "kind": "string",
+    "key": "code"
+   },
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "engagements_noms",
+    "kind": "string",
+    "key": "engagements_noms"
+   },
+   {
+    "attr": "mail",
+    "kind": "string",
+    "key": "mail"
+   },
+   {
+    "attr": "telephone",
+    "kind": "string",
+    "key": "telephone"
+   },
+   {
+    "attr": "type",
+    "kind": "string",
+    "key": "type"
+   },
+   {
+    "attr": "url_site_web",
+    "kind": "string",
+    "key": "urlSiteWeb"
+   },
+   {
+    "attr": "nom_simple",
+    "kind": "string",
+    "key": "nom_simple"
+   },
+   {
+    "attr": "date_affiliation",
+    "kind": "datetime",
+    "key": "dateAffiliation"
+   },
+   {
+    "attr": "saison_en_cours",
+    "kind": "bool",
+    "key": "saison_en_cours"
+   },
+   {
+    "attr": "offres_pratiques",
+    "kind": "list",
+    "of": "string",
+    "key": "offresPratiques"
+   },
+   {
+    "attr": "labellisation",
+    "kind": "list",
+    "of": "string",
+    "key": "labellisation"
+   },
+   {
+    "attr": "cartographie",
+    "kind": "object",
+    "class": "Cartographie",
+    "key": "cartographie"
+   },
+   {
+    "attr": "organisme_id_pere",
+    "kind": "object",
+    "class": "OrganismeIDPere",
+    "key": "organisme_id_pere"
+   },
+   {
+    "attr": "commune",
+    "kind": "object",
+    "class": "Commune",
+    "key": "commune"
+   },
+   {
+    "attr": "commune_club_pro",
+    "kind": "object",
+    "class": "Commune",
+    "key": "communeClubPro"
+   },
+   {
+    "attr": "type_association",
+    "kind": "object",
+    "class": "TypeAssociation",
+    "key": "type_association"
+   },
+   {
+    "attr": "logo",
+    "kind": "object",
+    "class": "Logo",
+    "key": "logo"
+   },
+   {
+    "attr": "geo",
+    "kind": "object",
+    "class": "Geo",
+    "key": "_geo"
+   },
+   {
+    "attr": "thumbnail",
+    "kind": "string",
+    "key": "thumbnail"
+   }
+  ]
+ },
+ "Poule": {
+  "file": "poule.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "nom",
+    "kind": "string",
+    "key": "nom"
+   },
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "engagements",
+    "kind": "list",
+    "class": "Engagement",
+    "key": "engagements"
+   }
+  ]
+ },
+ "PratiquesHit": {
+  "file": "pratiques_hit.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "titre",
+    "kind": "string",
+    "key": "titre"
+   },
+   {
+    "attr": "type",
+    "kind": "string",
+    "key": "type"
+   },
+   {
+    "attr": "adresse",
+    "kind": "string",
+    "key": "adresse"
+   },
+   {
+    "attr": "description",
+    "kind": "string",
+    "key": "description"
+   },
+   {
+    "attr": "id",
+    "kind": "int",
+    "key": "id"
+   },
+   {
+    "attr": "date_created",
+    "kind": "datetime",
+    "key": "date_created"
+   },
+   {
+    "attr": "date_debut",
+    "kind": "datetime",
+    "key": "date_debut"
+   },
+   {
+    "attr": "date_demande",
+    "kind": "int",
+    "key": "date_demande"
+   },
+   {
+    "attr": "date_fin",
+    "kind": "datetime",
+    "key": "date_fin"
+   },
+   {
+    "attr": "date_updated",
+    "kind": "datetime",
+    "key": "date_updated"
+   },
+   {
+    "attr": "facebook",
+    "kind": "string",
+    "key": "facebook"
+   },
+   {
+    "attr": "site_web",
+    "kind": "string",
+    "key": "site_web"
+   },
+   {
+    "attr": "twitter",
+    "kind": "string",
+    "key": "twitter"
+   },
+   {
+    "attr": "action",
+    "kind": "string",
+    "key": "action"
+   },
+   {
+    "attr": "adresse_salle",
+    "kind": "string",
+    "key": "adresse_salle"
+   },
+   {
+    "attr": "adresse_structure",
+    "kind": "string",
+    "key": "adresse_structure"
+   },
+   {
+    "attr": "assurance",
+    "kind": "string",
+    "key": "assurance"
+   },
+   {
+    "attr": "code",
+    "kind": "string",
+    "key": "code"
+   },
+   {
+    "attr": "cp_salle",
+    "kind": "string",
+    "key": "cp_salle"
+   },
+   {
+    "attr": "date_inscription",
+    "kind": "int",
+    "key": "date_inscription"
+   },
+   {
+    "attr": "email",
+    "kind": "string",
+    "key": "email"
+   },
+   {
+    "attr": "engagement",
+    "kind": "string",
+    "key": "engagement"
+   },
+   {
+    "attr": "horaires_seances",
+    "kind": "string",
+    "key": "horaires_seances"
+   },
+   {
+    "attr": "inscriptions",
+    "kind": "string",
+    "key": "inscriptions"
+   },
+   {
+    "attr": "jours",
+    "kind": "list",
+    "of": "raw",
+    "key": "jours"
+   },
+   {
+    "attr": "label",
+    "kind": "string",
+    "key": "label"
+   },
+   {
+    "attr": "latitude",
+    "kind": "float",
+    "key": "latitude"
+   },
+   {
+    "attr": "longitude",
+    "kind": "float",
+    "key": "longitude"
+   },
+   {
+    "attr": "mail_demandeur",
+    "kind": "string",
+    "key": "mail_demandeur"
+   },
+   {
+    "attr": "mail_structure",
+    "kind": "string",
+    "key": "mail_structure"
+   },
+   {
+    "attr": "nom_demandeur",
+    "kind": "string",
+    "key": "nom_demandeur"
+   },
+   {
+    "attr": "nom_salle",
+    "kind": "string",
+    "key": "nom_salle"
+   },
+   {
+    "attr": "nom_structure",
+    "kind": "string",
+    "key": "nom_structure"
+   },
+   {
+    "attr": "nombre_personnes",
+    "kind": "string",
+    "key": "nombre_personnes"
+   },
+   {
+    "attr": "nombre_seances",
+    "kind": "string",
+    "key": "nombre_seances"
+   },
+   {
+    "attr": "objectif",
+    "kind": "string",
+    "key": "objectif"
+   },
+   {
+    "attr": "prenom_demandeur",
+    "kind": "string",
+    "key": "prenom_demandeur"
+   },
+   {
+    "attr": "public",
+    "kind": "string",
+    "key": "public"
+   },
+   {
+    "attr": "telephone",
+    "kind": "string",
+    "key": "telephone"
+   },
+   {
+    "attr": "ville_salle",
+    "kind": "string",
+    "key": "ville_salle"
+   },
+   {
+    "attr": "cartographie",
+    "kind": "object",
+    "class": "Cartographie",
+    "key": "cartographie"
+   },
+   {
+    "attr": "affiche",
+    "kind": "object",
+    "class": "Affiche",
+    "key": "affiche"
+   },
+   {
+    "attr": "geo",
+    "kind": "object",
+    "class": "Geo",
+    "key": "_geo"
+   },
+   {
+    "attr": "date_debut_timestamp",
+    "kind": "int",
+    "key": "date_debut_timestamp"
+   },
+   {
+    "attr": "date_fin_timestamp",
+    "kind": "int",
+    "key": "date_fin_timestamp"
+   },
+   {
+    "attr": "thumbnail",
+    "kind": "string",
+    "key": "thumbnail"
+   }
+  ]
+ },
+ "PurpleLogo": {
+  "file": "purple_logo.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   }
+  ]
+ },
+ "RencontresHit": {
+  "file": "rencontres_hit.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "niveau",
+    "kind": "string",
+    "key": "niveau"
+   },
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "date",
+    "kind": "datetime",
+    "key": "date"
+   },
+   {
+    "attr": "date_rencontre",
+    "kind": "datetime",
+    "key": "date_rencontre"
+   },
+   {
+    "attr": "horaire",
+    "kind": "string",
+    "key": "horaire"
+   },
+   {
+    "attr": "nom_equipe1",
+    "kind": "string",
+    "key": "nomEquipe1"
+   },
+   {
+    "attr": "nom_equipe2",
+    "kind": "string",
+    "key": "nomEquipe2"
+   },
+   {
+    "attr": "numero_journee",
+    "kind": "int",
+    "key": "numeroJournee"
+   },
+   {
+    "attr": "pratique",
+    "kind": "string",
+    "key": "pratique"
+   },
+   {
+    "attr": "gs_id",
+    "kind": "string",
+    "key": "gsId"
+   },
+   {
+    "attr": "officiels",
+    "kind": "list",
+    "of": "raw",
+    "key": "officiels"
+   },
+   {
+    "attr": "competition_id",
+    "kind": "object",
+    "class": "CompetitionID",
+    "key": "competitionId"
+   },
+   {
+    "attr": "id_organisme_equipe1",
+    "kind": "object",
+    "class": "IDOrganismeEquipe",
+    "key": "idOrganismeEquipe1"
+   },
+   {
+    "attr": "id_organisme_equipe2",
+    "kind": "object",
+    "class": "IDOrganismeEquipe",
+    "key": "idOrganismeEquipe2"
+   },
+   {
+    "attr": "id_poule",
+    "kind": "object",
+    "class": "IDPoule",
+    "key": "idPoule"
+   },
+   {
+    "attr": "saison",
+    "kind": "object",
+    "class": "Saison",
+    "key": "saison"
+   },
+   {
+    "attr": "salle",
+    "kind": "object",
+    "class": "Salle",
+    "key": "salle"
+   },
+   {
+    "attr": "id_engagement_equipe1",
+    "kind": "object",
+    "class": "IDEngagementEquipe",
+    "key": "idEngagementEquipe1"
+   },
+   {
+    "attr": "id_engagement_equipe2",
+    "kind": "object",
+    "class": "IDEngagementEquipe",
+    "key": "idEngagementEquipe2"
+   },
+   {
+    "attr": "geo",
+    "kind": "object",
+    "class": "Geo",
+    "key": "_geo"
+   },
+   {
+    "attr": "date_timestamp",
+    "kind": "int",
+    "key": "date_timestamp"
+   },
+   {
+    "attr": "date_rencontre_timestamp",
+    "kind": "int",
+    "key": "date_rencontre_timestamp"
+   },
+   {
+    "attr": "creation_timestamp",
+    "kind": "int",
+    "key": "creation_timestamp"
+   },
+   {
+    "attr": "date_saisie_resultat_timestamp",
+    "kind": "int",
+    "key": "dateSaisieResultat_timestamp"
+   },
+   {
+    "attr": "modification_timestamp",
+    "kind": "int",
+    "key": "modification_timestamp"
+   },
+   {
+    "attr": "thumbnail",
+    "kind": "string",
+    "key": "thumbnail"
+   },
+   {
+    "attr": "organisateur",
+    "kind": "object",
+    "class": "Organisateur",
+    "key": "organisateur"
+   },
+   {
+    "attr": "niveau_nb",
+    "kind": "int",
+    "key": "niveau_nb"
+   }
+  ]
+ },
+ "Saison": {
+  "file": "saison.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "code",
+    "kind": "string",
+    "key": "code"
+   }
+  ]
+ },
+ "Salle": {
+  "file": "salle.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "libelle",
+    "kind": "string",
+    "key": "libelle"
+   },
+   {
+    "attr": "adresse",
+    "kind": "string",
+    "key": "adresse"
+   },
+   {
+    "attr": "adresse_complement",
+    "kind": "string",
+    "key": "adresseComplement"
+   },
+   {
+    "attr": "cartographie",
+    "kind": "object",
+    "class": "Cartographie",
+    "key": "cartographie"
+   }
+  ]
+ },
+ "SallesHit": {
+  "file": "salles_hit.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "libelle",
+    "kind": "string",
+    "key": "libelle"
+   },
+   {
+    "attr": "adresse",
+    "kind": "string",
+    "key": "adresse"
+   },
+   {
+    "attr": "id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "adresse_complement",
+    "kind": "string",
+    "key": "adresseComplement"
+   },
+   {
+    "attr": "capacite_spectateur",
+    "kind": "string",
+    "key": "capaciteSpectateur"
+   },
+   {
+    "attr": "date_created",
+    "kind": "datetime",
+    "key": "date_created"
+   },
+   {
+    "attr": "date_updated",
+    "kind": "datetime",
+    "key": "date_updated"
+   },
+   {
+    "attr": "libelle2",
+    "kind": "string",
+    "key": "libelle2"
+   },
+   {
+    "attr": "mail",
+    "kind": "string",
+    "key": "mail"
+   },
+   {
+    "attr": "numero",
+    "kind": "string",
+    "key": "numero"
+   },
+   {
+    "attr": "telephone",
+    "kind": "string",
+    "key": "telephone"
+   },
+   {
+    "attr": "cartographie",
+    "kind": "object",
+    "class": "Cartographie",
+    "key": "cartographie"
+   },
+   {
+    "attr": "commune",
+    "kind": "object",
+    "class": "Commune",
+    "key": "commune"
+   },
+   {
+    "attr": "geo",
+    "kind": "object",
+    "class": "Geo",
+    "key": "_geo"
+   },
+   {
+    "attr": "thumbnail",
+    "kind": "string",
+    "key": "thumbnail"
+   },
+   {
+    "attr": "type",
+    "kind": "string",
+    "key": "type"
+   },
+   {
+    "attr": "type_association",
+    "kind": "object",
+    "class": "TypeAssociation",
+    "key": "type_association"
+   }
+  ]
+ },
+ "TeamEngagement": {
+  "file": "team_engagement.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "nom_officiel",
+    "kind": "string",
+    "key": "nomOfficiel"
+   },
+   {
+    "attr": "nom_usuel",
+    "kind": "string",
+    "key": "nomUsuel"
+   },
+   {
+    "attr": "code_abrege",
+    "kind": "string",
+    "key": "codeAbrege"
+   },
+   {
+    "attr": "logo",
+    "kind": "object",
+    "class": "Logo",
+    "key": "logo"
+   }
+  ]
+ },
+ "TerrainsHit": {
+  "file": "terrains_hit.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "nom",
+    "kind": "string",
+    "key": "nom"
+   },
+   {
+    "attr": "sexe",
+    "kind": "string",
+    "key": "sexe"
+   },
+   {
+    "attr": "adresse",
+    "kind": "string",
+    "key": "adresse"
+   },
+   {
+    "attr": "nom_organisateur",
+    "kind": "string",
+    "key": "nomOrganisateur"
+   },
+   {
+    "attr": "description",
+    "kind": "string",
+    "key": "description"
+   },
+   {
+    "attr": "site_choisi",
+    "kind": "string",
+    "key": "siteChoisi"
+   },
+   {
+    "attr": "id",
+    "kind": "int",
+    "key": "id"
+   },
+   {
+    "attr": "code",
+    "kind": "string",
+    "key": "code"
+   },
+   {
+    "attr": "date_created",
+    "kind": "datetime",
+    "key": "date_created"
+   },
+   {
+    "attr": "date_updated",
+    "kind": "datetime",
+    "key": "date_updated"
+   },
+   {
+    "attr": "age_max",
+    "kind": "int",
+    "key": "ageMax"
+   },
+   {
+    "attr": "age_min",
+    "kind": "int",
+    "key": "ageMin"
+   },
+   {
+    "attr": "categorie_championnat3_x3_id",
+    "kind": "int",
+    "key": "categorieChampionnat3x3Id"
+   },
+   {
+    "attr": "categorie_championnat3_x3_libelle",
+    "kind": "string",
+    "key": "categorieChampionnat3x3Libelle"
+   },
+   {
+    "attr": "debut",
+    "kind": "datetime",
+    "key": "debut"
+   },
+   {
+    "attr": "fin",
+    "kind": "datetime",
+    "key": "fin"
+   },
+   {
+    "attr": "mail_organisateur",
+    "kind": "string",
+    "key": "mailOrganisateur"
+   },
+   {
+    "attr": "nb_participant_prevu",
+    "kind": "int",
+    "key": "nbParticipantPrevu"
+   },
+   {
+    "attr": "tarif_organisateur",
+    "kind": "int",
+    "key": "tarifOrganisateur"
+   },
+   {
+    "attr": "telephone_organisateur",
+    "kind": "string",
+    "key": "telephoneOrganisateur"
+   },
+   {
+    "attr": "url_organisateur",
+    "kind": "string",
+    "key": "urlOrganisateur"
+   },
+   {
+    "attr": "adresse_complement",
+    "kind": "string",
+    "key": "adresseComplement"
+   },
+   {
+    "attr": "tournoi_types3_x3",
+    "kind": "list",
+    "class": "TournoiTypes3X3",
+    "key": "tournoiTypes3x3"
+   },
+   {
+    "attr": "cartographie",
+    "kind": "object",
+    "class": "Cartographie",
+    "key": "cartographie"
+   },
+   {
+    "attr": "commune",
+    "kind": "object",
+    "class": "Commune",
+    "key": "commune"
+   },
+   {
+    "attr": "document_flyer",
+    "kind": "object",
+    "class": "DocumentFlyer",
+    "key": "document_flyer"
+   },
+   {
+    "attr": "tournoi_type",
+    "kind": "string",
+    "key": "tournoiType"
+   },
+   {
+    "attr": "geo",
+    "kind": "object",
+    "class": "Geo",
+    "key": "_geo"
+   },
+   {
+    "attr": "debut_timestamp",
+    "kind": "int",
+    "key": "debut_timestamp"
+   },
+   {
+    "attr": "fin_timestamp",
+    "kind": "int",
+    "key": "fin_timestamp"
+   },
+   {
+    "attr": "thumbnail",
+    "kind": "string",
+    "key": "thumbnail"
+   }
+  ]
+ },
+ "TournoiTypes3X3": {
+  "file": "tournoi_types_3x3.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "libelle",
+    "kind": "string",
+    "key": "libelle"
+   },
+   {
+    "attr": "logo",
+    "kind": "string",
+    "key": "logo"
+   },
+   {
+    "attr": "type_league",
+    "kind": "string",
+    "key": "type_league"
+   },
+   {
+    "attr": "type_tournois",
+    "kind": "int",
+    "key": "type_tournois"
+   }
+  ]
+ },
+ "TournoisHit": {
+  "file": "tournois_hit.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "nom",
+    "kind": "string",
+    "key": "nom"
+   },
+   {
+    "attr": "rue",
+    "kind": "string",
+    "key": "rue"
+   },
+   {
+    "attr": "id",
+    "kind": "int",
+    "key": "id"
+   },
+   {
+    "attr": "acces_libre",
+    "kind": "bool",
+    "key": "accesLibre"
+   },
+   {
+    "attr": "date_created",
+    "kind": "datetime",
+    "key": "date_created"
+   },
+   {
+    "attr": "date_updated",
+    "kind": "datetime",
+    "key": "date_updated"
+   },
+   {
+    "attr": "largeur",
+    "kind": "int",
+    "key": "largeur"
+   },
+   {
+    "attr": "longueur",
+    "kind": "int",
+    "key": "longueur"
+   },
+   {
+    "attr": "numero",
+    "kind": "int",
+    "key": "numero"
+   },
+   {
+    "attr": "cartographie",
+    "kind": "object",
+    "class": "Cartographie",
+    "key": "cartographie"
+   },
+   {
+    "attr": "commune",
+    "kind": "object",
+    "class": "Commune",
+    "key": "commune"
+   },
+   {
+    "attr": "nature_sol",
+    "kind": "object",
+    "class": "NatureSol",
+    "key": "natureSol"
+   },
+   {
+    "attr": "geo",
+    "kind": "object",
+    "class": "Geo",
+    "key": "_geo"
+   },
+   {
+    "attr": "thumbnail",
+    "kind": "string",
+    "key": "thumbnail"
+   },
+   {
+    "attr": "type",
+    "kind": "string",
+    "key": "type"
+   }
+  ]
+ },
+ "TypeAssociation": {
+  "file": "type_association.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "libelle",
+    "kind": "string",
+    "key": "libelle"
+   }
+  ]
+ },
+ "TypeCompetitionGenerique": {
+  "file": "type_competition_generique.py",
+  "doc": "",
+  "fields": [
+   {
+    "attr": "type_competition_generique_id",
+    "kind": "string",
+    "key": "id"
+   },
+   {
+    "attr": "logo",
+    "kind": "object",
+    "class": "Logo",
+    "key": "logo"
+   }
+  ]
+ }
+}

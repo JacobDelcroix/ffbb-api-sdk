@@ -15,6 +15,9 @@ fields, filter, search, sort, limit, offset, page, aggregate, groupBy, deep, ali
         ->limit(50)
         ->get();
 
+Les résultats sont des DTOs (RencontresItem…), ou des Item génériques pour une collection sans DTO.
+Les variantes *Raw() renvoient les tableaux Directus, utiles pour les agrégats.
+
 Obtenu via `$ffbb->directus('nom_de_collection')`. Les méthodes de construction renvoient le builder (chaînables) ; `get()`, `first()`, `find()`, `count()`, `cursor()`, `raw()`, `getData()` et `findData()` exécutent la requête.
 
 Guide avec exemples : [06-query-builder-directus](../guides/06-query-builder-directus.md)
@@ -35,14 +38,15 @@ Guide avec exemples : [06-query-builder-directus](../guides/06-query-builder-dir
 | [`alias()`](#alias) | `self` | Renomme un champ dans la réponse, ex. |
 | [`withMeta()`](#withmeta) | `self` | Métadonnées : "total_count", "filter_count" ou "*". |
 | [`toQuery()`](#toquery) | `array<string, string>` | Paramètres de requête tels qu'envoyés à Directus. |
-| [`get()`](#get) | `list<array<string, mixed>>` | Les éléments correspondant à la requête. |
-| [`getData()`](#getdata) | `list<object>` | Les éléments hydratés dans le DTO de la collection (src/Data, généré depuis la spec OpenAPI). |
-| [`findData()`](#finddata) | `?object` | Un élément par identifiant, hydraté dans son DTO. |
+| [`get()`](#get) | `list<T>` | Les éléments correspondant à la requête, hydratés dans le DTO de la collection. |
+| [`getRaw()`](#getraw) | `list<array<string, mixed>>` | Les éléments correspondant à la requête, en tableaux Directus (ex. |
 | [`raw()`](#raw) | `array<string, mixed>` | Réponse brute Directus : ['data' => [...], 'meta' => [...]]. |
-| [`first()`](#first) | `array<string, mixed>\|null` | Le premier élément correspondant à la requête (limit 1). |
-| [`find()`](#find) | `array<string, mixed>\|null` | Un élément par identifiant (seuls fields, deep et alias s'appliquent). |
+| [`first()`](#first) | `T\|null` | Le premier élément correspondant à la requête (limit 1). |
+| [`firstRaw()`](#firstraw) | `array<string, mixed>\|null` | Le premier élément correspondant à la requête, en tableau Directus. |
+| [`find()`](#find) | `T\|null` | Un élément par identifiant, hydraté dans son DTO (seuls fields, deep et alias s'appliquent). |
+| [`findRaw()`](#findraw) | `array<string, mixed>\|null` | Un élément par identifiant, en tableau Directus. |
 | [`count()`](#count) | `int` | Nombre d'éléments correspondant au filtre (aggregate[count]=*). |
-| [`cursor()`](#cursor) | `Generator<int, array<string, mixed>>` | Itère sur tous les résultats, page par page. |
+| [`cursor()`](#cursor) | `Generator<int, T>` | Itère sur tous les résultats (DTOs), page par page. |
 
 ### `fields()`
 
@@ -247,37 +251,23 @@ public function toQuery(): array
 
 ### `get()`
 
-Les éléments correspondant à la requête.
+Les éléments correspondant à la requête, hydratés dans le DTO de la collection.
 
 ```php
 public function get(): array
 ```
 
+**Retour :** `list<T>`
+
+### `getRaw()`
+
+Les éléments correspondant à la requête, en tableaux Directus (ex. lignes d'agrégat).
+
+```php
+public function getRaw(): array
+```
+
 **Retour :** `list<array<string, mixed>>`
-
-### `getData()`
-
-Les éléments hydratés dans le DTO de la collection (src/Data, généré depuis la spec OpenAPI).
-
-```php
-public function getData(): array
-```
-
-**Retour :** `list<object>`
-
-### `findData()`
-
-Un élément par identifiant, hydraté dans son DTO.
-
-```php
-public function findData(int|string $id): ?object
-```
-
-| Paramètre | Type | Défaut | Description |
-|---|---|---|---|
-| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
-
-**Retour :** `?object`
 
 ### `raw()`
 
@@ -294,17 +284,41 @@ public function raw(): array
 Le premier élément correspondant à la requête (limit 1).
 
 ```php
-public function first(): ?array
+public function first(): ?object
+```
+
+**Retour :** `T|null`
+
+### `firstRaw()`
+
+Le premier élément correspondant à la requête, en tableau Directus.
+
+```php
+public function firstRaw(): ?array
 ```
 
 **Retour :** `array<string, mixed>|null`
 
 ### `find()`
 
-Un élément par identifiant (seuls fields, deep et alias s'appliquent).
+Un élément par identifiant, hydraté dans son DTO (seuls fields, deep et alias s'appliquent).
 
 ```php
-public function find(int|string $id): ?array
+public function find(int|string $id): ?object
+```
+
+| Paramètre | Type | Défaut | Description |
+|---|---|---|---|
+| `$id` | `int\|string` | — | Identifiant Directus de l'élément. |
+
+**Retour :** `T|null`
+
+### `findRaw()`
+
+Un élément par identifiant, en tableau Directus.
+
+```php
+public function findRaw(int|string $id): ?array
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -325,7 +339,7 @@ public function count(): int
 
 ### `cursor()`
 
-Itère sur tous les résultats, page par page.
+Itère sur tous les résultats (DTOs), page par page.
 
 ```php
 public function cursor(int $pageSize = 100): Generator
@@ -335,4 +349,4 @@ public function cursor(int $pageSize = 100): Generator
 |---|---|---|---|
 | `$pageSize` | `int` | `100` | Taille de chaque page demandée à Directus. |
 
-**Retour :** `Generator<int, array<string, mixed>>`
+**Retour :** `Generator<int, T>`

@@ -7,15 +7,28 @@ recherche floue et la géolocalisation, et reste souvent accessible quand Direct
 
 ## Résultat d'une recherche
 
-Chaque méthode `search*` renvoie le résultat Meilisearch d'une requête :
+Chaque méthode `search*` renvoie un `SearchResult` (ou `null` sans texte recherché), dont les hits sont des
+objets typés selon l'index :
 
 ```php
-$resultat = $ffbb->searchOrganismes('Ostrevent');
+$resultat = $ffbb->searchOrganismes('Ostrevent');   // ?SearchResult<OrganismesHit>
 
-$resultat['hits'];                // les documents trouvés
-$resultat['estimatedTotalHits'];  // nombre estimé (corrigé après le filtrage client)
-$resultat['facetDistribution'];   // comptages par facette (type, labellisation…)
+$resultat->hits;                 // list<OrganismesHit>
+$resultat->first()?->nom;        // premier hit
+$resultat->estimatedTotalHits;   // nombre estimé (corrigé après le filtrage client)
+$resultat->facet('type');        // ['Club' => 4210, 'Comité départemental' => 101, …]
+$resultat->facetDistribution;    // toutes les facettes
+$resultat->isEmpty();
+
+foreach ($resultat->hits as $club) {
+    echo $club->nom.' ('.$club->commune?->libelle.')'.PHP_EOL;
+    $club->_geo?->lat;           // coordonnées GPS
+}
 ```
+
+Les DTOs de hits sont générés depuis les modèles du SDK Python, **complétés par les attributs réellement
+observés** dans chaque index (par exemple `joue`, `resultatEquipe1` et `resultatEquipe2` sur les rencontres,
+absents du modèle Python). Liste complète des propriétés : [référence DTOs](../reference/dtos.md#réponses-meilisearch-et-lives).
 
 Comme dans le SDK Python, deux comportements à connaître :
 
@@ -26,21 +39,24 @@ Comme dans le SDK Python, deux comportements à connaître :
 
 ## Les 13 index
 
-| Méthode | Index | Contenu |
-|---|---|---|
-| `searchOrganismes()` | `ffbbserver_organismes` | clubs, comités, ligues |
-| `searchEngagements()` | `ffbbserver_engagements` | équipes engagées |
-| `searchCompetitions()` | `ffbbserver_competitions` | compétitions |
-| `searchRencontres()` | `ffbbserver_rencontres` | matchs (fenêtre glissante d'environ deux semaines) |
-| `searchSalles()` | `ffbbserver_salles` | salles |
-| `searchTerrains()` | `ffbbserver_terrains` | terrains extérieurs / 3x3 |
-| `searchTournois()` | `ffbbserver_tournois` | tournois |
-| `searchPratiques()` | `ffbbnational_pratiques` | offres de pratique |
-| `searchFormations()` | `ffbbserver_formations` | formations |
-| `searchNews()` | `ffbbsite_news` | actualités |
-| `searchYoutubeVideos()` | `youtube_videos` | vidéos YouTube |
-| `searchRss()` | `ffbbnational_rss` | flux RSS |
-| `searchGaleries()` | `ffbbnational_galeries` | galeries photos |
+| Méthode | Index | Hits | Contenu |
+|---|---|---|---|
+| `searchOrganismes()` | `ffbbserver_organismes` | `OrganismesHit` | clubs, comités, ligues |
+| `searchEngagements()` | `ffbbserver_engagements` | `EngagementsHit` | équipes engagées |
+| `searchCompetitions()` | `ffbbserver_competitions` | `CompetitionsHit` | compétitions |
+| `searchRencontres()` | `ffbbserver_rencontres` | `RencontresHit` | matchs (fenêtre glissante d'environ deux semaines) |
+| `searchSalles()` | `ffbbserver_salles` | `SallesHit` | salles |
+| `searchTerrains()` | `ffbbserver_terrains` | `TerrainsHit` | terrains extérieurs / 3x3 |
+| `searchTournois()` | `ffbbserver_tournois` | `TournoisHit` | tournois |
+| `searchPratiques()` | `ffbbnational_pratiques` | `PratiquesHit` | offres de pratique |
+| `searchFormations()` | `ffbbserver_formations` | `FormationsHit` | formations |
+| `searchNews()` | `ffbbsite_news` | `ContentHit` | actualités |
+| `searchYoutubeVideos()` | `youtube_videos` | `ContentHit` | vidéos YouTube |
+| `searchRss()` | `ffbbnational_rss` | `ContentHit` | flux RSS |
+| `searchGaleries()` | `ffbbnational_galeries` | `ContentHit` | galeries photos |
+
+Les index de contenu changent souvent de schéma côté FFBB : `ContentHit` type les champs communs (`id`, `title`,
+`type`, `url`, `thumbnail`, `date`) et garde le reste dans `->raw` (`$hit->get('auteur')`).
 
 Chacune existe aussi en version multiple (`searchMultipleOrganismes(['Douai', 'Lens'])`) : plusieurs recherches
 dans un seul appel HTTP, un résultat par texte.
@@ -91,21 +107,28 @@ $ffbb->searchOrganismesByCity('Douai');
 ## Recherche universelle
 
 ```php
-$resultats = $ffbb->multiSearch('Ostrevent');  // un résultat par index, dans l'ordre du tableau ci-dessus
+$resultats = $ffbb->multiSearch('Ostrevent');  // list<SearchResult>, un par index, dans l'ordre du tableau ci-dessus
+
+foreach ($resultats as $resultat) {
+    echo $resultat->indexUid.' : '.$resultat->count().' résultat(s)'.PHP_EOL;
+}
 ```
 
 ## Requêtes sur mesure
 
 Pour des paramètres que les méthodes n'exposent pas (offset, facettes choisies…), construis les requêtes
-toi-même et passe-les au moteur de recherche :
+toi-même et passe-les au moteur de recherche. Il renvoie les tableaux Meilisearch : type-les avec `SearchResult::fromArray()`.
 
 ```php
+use CoachBasket\Ffbb\Data\Models\SearchResult;
 use CoachBasket\Ffbb\Search\Index;
 use CoachBasket\Ffbb\Search\MultiSearchQuery;
 
-$resultats = $ffbb->search->recursiveSmartMultiSearch([
+$brut = $ffbb->search->recursiveSmartMultiSearch([
     new MultiSearchQuery(Index::Salles, q: 'gymnase', limit: 50, facets: ['commune.libelle']),
 ]);
+
+$salles = SearchResult::fromArray($brut[0], Index::Salles->hitClass());   // SearchResult<SallesHit>
 
 // Sans filtrage client ni pagination récursive : la réponse Meilisearch brute
 $brut = $ffbb->search->multiSearch([MultiSearchQuery::for(Index::Organismes, 'Douai', limit: 5)]);

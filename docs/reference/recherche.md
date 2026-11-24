@@ -9,42 +9,42 @@ Guide avec exemples : [05-recherche](../guides/05-recherche.md)
 
 | Méthode | Retour | Description |
 |---|---|---|
-| [`multiSearch()`](#multisearch) | `list<array<string, mixed>>\|null` | Recherche universelle sur les 13 index (1 hit par index et par page). |
-| [`searchCompetitions()`](#searchcompetitions) | `array<string, mixed>\|null` | Recherche plein texte dans les compétitions (null si aucun nom). |
-| [`searchMultipleCompetitions()`](#searchmultiplecompetitions) | `list<array<string, mixed>>\|null` | Plusieurs recherches dans les compétitions, en un seul appel multi-search (un résultat par nom). |
-| [`searchOrganismes()`](#searchorganismes) | `array<string, mixed>\|null` | Recherche plein texte dans les organismes (clubs, comités, ligues) (null si aucun nom). |
-| [`searchMultipleOrganismes()`](#searchmultipleorganismes) | `list<array<string, mixed>>\|null` | Plusieurs recherches dans les organismes (clubs, comités, ligues), en un seul appel multi-search (un résultat par nom). |
-| [`searchPratiques()`](#searchpratiques) | `array<string, mixed>\|null` | Recherche plein texte dans les offres de pratique (null si aucun nom). |
-| [`searchMultiplePratiques()`](#searchmultiplepratiques) | `list<array<string, mixed>>\|null` | Plusieurs recherches dans les offres de pratique, en un seul appel multi-search (un résultat par nom). |
-| [`searchRencontres()`](#searchrencontres) | `array<string, mixed>\|null` | Recherche plein texte dans les rencontres (null si aucun nom). |
-| [`searchMultipleRencontres()`](#searchmultiplerencontres) | `list<array<string, mixed>>\|null` | Plusieurs recherches dans les rencontres, en un seul appel multi-search (un résultat par nom). |
-| [`searchSalles()`](#searchsalles) | `array<string, mixed>\|null` | Recherche plein texte dans les salles (null si aucun nom). |
-| [`searchMultipleSalles()`](#searchmultiplesalles) | `list<array<string, mixed>>\|null` | Plusieurs recherches dans les salles, en un seul appel multi-search (un résultat par nom). |
-| [`searchTerrains()`](#searchterrains) | `array<string, mixed>\|null` | Recherche plein texte dans les terrains (null si aucun nom). |
-| [`searchMultipleTerrains()`](#searchmultipleterrains) | `list<array<string, mixed>>\|null` | Plusieurs recherches dans les terrains, en un seul appel multi-search (un résultat par nom). |
-| [`searchTournois()`](#searchtournois) | `array<string, mixed>\|null` | Recherche plein texte dans les tournois (null si aucun nom). |
-| [`searchMultipleTournois()`](#searchmultipletournois) | `list<array<string, mixed>>\|null` | Plusieurs recherches dans les tournois, en un seul appel multi-search (un résultat par nom). |
-| [`searchEngagements()`](#searchengagements) | `array<string, mixed>\|null` | Recherche plein texte dans les équipes engagées (null si aucun nom). |
-| [`searchMultipleEngagements()`](#searchmultipleengagements) | `list<array<string, mixed>>\|null` | Plusieurs recherches dans les équipes engagées, en un seul appel multi-search (un résultat par nom). |
-| [`searchFormations()`](#searchformations) | `array<string, mixed>\|null` | Recherche plein texte dans les formations (null si aucun nom). |
-| [`searchMultipleFormations()`](#searchmultipleformations) | `list<array<string, mixed>>\|null` | Plusieurs recherches dans les formations, en un seul appel multi-search (un résultat par nom). |
-| [`searchNews()`](#searchnews) | `array<string, mixed>\|null` | Recherche plein texte dans les actualités ffbb.com (null si aucun nom). |
-| [`searchMultipleNews()`](#searchmultiplenews) | `list<array<string, mixed>>\|null` | Plusieurs recherches dans les actualités ffbb.com, en un seul appel multi-search (un résultat par nom). |
-| [`searchYoutubeVideos()`](#searchyoutubevideos) | `array<string, mixed>\|null` | Recherche plein texte dans les vidéos YouTube FFBB (null si aucun nom). |
-| [`searchMultipleYoutubeVideos()`](#searchmultipleyoutubevideos) | `list<array<string, mixed>>\|null` | Plusieurs recherches dans les vidéos YouTube FFBB, en un seul appel multi-search (un résultat par nom). |
-| [`searchRss()`](#searchrss) | `array<string, mixed>\|null` | Recherche plein texte dans les flux RSS FFBB (null si aucun nom). |
-| [`searchMultipleRss()`](#searchmultiplerss) | `list<array<string, mixed>>\|null` | Plusieurs recherches dans les flux RSS FFBB, en un seul appel multi-search (un résultat par nom). |
-| [`searchGaleries()`](#searchgaleries) | `array<string, mixed>\|null` | Recherche plein texte dans les galeries photos FFBB (null si aucun nom). |
-| [`searchMultipleGaleries()`](#searchmultiplegaleries) | `list<array<string, mixed>>\|null` | Plusieurs recherches dans les galeries photos FFBB, en un seul appel multi-search (un résultat par nom). |
-| [`searchOrganismesByGeo()`](#searchorganismesbygeo) | `array<string, mixed>\|null` | Clubs dans un rayon autour d'un point GPS, triés par distance. |
-| [`searchOrganismesByCity()`](#searchorganismesbycity) | `array<string, mixed>\|null` | Clubs d'une commune (correspondance exacte sur le nom de la commune). |
-| [`searchSallesByGeo()`](#searchsallesbygeo) | `array<string, mixed>\|null` | Salles dans un rayon autour d'un point GPS. |
-| [`searchEngagementsByGeo()`](#searchengagementsbygeo) | `array<string, mixed>\|null` | Équipes engagées dans un rayon autour d'un point GPS. |
-| [`searchEngagementsFiltered()`](#searchengagementsfiltered) | `array<string, mixed>\|null` | Équipes engagées autour d'un point, filtrées par sexe et niveau. |
+| [`multiSearch()`](#multisearch) | `list<SearchResult<object>>\|null` | Recherche universelle sur les 13 index (un résultat par index, dans l'ordre de l'enum Index). |
+| [`searchCompetitions()`](#searchcompetitions) | `SearchResult<CompetitionsHit>\|null` | Recherche plein texte dans les compétitions (null si aucun nom). |
+| [`searchMultipleCompetitions()`](#searchmultiplecompetitions) | `list<SearchResult<CompetitionsHit>>\|null` | Plusieurs recherches dans les compétitions, en un seul appel multi-search (un résultat par nom). |
+| [`searchOrganismes()`](#searchorganismes) | `SearchResult<OrganismesHit>\|null` | Recherche plein texte dans les organismes (clubs, comités, ligues) (null si aucun nom). |
+| [`searchMultipleOrganismes()`](#searchmultipleorganismes) | `list<SearchResult<OrganismesHit>>\|null` | Plusieurs recherches dans les organismes (clubs, comités, ligues), en un seul appel multi-search (un résultat par nom). |
+| [`searchPratiques()`](#searchpratiques) | `SearchResult<PratiquesHit>\|null` | Recherche plein texte dans les offres de pratique (null si aucun nom). |
+| [`searchMultiplePratiques()`](#searchmultiplepratiques) | `list<SearchResult<PratiquesHit>>\|null` | Plusieurs recherches dans les offres de pratique, en un seul appel multi-search (un résultat par nom). |
+| [`searchRencontres()`](#searchrencontres) | `SearchResult<RencontresHit>\|null` | Recherche plein texte dans les rencontres (null si aucun nom). |
+| [`searchMultipleRencontres()`](#searchmultiplerencontres) | `list<SearchResult<RencontresHit>>\|null` | Plusieurs recherches dans les rencontres, en un seul appel multi-search (un résultat par nom). |
+| [`searchSalles()`](#searchsalles) | `SearchResult<SallesHit>\|null` | Recherche plein texte dans les salles (null si aucun nom). |
+| [`searchMultipleSalles()`](#searchmultiplesalles) | `list<SearchResult<SallesHit>>\|null` | Plusieurs recherches dans les salles, en un seul appel multi-search (un résultat par nom). |
+| [`searchTerrains()`](#searchterrains) | `SearchResult<TerrainsHit>\|null` | Recherche plein texte dans les terrains (null si aucun nom). |
+| [`searchMultipleTerrains()`](#searchmultipleterrains) | `list<SearchResult<TerrainsHit>>\|null` | Plusieurs recherches dans les terrains, en un seul appel multi-search (un résultat par nom). |
+| [`searchTournois()`](#searchtournois) | `SearchResult<TournoisHit>\|null` | Recherche plein texte dans les tournois (null si aucun nom). |
+| [`searchMultipleTournois()`](#searchmultipletournois) | `list<SearchResult<TournoisHit>>\|null` | Plusieurs recherches dans les tournois, en un seul appel multi-search (un résultat par nom). |
+| [`searchEngagements()`](#searchengagements) | `SearchResult<EngagementsHit>\|null` | Recherche plein texte dans les équipes engagées (null si aucun nom). |
+| [`searchMultipleEngagements()`](#searchmultipleengagements) | `list<SearchResult<EngagementsHit>>\|null` | Plusieurs recherches dans les équipes engagées, en un seul appel multi-search (un résultat par nom). |
+| [`searchFormations()`](#searchformations) | `SearchResult<FormationsHit>\|null` | Recherche plein texte dans les formations (null si aucun nom). |
+| [`searchMultipleFormations()`](#searchmultipleformations) | `list<SearchResult<FormationsHit>>\|null` | Plusieurs recherches dans les formations, en un seul appel multi-search (un résultat par nom). |
+| [`searchNews()`](#searchnews) | `SearchResult<ContentHit>\|null` | Recherche plein texte dans les actualités ffbb.com (null si aucun nom). |
+| [`searchMultipleNews()`](#searchmultiplenews) | `list<SearchResult<ContentHit>>\|null` | Plusieurs recherches dans les actualités ffbb.com, en un seul appel multi-search (un résultat par nom). |
+| [`searchYoutubeVideos()`](#searchyoutubevideos) | `SearchResult<ContentHit>\|null` | Recherche plein texte dans les vidéos YouTube FFBB (null si aucun nom). |
+| [`searchMultipleYoutubeVideos()`](#searchmultipleyoutubevideos) | `list<SearchResult<ContentHit>>\|null` | Plusieurs recherches dans les vidéos YouTube FFBB, en un seul appel multi-search (un résultat par nom). |
+| [`searchRss()`](#searchrss) | `SearchResult<ContentHit>\|null` | Recherche plein texte dans les flux RSS FFBB (null si aucun nom). |
+| [`searchMultipleRss()`](#searchmultiplerss) | `list<SearchResult<ContentHit>>\|null` | Plusieurs recherches dans les flux RSS FFBB, en un seul appel multi-search (un résultat par nom). |
+| [`searchGaleries()`](#searchgaleries) | `SearchResult<ContentHit>\|null` | Recherche plein texte dans les galeries photos FFBB (null si aucun nom). |
+| [`searchMultipleGaleries()`](#searchmultiplegaleries) | `list<SearchResult<ContentHit>>\|null` | Plusieurs recherches dans les galeries photos FFBB, en un seul appel multi-search (un résultat par nom). |
+| [`searchOrganismesByGeo()`](#searchorganismesbygeo) | `SearchResult<OrganismesHit>\|null` | Clubs dans un rayon autour d'un point GPS, triés par distance. |
+| [`searchOrganismesByCity()`](#searchorganismesbycity) | `SearchResult<OrganismesHit>\|null` | Clubs d'une commune (correspondance exacte sur le nom de la commune). |
+| [`searchSallesByGeo()`](#searchsallesbygeo) | `SearchResult<SallesHit>\|null` | Salles dans un rayon autour d'un point GPS. |
+| [`searchEngagementsByGeo()`](#searchengagementsbygeo) | `SearchResult<EngagementsHit>\|null` | Équipes engagées dans un rayon autour d'un point GPS. |
+| [`searchEngagementsFiltered()`](#searchengagementsfiltered) | `SearchResult<EngagementsHit>\|null` | Équipes engagées autour d'un point, filtrées par sexe et niveau. |
 
 ### `multiSearch()`
 
-Recherche universelle sur les 13 index (1 hit par index et par page).
+Recherche universelle sur les 13 index (un résultat par index, dans l'ordre de l'enum Index).
 
 ```php
 public function multiSearch(?string $name = null): ?array
@@ -54,7 +54,7 @@ public function multiSearch(?string $name = null): ?array
 |---|---|---|---|
 | `$name` | `?string` | `null` | Texte recherché (null : aucune requête). |
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<SearchResult<object>>|null`
 
 Équivalent Python : `multi_search`
 
@@ -63,7 +63,7 @@ public function multiSearch(?string $name = null): ?array
 Recherche plein texte dans les compétitions (null si aucun nom).
 
 ```php
-public function searchCompetitions(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+public function searchCompetitions(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -73,7 +73,7 @@ public function searchCompetitions(?string $name = null, ?array $filter = null, 
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<CompetitionsHit>|null`
 
 Équivalent Python : `search_competitions`
 
@@ -92,7 +92,7 @@ public function searchMultipleCompetitions(?array $names = null, ?array $filter 
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<SearchResult<CompetitionsHit>>|null`
 
 Équivalent Python : `search_multiple_competitions`
 
@@ -101,7 +101,7 @@ public function searchMultipleCompetitions(?array $names = null, ?array $filter 
 Recherche plein texte dans les organismes (clubs, comités, ligues) (null si aucun nom).
 
 ```php
-public function searchOrganismes(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+public function searchOrganismes(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -111,7 +111,7 @@ public function searchOrganismes(?string $name = null, ?array $filter = null, ?a
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<OrganismesHit>|null`
 
 Équivalent Python : `search_organismes`
 
@@ -130,7 +130,7 @@ public function searchMultipleOrganismes(?array $names = null, ?array $filter = 
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<SearchResult<OrganismesHit>>|null`
 
 Équivalent Python : `search_multiple_organismes`
 
@@ -139,7 +139,7 @@ public function searchMultipleOrganismes(?array $names = null, ?array $filter = 
 Recherche plein texte dans les offres de pratique (null si aucun nom).
 
 ```php
-public function searchPratiques(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+public function searchPratiques(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -149,7 +149,7 @@ public function searchPratiques(?string $name = null, ?array $filter = null, ?ar
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<PratiquesHit>|null`
 
 Équivalent Python : `search_pratiques`
 
@@ -168,7 +168,7 @@ public function searchMultiplePratiques(?array $names = null, ?array $filter = n
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<SearchResult<PratiquesHit>>|null`
 
 Équivalent Python : `search_multiple_pratiques`
 
@@ -177,7 +177,7 @@ public function searchMultiplePratiques(?array $names = null, ?array $filter = n
 Recherche plein texte dans les rencontres (null si aucun nom).
 
 ```php
-public function searchRencontres(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+public function searchRencontres(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -187,7 +187,7 @@ public function searchRencontres(?string $name = null, ?array $filter = null, ?a
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<RencontresHit>|null`
 
 Équivalent Python : `search_rencontres`
 
@@ -206,7 +206,7 @@ public function searchMultipleRencontres(?array $names = null, ?array $filter = 
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<SearchResult<RencontresHit>>|null`
 
 Équivalent Python : `search_multiple_rencontres`
 
@@ -215,7 +215,7 @@ public function searchMultipleRencontres(?array $names = null, ?array $filter = 
 Recherche plein texte dans les salles (null si aucun nom).
 
 ```php
-public function searchSalles(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+public function searchSalles(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -225,7 +225,7 @@ public function searchSalles(?string $name = null, ?array $filter = null, ?array
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<SallesHit>|null`
 
 Équivalent Python : `search_salles`
 
@@ -244,7 +244,7 @@ public function searchMultipleSalles(?array $names = null, ?array $filter = null
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<SearchResult<SallesHit>>|null`
 
 Équivalent Python : `search_multiple_salles`
 
@@ -253,7 +253,7 @@ public function searchMultipleSalles(?array $names = null, ?array $filter = null
 Recherche plein texte dans les terrains (null si aucun nom).
 
 ```php
-public function searchTerrains(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+public function searchTerrains(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -263,7 +263,7 @@ public function searchTerrains(?string $name = null, ?array $filter = null, ?arr
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<TerrainsHit>|null`
 
 Équivalent Python : `search_terrains`
 
@@ -282,7 +282,7 @@ public function searchMultipleTerrains(?array $names = null, ?array $filter = nu
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<SearchResult<TerrainsHit>>|null`
 
 Équivalent Python : `search_multiple_terrains`
 
@@ -291,7 +291,7 @@ public function searchMultipleTerrains(?array $names = null, ?array $filter = nu
 Recherche plein texte dans les tournois (null si aucun nom).
 
 ```php
-public function searchTournois(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+public function searchTournois(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -301,7 +301,7 @@ public function searchTournois(?string $name = null, ?array $filter = null, ?arr
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<TournoisHit>|null`
 
 Équivalent Python : `search_tournois`
 
@@ -320,7 +320,7 @@ public function searchMultipleTournois(?array $names = null, ?array $filter = nu
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<SearchResult<TournoisHit>>|null`
 
 Équivalent Python : `search_multiple_tournois`
 
@@ -329,7 +329,7 @@ public function searchMultipleTournois(?array $names = null, ?array $filter = nu
 Recherche plein texte dans les équipes engagées (null si aucun nom).
 
 ```php
-public function searchEngagements(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+public function searchEngagements(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -339,7 +339,7 @@ public function searchEngagements(?string $name = null, ?array $filter = null, ?
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<EngagementsHit>|null`
 
 Équivalent Python : `search_engagements`
 
@@ -358,7 +358,7 @@ public function searchMultipleEngagements(?array $names = null, ?array $filter =
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<SearchResult<EngagementsHit>>|null`
 
 Équivalent Python : `search_multiple_engagements`
 
@@ -367,7 +367,7 @@ public function searchMultipleEngagements(?array $names = null, ?array $filter =
 Recherche plein texte dans les formations (null si aucun nom).
 
 ```php
-public function searchFormations(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+public function searchFormations(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -377,7 +377,7 @@ public function searchFormations(?string $name = null, ?array $filter = null, ?a
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<FormationsHit>|null`
 
 Équivalent Python : `search_formations`
 
@@ -396,7 +396,7 @@ public function searchMultipleFormations(?array $names = null, ?array $filter = 
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<SearchResult<FormationsHit>>|null`
 
 Équivalent Python : `search_multiple_formations`
 
@@ -405,7 +405,7 @@ public function searchMultipleFormations(?array $names = null, ?array $filter = 
 Recherche plein texte dans les actualités ffbb.com (null si aucun nom).
 
 ```php
-public function searchNews(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+public function searchNews(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -415,7 +415,7 @@ public function searchNews(?string $name = null, ?array $filter = null, ?array $
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<ContentHit>|null`
 
 Équivalent Python : `search_news`
 
@@ -434,7 +434,7 @@ public function searchMultipleNews(?array $names = null, ?array $filter = null, 
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<SearchResult<ContentHit>>|null`
 
 Équivalent Python : `search_multiple_news`
 
@@ -443,7 +443,7 @@ public function searchMultipleNews(?array $names = null, ?array $filter = null, 
 Recherche plein texte dans les vidéos YouTube FFBB (null si aucun nom).
 
 ```php
-public function searchYoutubeVideos(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+public function searchYoutubeVideos(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -453,7 +453,7 @@ public function searchYoutubeVideos(?string $name = null, ?array $filter = null,
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<ContentHit>|null`
 
 Équivalent Python : `search_youtube_videos`
 
@@ -472,7 +472,7 @@ public function searchMultipleYoutubeVideos(?array $names = null, ?array $filter
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<SearchResult<ContentHit>>|null`
 
 Équivalent Python : `search_multiple_youtube_videos`
 
@@ -481,7 +481,7 @@ public function searchMultipleYoutubeVideos(?array $names = null, ?array $filter
 Recherche plein texte dans les flux RSS FFBB (null si aucun nom).
 
 ```php
-public function searchRss(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+public function searchRss(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -491,7 +491,7 @@ public function searchRss(?string $name = null, ?array $filter = null, ?array $s
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<ContentHit>|null`
 
 Équivalent Python : `search_rss`
 
@@ -510,7 +510,7 @@ public function searchMultipleRss(?array $names = null, ?array $filter = null, ?
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<SearchResult<ContentHit>>|null`
 
 Équivalent Python : `search_multiple_rss`
 
@@ -519,7 +519,7 @@ public function searchMultipleRss(?array $names = null, ?array $filter = null, ?
 Recherche plein texte dans les galeries photos FFBB (null si aucun nom).
 
 ```php
-public function searchGaleries(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+public function searchGaleries(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -529,7 +529,7 @@ public function searchGaleries(?string $name = null, ?array $filter = null, ?arr
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<ContentHit>|null`
 
 Équivalent Python : `search_galeries`
 
@@ -548,7 +548,7 @@ public function searchMultipleGaleries(?array $names = null, ?array $filter = nu
 | `$sort` | `list<string>\|null` | `null` | Champs de tri ; préfixe `-` pour un tri décroissant (Meilisearch : `champ:asc` / `champ:desc`). |
 | `$limit` | `?int` | `10` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<SearchResult<ContentHit>>|null`
 
 Équivalent Python : `search_multiple_galeries`
 
@@ -557,7 +557,7 @@ public function searchMultipleGaleries(?array $names = null, ?array $filter = nu
 Clubs dans un rayon autour d'un point GPS, triés par distance.
 
 ```php
-public function searchOrganismesByGeo(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 20, GeoSortOrder $geoSort = GeoSortOrder::NearestFirst): ?array
+public function searchOrganismesByGeo(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 20, GeoSortOrder $geoSort = GeoSortOrder::NearestFirst): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -569,7 +569,7 @@ public function searchOrganismesByGeo(float $lat, float $lng, float $radiusKm = 
 | `$limit` | `?int` | `20` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 | `$geoSort` | `GeoSortOrder` | `GeoSortOrder::NearestFirst` | Ordre de tri par distance. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<OrganismesHit>|null`
 
 Équivalent Python : `search_organismes_by_geo`
 
@@ -578,7 +578,7 @@ public function searchOrganismesByGeo(float $lat, float $lng, float $radiusKm = 
 Clubs d'une commune (correspondance exacte sur le nom de la commune).
 
 ```php
-public function searchOrganismesByCity(string $cityName, string $q = '', int $limit = 200): ?array
+public function searchOrganismesByCity(string $cityName, string $q = '', int $limit = 200): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -587,7 +587,7 @@ public function searchOrganismesByCity(string $cityName, string $q = '', int $li
 | `$q` | `string` | `''` | Texte recherché en plus du filtre (chaîne vide : tous). |
 | `$limit` | `int` | `200` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<OrganismesHit>|null`
 
 Équivalent Python : `search_organismes_by_city`
 
@@ -596,7 +596,7 @@ public function searchOrganismesByCity(string $cityName, string $q = '', int $li
 Salles dans un rayon autour d'un point GPS.
 
 ```php
-public function searchSallesByGeo(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 20, GeoSortOrder $geoSort = GeoSortOrder::NearestFirst): ?array
+public function searchSallesByGeo(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 20, GeoSortOrder $geoSort = GeoSortOrder::NearestFirst): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -608,7 +608,7 @@ public function searchSallesByGeo(float $lat, float $lng, float $radiusKm = 10.0
 | `$limit` | `?int` | `20` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 | `$geoSort` | `GeoSortOrder` | `GeoSortOrder::NearestFirst` | Ordre de tri par distance. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<SallesHit>|null`
 
 Équivalent Python : `search_salles_by_geo`
 
@@ -617,7 +617,7 @@ public function searchSallesByGeo(float $lat, float $lng, float $radiusKm = 10.0
 Équipes engagées dans un rayon autour d'un point GPS.
 
 ```php
-public function searchEngagementsByGeo(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 20, GeoSortOrder $geoSort = GeoSortOrder::NearestFirst): ?array
+public function searchEngagementsByGeo(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 20, GeoSortOrder $geoSort = GeoSortOrder::NearestFirst): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -629,7 +629,7 @@ public function searchEngagementsByGeo(float $lat, float $lng, float $radiusKm =
 | `$limit` | `?int` | `20` | Nombre maximum d'éléments (Meilisearch : taille de la première page, les suivantes sont récupérées automatiquement). |
 | `$geoSort` | `GeoSortOrder` | `GeoSortOrder::NearestFirst` | Ordre de tri par distance. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<EngagementsHit>|null`
 
 Équivalent Python : `search_engagements_by_geo`
 
@@ -638,7 +638,7 @@ public function searchEngagementsByGeo(float $lat, float $lng, float $radiusKm =
 Équipes engagées autour d'un point, filtrées par sexe et niveau.
 
 ```php
-public function searchEngagementsFiltered(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 5000, ?array $sexes = null, ?array $niveauCodes = null): ?array
+public function searchEngagementsFiltered(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 5000, ?array $sexes = null, ?array $niveauCodes = null): ?SearchResult
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -651,6 +651,6 @@ public function searchEngagementsFiltered(float $lat, float $lng, float $radiusK
 | `$sexes` | `list<string>\|null` | `null` | ex. ['F', 'M'] |
 | `$niveauCodes` | `list<string>\|null` | `null` | ex. ['DEP', 'REG'] |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `SearchResult<EngagementsHit>|null`
 
 Équivalent Python : `search_engagements_filtered`

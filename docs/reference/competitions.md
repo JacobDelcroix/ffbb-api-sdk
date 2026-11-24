@@ -8,10 +8,10 @@ Guide avec exemples : [03-competitions-poules-classements](../guides/03-competit
 
 | Méthode | Retour | Description |
 |---|---|---|
-| [`getCompetition()`](#getcompetition) | `array<string, mixed>\|null` | Détail d'une compétition avec phases, poules et rencontres imbriquées. |
-| [`getPoule()`](#getpoule) | `array<string, mixed>\|null` | Détail d'une poule avec rencontres et classements. |
-| [`getClassement()`](#getclassement) | `list<array<string, mixed>>\|null` | Uniquement le classement d'une poule. |
-| [`getSaisons()`](#getsaisons) | `list<array<string, mixed>>` | Saisons (par défaut : les saisons actives). |
+| [`getCompetition()`](#getcompetition) | `?CompetitionsItem` | Détail d'une compétition avec phases, poules et rencontres imbriquées. |
+| [`getPoule()`](#getpoule) | `?PoulesItem` | Détail d'une poule avec rencontres et classements. |
+| [`getClassement()`](#getclassement) | `list<PoulesClassementsItem>\|null` | Uniquement le classement d'une poule, trié comme le renvoie la FFBB. |
+| [`getSaisons()`](#getsaisons) | `list<SaisonsItem>` | Saisons (par défaut : les saisons actives). |
 
 ### `getCompetition()`
 
@@ -22,7 +22,7 @@ Détail d'une compétition avec phases, poules et rencontres imbriquées.
 - autre erreur HTTP / réseau → reconstruction depuis Meilisearch.
 
 ```php
-public function getCompetition(int|string $competitionId, ?string $deepLimit = '1000', ?array $fields = null): ?array
+public function getCompetition(int|string $competitionId, ?string $deepLimit = '1000', ?array $fields = null): ?CompetitionsItem
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -31,7 +31,7 @@ public function getCompetition(int|string $competitionId, ?string $deepLimit = '
 | `$deepLimit` | `?string` | `'1000'` | Nombre maximum d'éléments imbriqués (rencontres, classements) renvoyés par Directus. |
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?CompetitionsItem`
 
 Équivalent Python : `get_competition`
 
@@ -42,7 +42,7 @@ Détail d'une poule avec rencontres et classements.
 Sur erreur (hors 404), la poule est reconstruite depuis Meilisearch.
 
 ```php
-public function getPoule(int|string $pouleId, ?string $deepLimit = '1000', ?array $fields = null): ?array
+public function getPoule(int|string $pouleId, ?string $deepLimit = '1000', ?array $fields = null): ?PoulesItem
 ```
 
 | Paramètre | Type | Défaut | Description |
@@ -51,13 +51,13 @@ public function getPoule(int|string $pouleId, ?string $deepLimit = '1000', ?arra
 | `$deepLimit` | `?string` | `'1000'` | Nombre maximum d'éléments imbriqués (rencontres, classements) renvoyés par Directus. |
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 
-**Retour :** `array<string, mixed>|null`
+**Retour :** `?PoulesItem`
 
 Équivalent Python : `get_poule`
 
 ### `getClassement()`
 
-Uniquement le classement d'une poule.
+Uniquement le classement d'une poule, trié comme le renvoie la FFBB.
 
 ```php
 public function getClassement(int|string $pouleId): ?array
@@ -67,7 +67,7 @@ public function getClassement(int|string $pouleId): ?array
 |---|---|---|---|
 | `$pouleId` | `int\|string` | — | Identifiant de la poule. |
 
-**Retour :** `list<array<string, mixed>>|null`
+**Retour :** `list<PoulesClassementsItem>|null`
 
 Équivalent Python : `get_classement`
 
@@ -86,6 +86,6 @@ public function getSaisons(?array $fields = null, ?string $filterCriteria = '{"a
 | `$fields` | `list<string>\|null` | `null` | Champs Directus à renvoyer, notation pointée pour les relations (`idPoule.nom`, `engagements.*`). Par défaut : le jeu de champs du SDK Python. |
 | `$filterCriteria` | `?string` | `'{"actif":{"_eq":true}}'` | Filtre Directus en JSON, ex. `{"idPoule":{"_eq":900}}`. |
 
-**Retour :** `list<array<string, mixed>>`
+**Retour :** `list<SaisonsItem>`
 
 Équivalent Python : `get_saisons`

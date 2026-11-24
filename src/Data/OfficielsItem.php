@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_officiels` (schéma OpenAPI ItemsFfbbserverOfficiels).
@@ -16,8 +17,8 @@ final readonly class OfficielsItem
     public const string COLLECTION = 'ffbbserver_officiels';
 
     public function __construct(
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?string $nom = null,
         public ?string $numeroNational = null,
         public ?string $prenom = null,
@@ -31,8 +32,8 @@ final readonly class OfficielsItem
     public static function fromArray(array $data): self
     {
         return new self(
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             nom: Cast::string($data['nom'] ?? null),
             numeroNational: Cast::string($data['numeroNational'] ?? null),
             prenom: Cast::string($data['prenom'] ?? null),
@@ -49,7 +50,9 @@ final readonly class OfficielsItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_cartographies` (schéma OpenAPI ItemsFfbbserverCartographies).
@@ -19,8 +20,8 @@ final readonly class CartographiesItem
         public ?string $adresse = null,
         public ?string $codePostal = null,
         public mixed $coordonnees = null,
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?string $id = null,
         public ?float $latitude = null,
         public ?float $longitude = null,
@@ -40,8 +41,8 @@ final readonly class CartographiesItem
             adresse: Cast::string($data['adresse'] ?? null),
             codePostal: Cast::string($data['codePostal'] ?? null),
             coordonnees: $data['coordonnees'] ?? null,
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             id: Cast::string($data['id'] ?? null),
             latitude: Cast::float($data['latitude'] ?? null),
             longitude: Cast::float($data['longitude'] ?? null),
@@ -61,7 +62,9 @@ final readonly class CartographiesItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

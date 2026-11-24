@@ -5,6 +5,19 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Concerns;
 
 use CoachBasket\Ffbb\Config;
+use CoachBasket\Ffbb\Data\CommunesItem;
+use CoachBasket\Ffbb\Data\ConfigurationItem;
+use CoachBasket\Ffbb\Data\EngagementsItem;
+use CoachBasket\Ffbb\Data\EntraineursItem;
+use CoachBasket\Ffbb\Data\FormationsItem;
+use CoachBasket\Ffbb\Data\OfficielsItem;
+use CoachBasket\Ffbb\Data\PratiquesItem;
+use CoachBasket\Ffbb\Data\RencontresItem;
+use CoachBasket\Ffbb\Data\SallesItem;
+use CoachBasket\Ffbb\Data\SessionsItem;
+use CoachBasket\Ffbb\Data\TerrainsItem;
+use CoachBasket\Ffbb\Data\TournoisItem;
+use CoachBasket\Ffbb\Data\Models\Live;
 use CoachBasket\Ffbb\Exceptions\FfbbException;
 use CoachBasket\Ffbb\Exceptions\FfbbNotFoundException;
 use CoachBasket\Ffbb\Requests\Directus\GetConfiguration;
@@ -15,16 +28,14 @@ use CoachBasket\Ffbb\Support\Json;
 /**
  * Getters simples, lives, configuration, spec OpenAPI et sessions (miroir de GettersMixin).
  *
- * Méthodes volontairement explicites (une par ressource) pour l'autocomplétion et PHPStan.
+ * FICHIER GÉNÉRÉ par tools/generate_concerns.py — modifier le générateur plutôt que ce fichier.
  */
 trait ManagesResources
 {
     /**
-     * Configuration publique de l'app (jetons key_dh / key_ms, versions iOS / Android).
-     *
-     * @return array<string, mixed>|null
+     * Configuration publique de l'app : jetons key_dh / key_ms, versions iOS / Android (null en cas d'erreur).
      */
-    public function getConfiguration(): ?array
+    public function getConfiguration(): ?ConfigurationItem
     {
         try {
             $data = Json::unwrapData($this->sendDirectus(new GetConfiguration));
@@ -32,13 +43,13 @@ trait ManagesResources
             return null;
         }
 
-        return is_array($data) && isset($data['key_dh'], $data['key_ms']) ? $data : null;
+        return is_array($data) && isset($data['key_dh'], $data['key_ms']) ? ConfigurationItem::fromArray($data) : null;
     }
 
     /**
-     * Matchs suivis en direct.
+     * Matchs suivis en direct (jamais mis en cache).
      *
-     * @return list<array<string, mixed>>|null
+     * @return list<Live>|null
      */
     public function getLives(): ?array
     {
@@ -56,11 +67,13 @@ trait ManagesResources
             $data = $data['lives'];
         }
 
-        return is_array($data) && array_is_list($data) ? array_values(array_filter($data, 'is_array')) : [];
+        return is_array($data) && array_is_list($data) ? Live::collect($data) : [];
     }
 
     /**
-     * Spécification OpenAPI exposée par Directus (null en cas d'erreur).
+     * Spécification OpenAPI exposée par Directus, en tableau (null en cas d'erreur).
+     *
+     * C'est un document de description d'API, pas une donnée FFBB : il n'a pas de DTO.
      *
      * @return array<string, mixed>|null
      */
@@ -77,113 +90,92 @@ trait ManagesResources
 
     /**
      * Détail d'une rencontre (match) : équipes, date, score, salle, officiels (null si introuvable).
-     *
-     * @return array<string, mixed>|null
      */
-    public function getRencontre(int|string $id): ?array
+    public function getRencontre(int|string $id): ?RencontresItem
     {
-        return $this->getDirectusItem(Config::ENDPOINT_RENCONTRES, $id);
+        return self::hydrateOne($this->getDirectusItem(Config::ENDPOINT_RENCONTRES, $id), RencontresItem::class);
     }
 
     /**
      * Détail d'un engagement : une équipe d'un club dans une compétition / poule (null si introuvable).
-     *
-     * @return array<string, mixed>|null
      */
-    public function getEngagement(int|string $id): ?array
+    public function getEngagement(int|string $id): ?EngagementsItem
     {
-        return $this->getDirectusItem(Config::ENDPOINT_ENGAGEMENTS, $id);
+        return self::hydrateOne($this->getDirectusItem(Config::ENDPOINT_ENGAGEMENTS, $id), EngagementsItem::class);
     }
 
     /**
      * Détail d'une formation (null si introuvable).
-     *
-     * @return array<string, mixed>|null
      */
-    public function getFormation(int|string $id): ?array
+    public function getFormation(int|string $id): ?FormationsItem
     {
-        return $this->getDirectusItem(Config::ENDPOINT_FORMATIONS, $id);
+        return self::hydrateOne($this->getDirectusItem(Config::ENDPOINT_FORMATIONS, $id), FormationsItem::class);
     }
 
     /**
      * Détail d'un entraîneur (par numéro de licence) (null si introuvable).
-     *
-     * @return array<string, mixed>|null
      */
-    public function getEntraineur(int|string $id): ?array
+    public function getEntraineur(int|string $id): ?EntraineursItem
     {
-        return $this->getDirectusItem(Config::ENDPOINT_ENTRAINEURS, $id);
+        return self::hydrateOne($this->getDirectusItem(Config::ENDPOINT_ENTRAINEURS, $id), EntraineursItem::class);
     }
 
     /**
      * Détail d'une commune (null si introuvable).
-     *
-     * @return array<string, mixed>|null
      */
-    public function getCommune(int|string $id): ?array
+    public function getCommune(int|string $id): ?CommunesItem
     {
-        return $this->getDirectusItem(Config::ENDPOINT_COMMUNES, $id);
+        return self::hydrateOne($this->getDirectusItem(Config::ENDPOINT_COMMUNES, $id), CommunesItem::class);
     }
 
     /**
      * Détail d'un officiel (arbitre, OTM) (null si introuvable).
-     *
-     * @return array<string, mixed>|null
      */
-    public function getOfficiel(int|string $id): ?array
+    public function getOfficiel(int|string $id): ?OfficielsItem
     {
-        return $this->getDirectusItem(Config::ENDPOINT_OFFICIELS, $id);
+        return self::hydrateOne($this->getDirectusItem(Config::ENDPOINT_OFFICIELS, $id), OfficielsItem::class);
     }
 
     /**
      * Détail d'une salle : nom, adresse, commune, coordonnées (null si introuvable).
-     *
-     * @return array<string, mixed>|null
      */
-    public function getSalle(int|string $id): ?array
+    public function getSalle(int|string $id): ?SallesItem
     {
-        return $this->getDirectusItem(Config::ENDPOINT_SALLES, $id);
+        return self::hydrateOne($this->getDirectusItem(Config::ENDPOINT_SALLES, $id), SallesItem::class);
     }
 
     /**
      * Détail d'un terrain (3x3 / extérieur) (null si introuvable).
-     *
-     * @return array<string, mixed>|null
      */
-    public function getTerrain(int|string $id): ?array
+    public function getTerrain(int|string $id): ?TerrainsItem
     {
-        return $this->getDirectusItem(Config::ENDPOINT_TERRAINS, $id);
+        return self::hydrateOne($this->getDirectusItem(Config::ENDPOINT_TERRAINS, $id), TerrainsItem::class);
     }
 
     /**
      * Détail d'un tournoi (null si introuvable).
-     *
-     * @return array<string, mixed>|null
      */
-    public function getTournoi(int|string $id): ?array
+    public function getTournoi(int|string $id): ?TournoisItem
     {
-        return $this->getDirectusItem(Config::ENDPOINT_TOURNOIS, $id);
+        return self::hydrateOne($this->getDirectusItem(Config::ENDPOINT_TOURNOIS, $id), TournoisItem::class);
     }
 
     /**
      * Détail d'une offre de pratique (null si introuvable).
-     *
-     * @return array<string, mixed>|null
      */
-    public function getPratique(int|string $id): ?array
+    public function getPratique(int|string $id): ?PratiquesItem
     {
-        return $this->getDirectusItem(Config::ENDPOINT_PRATIQUES, $id);
+        return self::hydrateOne($this->getDirectusItem(Config::ENDPOINT_PRATIQUES, $id), PratiquesItem::class);
     }
 
     /**
      * Une session de formation (null si introuvable).
      *
      * @param  list<string>|null  $fields
-     * @return array<string, mixed>|null
      */
-    public function getSession(int|string $id, ?array $fields = null): ?array
+    public function getSession(int|string $id, ?array $fields = null): ?SessionsItem
     {
-        return $this->getDirectusItem(Config::ENDPOINT_SESSIONS, $id, $fields);
+        return self::hydrateOne($this->getDirectusItem(Config::ENDPOINT_SESSIONS, $id, $fields), SessionsItem::class);
     }
 
     /**
@@ -191,10 +183,10 @@ trait ManagesResources
      *
      * @param  list<string>|null  $fields
      * @param  string|list<string>|null  $sort
-     * @return list<array<string, mixed>>
+     * @return list<SessionsItem>
      */
     public function listSessions(int $limit = 10, ?array $fields = null, ?string $filterCriteria = null, string|array|null $sort = null): array
     {
-        return $this->listDirectusItems(Config::ENDPOINT_SESSIONS, $limit, $fields, $filterCriteria, $sort);
+        return SessionsItem::collect($this->listDirectusItems(Config::ENDPOINT_SESSIONS, $limit, $fields, $filterCriteria, $sort));
     }
 }

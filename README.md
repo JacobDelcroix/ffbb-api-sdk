@@ -46,7 +46,7 @@
 | **Connexion sans configuration** : jetons récupérés comme l'app mobile, avec repli sur plusieurs hôtes | ✅ |
 | **Résilience face au WAF BunnyCDN** : rotation de User-Agent, retry exponentiel, reconstruction via Meilisearch | ✅ |
 | **Query builder Directus complet** : `fields`, `filter`, `sort`, `search`, `deep`, `aggregate`, `groupBy`, `meta` | ✅ |
-| **47 DTOs typés** générés depuis la spec OpenAPI de Directus | ✅ |
+| **Réponses 100 % typées** : 68 DTOs Directus (spec OpenAPI) et 46 DTOs Meilisearch / lives, dates en `DateTimeImmutable` | ✅ |
 | **Recherche Meilisearch** : 13 index, filtres, rayon GPS, recherche universelle | ✅ |
 | **Pagination automatique** : listes complètes ou générateurs page par page | ✅ |
 | **Cache PSR-16** : réponses, recherches et jetons ; branché sur le cache Laravel | ✅ |
@@ -79,17 +79,18 @@ use CoachBasket\Ffbb\FfbbDataClient;
 $ffbb = FfbbDataClient::create();
 
 // 1. Trouver un club
-$club = $ffbb->searchOrganismes('Ostrevent')['hits'][0];
-// ['id' => '10238', 'code' => 'HDF0059038', 'nom' => 'OSTREVENT BASKET BALL EAA MONCHECOURT', ...]
+$club = $ffbb->searchOrganismes('Ostrevent')->first();   // OrganismesHit
+$club->id;    // '10238'
+$club->code;  // 'HDF0059038'
 
 // 2. Ses équipes engagées
-foreach ($ffbb->getEquipes((int) $club['id']) as $equipe) {
-    echo $equipe['idCompetition']['nom'].' — '.$equipe['idPoule']['nom'].PHP_EOL;
+foreach ($ffbb->getEquipes((int) $club->id) as $equipe) {   // EngagementsItem
+    echo $equipe->idCompetition?->nom.' — '.$equipe->idPoule?->nom.PHP_EOL;
 }
 
 // 3. Le classement et les matchs d'une poule
-$classement = $ffbb->getClassement(900);
-$rencontres = $ffbb->listRencontresByPoule(900);
+$classement = $ffbb->getClassement(900);           // list<PoulesClassementsItem>
+$rencontres = $ffbb->listRencontresByPoule(900);   // list<RencontresItem>
 ```
 
 Avec Laravel :
@@ -97,8 +98,12 @@ Avec Laravel :
 ```php
 use CoachBasket\Ffbb\Laravel\Facades\Ffbb;
 
-$club = Ffbb::getOrganisme(10238);
+$club = Ffbb::getOrganisme(10238);   // ?OrganismesItem
 ```
+
+Toutes les méthodes renvoient des **objets typés** : l'IDE complète les propriétés, PHPStan vérifie les types,
+les dates sont des `DateTimeImmutable` et les relations des objets (`$equipe->idPoule->nom`). La réponse brute
+reste accessible via `->raw` / `toArray()`.
 
 ---
 
@@ -109,8 +114,8 @@ $club = Ffbb::getOrganisme(10238);
 ```php
 $clubs = $ffbb->searchOrganismesByGeo(lat: 50.30, lng: 3.21, radiusKm: 15);
 
-foreach ($clubs['hits'] as $club) {
-    echo $club['nom'].' ('.($club['commune']['libelle'] ?? '?').')'.PHP_EOL;
+foreach ($clubs->hits as $club) {   // OrganismesHit
+    echo $club->nom.' ('.$club->commune?->libelle.')'.PHP_EOL;
 }
 ```
 
@@ -123,7 +128,9 @@ $equipes = $ffbb->searchEngagementsFiltered(50.30, 3.21, radiusKm: 30, sexes: ['
 ### 📅 Derniers résultats d'un club
 
 ```php
-$resultats = $ffbb->directus('ffbbserver_rencontres')
+use CoachBasket\Ffbb\Data\RencontresItem;
+
+$resultats = $ffbb->directus(RencontresItem::class)
     ->fields(['date_rencontre', 'nomEquipe1', 'nomEquipe2', 'resultatEquipe1', 'resultatEquipe2', 'idPoule.nom'])
     ->filter(['_or' => [
         ['idOrganismeEquipe1' => ['_eq' => 10238]],
@@ -132,34 +139,34 @@ $resultats = $ffbb->directus('ffbbserver_rencontres')
     ->where('joue', '_eq', true)
     ->sort('-date_rencontre')
     ->limit(10)
-    ->get();
+    ->get();   // list<RencontresItem>
+
+foreach ($resultats as $match) {
+    echo $match->date_rencontre?->format('d/m')." {$match->nomEquipe1} {$match->resultatEquipe1}-{$match->resultatEquipe2} {$match->nomEquipe2}".PHP_EOL;
+}
 ```
 
 ### 🏅 Classement formaté
 
 ```php
 foreach ($ffbb->getClassement(900) ?? [] as $ligne) {
-    printf("%d. %s — %d pts (%d V / %d D)\n", $ligne['position'], $ligne['idEngagement']['nom'], $ligne['points'], $ligne['gagnes'], $ligne['perdus']);
+    printf("%d. %s — %d pts (%d V / %d D)\n", $ligne->position, $ligne->idEngagement?->nom, $ligne->points, $ligne->gagnes, $ligne->perdus);
 }
 ```
 
-### 🧱 Objets typés
+### 📺 Matchs en direct
 
 ```php
-use CoachBasket\Ffbb\Data\RencontresItem;
-
-$matchs = $ffbb->directus('ffbbserver_rencontres')->where('idPoule', '_eq', 900)->getData();
-
-$matchs[0]->joue;            // bool, même si la FFBB renvoie "1"
-$matchs[0]->date_rencontre;
-$matchs[0]->raw;             // réponse complète
+foreach ($ffbb->getLives() ?? [] as $live) {   // Live
+    echo "{$live->teamName_home} {$live->score_home} - {$live->score_out} {$live->teamName_out}".PHP_EOL;
+}
 ```
 
 ### 🧵 Gros volumes, page par page
 
 ```php
 foreach ($ffbb->iterAllSalles(filterCriteria: '{"commune":{"codePostal":{"_starts_with":"59"}}}', pageSize: 200) as $salle) {
-    // une page en mémoire à la fois
+    echo $salle->libelle.PHP_EOL;   // SallesItem, une page en mémoire à la fois
 }
 ```
 
@@ -189,7 +196,8 @@ foreach ($ffbb->iterAllSalles(filterCriteria: '{"commune":{"codePostal":{"_start
 
 Chaque méthode publique synchrone de `FFBBDataClient` existe en camelCase : `get_organisme` → `getOrganisme()`,
 `search_organismes_by_geo` → `searchOrganismesByGeo()`. `aiter_all_x` devient le générateur `iterAllX()` ;
-les variantes `*_async` ne sont pas portées. La table complète figure dans la [référence](docs/reference/README.md)
+les variantes `*_async` ne sont pas portées. Comme en Python, les réponses sont des objets typés
+(`OrganismesHit`, `Live`…), ici enrichis des attributs que les modèles Python ne décrivent pas. La table complète figure dans la [référence](docs/reference/README.md)
 (« Équivalent Python » sur chaque méthode), et `tests/Unit/UpstreamParityTest.php` vérifie la correspondance.
 
 ---
@@ -231,7 +239,7 @@ Contributions bienvenues : fork, branche, `composer test`, puis Pull Request.
   titulaires. Ce projet n'est ni affilié à la FFBB, ni approuvé par elle.
 - **[nickdesi/ffbb-data-client](https://github.com/nickdesi/ffbb-data-client)** : ce SDK est le portage PHP
   de ce projet Python. La cartographie de l'API, les jeux de champs Directus, les User-Agents, les mécanismes de
-  repli et les instantanés de schéma de départ viennent de son travail. Si ce SDK te sert, pense à lui mettre une
+  repli, les modèles de réponse et les instantanés de schéma de départ viennent de son travail. Si ce SDK te sert, pense à lui mettre une
   ⭐ aussi.
 - **[Saloon](https://github.com/saloonphp/saloon)** de Sam Carré, pour la couche HTTP.
 

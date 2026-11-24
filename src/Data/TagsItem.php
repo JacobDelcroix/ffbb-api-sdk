@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbnational_tags` (schéma OpenAPI ItemsFfbbnationalTags).
@@ -16,8 +17,8 @@ final readonly class TagsItem
     public const string COLLECTION = 'ffbbnational_tags';
 
     public function __construct(
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?string $id = null,
         public ?string $title = null,
         /** @var array<string, mixed> Réponse brute complète */
@@ -30,8 +31,8 @@ final readonly class TagsItem
     public static function fromArray(array $data): self
     {
         return new self(
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             id: Cast::string($data['id'] ?? null),
             title: Cast::string($data['title'] ?? null),
             raw: $data,
@@ -47,7 +48,9 @@ final readonly class TagsItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

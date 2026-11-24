@@ -13,6 +13,24 @@ final class ItemMap
 {
     /** @var array<string, class-string> */
     public const array CLASSES = [
+        'configuration' => ConfigurationItem::class,
+        'edf_arenas' => EdfArenasItem::class,
+        'edf_campaigns' => EdfCampaignsItem::class,
+        'edf_campaigns_edf_cities' => EdfCampaignsEdfCitiesItem::class,
+        'edf_campaigns_edf_countries' => EdfCampaignsEdfCountriesItem::class,
+        'edf_cities' => EdfCitiesItem::class,
+        'edf_coaches' => EdfCoachesItem::class,
+        'edf_competition_types' => EdfCompetitionTypesItem::class,
+        'edf_countries' => EdfCountriesItem::class,
+        'edf_matches' => EdfMatchesItem::class,
+        'edf_opponents' => EdfOpponentsItem::class,
+        'edf_players' => EdfPlayersItem::class,
+        'edf_players_edf_positions' => EdfPlayersEdfPositionsItem::class,
+        'edf_positions' => EdfPositionsItem::class,
+        'edf_rosters' => EdfRostersItem::class,
+        'edf_selection' => EdfSelectionItem::class,
+        'edf_staffs' => EdfStaffsItem::class,
+        'edf_teams' => EdfTeamsItem::class,
         'ffbbnational_categories' => CategoriesItem::class,
         'ffbbnational_galeries' => GaleriesItem::class,
         'ffbbnational_galeries_ffbbnational_tags' => GaleriesFfbbnationalTagsItem::class,
@@ -60,9 +78,14 @@ final class ItemMap
         'ffbbserver_types_pratiques_sportives' => TypesPratiquesSportivesItem::class,
         'ffbbserver_types_tournois' => TypesTournoisItem::class,
         'ffbbserver_types_tournois3x3' => TypesTournois3x3Item::class,
+        'genius_sport_matches' => GeniusSportMatchesItem::class,
+        'genius_sports_live_logs' => GeniusSportsLiveLogsItem::class,
+        'rematch_videos' => RematchVideosItem::class,
     ];
 
     /**
+     * DTO d'une collection, ou null si la collection n'a pas de DTO généré.
+     *
      * @return class-string|null
      */
     public static function for(string $collection): ?string

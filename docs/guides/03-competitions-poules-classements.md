@@ -12,12 +12,17 @@ Référence : [Compétitions, poules et classements](../reference/competitions.m
 ## Compétition
 
 ```php
-$competition = $ffbb->getCompetition(500);
+$competition = $ffbb->getCompetition(500);   // ?CompetitionsItem
 
-$competition['nom'];
-$competition['sexe'];
-$competition['categorie']['code'];   // ex. U15
-foreach ($competition['phases'] ?? [] as $phase) {
+$competition->nom;
+$competition->sexe;
+$competition->categorie?->code;   // ex. U15 (CategoriesChampionnatsItem)
+
+foreach ($competition->poules ?? [] as $poule) {   // list<PoulesItem>
+    echo $poule->id.' — '.$poule->nom;
+}
+
+foreach ($competition->phases ?? [] as $phase) {   // phases : brutes (structure non décrite par la spec)
     foreach ($phase['poules'] ?? [] as $poule) {
         echo $poule['id'].' — '.$poule['nom'];
     }
@@ -35,28 +40,28 @@ Liste rapide de compétitions : `listCompetitions(limit: 50)` (par défaut, cham
 ## Poule
 
 ```php
-$poule = $ffbb->getPoule(900);
+$poule = $ffbb->getPoule(900);   // ?PoulesItem
 
-$poule['nom'];
-$poule['rencontres'];   // matchs, avec équipes, scores, salle et officiels
-$poule['classements'];  // classement complet
+$poule->nom;
+$poule->rencontres;    // list<RencontresItem> : équipes, scores, salle, officiels
+$poule->classements;   // list<PoulesClassementsItem>
 ```
 
 ## Classement
 
 ```php
-$classement = $ffbb->getClassement(900);
+$classement = $ffbb->getClassement(900);   // list<PoulesClassementsItem>
 
 foreach ($classement as $ligne) {
     printf(
         "%d. %s — %d pts (%d J, %d V, %d D, diff. %+d)\n",
-        $ligne['position'],
-        $ligne['idEngagement']['nom'] ?? $ligne['organisme']['nom'],
-        $ligne['points'],
-        $ligne['matchJoues'],
-        $ligne['gagnes'],
-        $ligne['perdus'],
-        $ligne['difference'],
+        $ligne->position,
+        $ligne->idEngagement?->nom ?? $ligne->organisme?->nom,
+        $ligne->points,
+        $ligne->matchJoues,
+        $ligne->gagnes,
+        $ligne->perdus,
+        $ligne->difference,
     );
 }
 ```
@@ -64,17 +69,18 @@ foreach ($classement as $ligne) {
 Champs disponibles par ligne : `position`, `points`, `matchJoues`, `gagnes`, `perdus`, `nuls`,
 `paniersMarques`, `paniersEncaisses`, `difference`, `quotient`, `nombreForfaits`, `nombreDefauts`,
 `penalitesArbitrage`, `penalitesEntraineur`, `penalitesDiverses`, `horsClassement`,
-`idEngagement` (`id`, `nom`, `nomUsuel`, `codeAbrege`, `numeroEquipe`, `logo`) et `organisme` (`id`, `nom`, `logo`).
+`idEngagement` (`EngagementsItem` : `id`, `nom`, `nomUsuel`, `codeAbrege`, `numeroEquipe`, `logo`) et
+`organisme` (`OrganismesItem` : `id`, `nom`, `logo`). Liste complète : [PoulesClassementsItem](../reference/dtos.md#poulesclassementsitem).
 
 ### Mettre en avant son équipe
 
 ```php
-$monClubId = '10238';
-
 $maLigne = array_values(array_filter(
     $ffbb->getClassement(900) ?? [],
-    fn (array $l) => (string) ($l['organisme']['id'] ?? '') === $monClubId,
+    fn ($ligne) => $ligne->organisme?->id === '10238',
 ))[0] ?? null;
+
+$maLigne?->position;
 ```
 
 > [!NOTE]
@@ -85,8 +91,11 @@ $maLigne = array_values(array_filter(
 ## Saisons
 
 ```php
-$ffbb->getSaisons();                 // saisons actives (filtre {"actif":{"_eq":true}})
-$ffbb->getSaisons(filterCriteria: null, fields: ['id', 'nom', 'code', 'actif']); // toutes
+$saisons = $ffbb->getSaisons();      // list<SaisonsItem>, saisons actives ({"actif":{"_eq":true}})
+$saisons[0]->libelle;                // « Saison 2026-2027 »
+$saisons[0]->debut?->format('d/m/Y');
+
+$ffbb->getSaisons(filterCriteria: null, fields: ['id', 'libelle', 'code', 'actif']); // toutes
 ```
 
 Si Directus est indisponible, `getSaisons()` renvoie la saison en cours codée en dur (comme le SDK Python).

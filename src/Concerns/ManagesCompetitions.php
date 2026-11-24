@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Concerns;
 
 use CoachBasket\Ffbb\Config;
+use CoachBasket\Ffbb\Data\CompetitionsItem;
+use CoachBasket\Ffbb\Data\PoulesClassementsItem;
+use CoachBasket\Ffbb\Data\PoulesItem;
+use CoachBasket\Ffbb\Data\SaisonsItem;
 use CoachBasket\Ffbb\Exceptions\FfbbAuthenticationException;
 use CoachBasket\Ffbb\Exceptions\FfbbException;
 use CoachBasket\Ffbb\Exceptions\FfbbHttpException;
@@ -36,9 +40,19 @@ trait ManagesCompetitions
      * - autre erreur HTTP / réseau → reconstruction depuis Meilisearch.
      *
      * @param  list<string>|null  $fields
+     */
+    public function getCompetition(int|string $competitionId, ?string $deepLimit = '1000', ?array $fields = null): ?CompetitionsItem
+    {
+        return self::hydrateOne($this->fetchCompetition($competitionId, $deepLimit, $fields), CompetitionsItem::class);
+    }
+
+    /**
+     * Compétition brute Directus (avec les replis de getCompetition()).
+     *
+     * @param  list<string>|null  $fields
      * @return array<string, mixed>|null
      */
-    public function getCompetition(int|string $competitionId, ?string $deepLimit = '1000', ?array $fields = null): ?array
+    protected function fetchCompetition(int|string $competitionId, ?string $deepLimit = '1000', ?array $fields = null): ?array
     {
         $extra = [];
 
@@ -112,9 +126,19 @@ trait ManagesCompetitions
      * Sur erreur (hors 404), la poule est reconstruite depuis Meilisearch.
      *
      * @param  list<string>|null  $fields
+     */
+    public function getPoule(int|string $pouleId, ?string $deepLimit = '1000', ?array $fields = null): ?PoulesItem
+    {
+        return self::hydrateOne($this->fetchPoule($pouleId, $deepLimit, $fields), PoulesItem::class);
+    }
+
+    /**
+     * Poule brute Directus, ou reconstruite depuis Meilisearch si Directus échoue.
+     *
+     * @param  list<string>|null  $fields
      * @return array<string, mixed>|null
      */
-    public function getPoule(int|string $pouleId, ?string $deepLimit = '1000', ?array $fields = null): ?array
+    protected function fetchPoule(int|string $pouleId, ?string $deepLimit = '1000', ?array $fields = null): ?array
     {
         $extra = [];
 
@@ -143,19 +167,19 @@ trait ManagesCompetitions
     }
 
     /**
-     * Uniquement le classement d'une poule.
+     * Uniquement le classement d'une poule, trié comme le renvoie la FFBB.
      *
-     * @return list<array<string, mixed>>|null
+     * @return list<PoulesClassementsItem>|null
      */
     public function getClassement(int|string $pouleId): ?array
     {
-        $poule = $this->getPoule($pouleId, '1000', QueryFields::classement());
+        $poule = $this->fetchPoule($pouleId, '1000', QueryFields::classement());
 
         if ($poule === null) {
             return null;
         }
 
-        return array_values(array_filter((array) ($poule['classements'] ?? []), 'is_array'));
+        return PoulesClassementsItem::collect(array_filter((array) ($poule['classements'] ?? []), 'is_array'));
     }
 
     /**
@@ -164,7 +188,7 @@ trait ManagesCompetitions
      * Si Directus est bloqué, renvoie la saison de repli codée en dur (comme le Python).
      *
      * @param  list<string>|null  $fields
-     * @return list<array<string, mixed>>
+     * @return list<SaisonsItem>
      */
     public function getSaisons(?array $fields = null, ?string $filterCriteria = Config::DEFAULT_SAISONS_FILTER): array
     {
@@ -178,11 +202,9 @@ trait ManagesCompetitions
         } catch (FfbbNotFoundException) {
             return [];
         } catch (FfbbHttpException|FfbbTransportException) {
-            return [Config::FALLBACK_SAISON];
+            return [SaisonsItem::fromArray(Config::FALLBACK_SAISON)];
         }
 
-        return is_array($data) && array_is_list($data)
-            ? array_values(array_filter($data, 'is_array'))
-            : [];
+        return is_array($data) && array_is_list($data) ? SaisonsItem::collect($data) : [];
     }
 }

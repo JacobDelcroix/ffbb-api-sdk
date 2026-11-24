@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbnational_galeries` (schéma OpenAPI ItemsFfbbnationalGaleries).
@@ -18,14 +19,14 @@ final readonly class GaleriesItem
     public function __construct(
         public mixed $cover = null,
         public ?string $creator = null,
-        public ?string $date = null,
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $date = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?int $id = null,
-        /** @var list<GaleriesFilesItem|string|int>|null */
+        /** @var list<GaleriesFilesItem>|null */
         public ?array $images = null,
         public ?string $surtitle = null,
-        /** @var list<GaleriesFfbbnationalTagsItem|string|int>|null */
+        /** @var list<GaleriesFfbbnationalTagsItem>|null */
         public ?array $tags = null,
         public ?string $title = null,
         /** @var array<string, mixed> Réponse brute complète */
@@ -40,13 +41,13 @@ final readonly class GaleriesItem
         return new self(
             cover: $data['cover'] ?? null,
             creator: Cast::string($data['creator'] ?? null),
-            date: Cast::string($data['date'] ?? null),
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            date: Cast::dateTime($data['date'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             id: Cast::int($data['id'] ?? null),
-            images: Cast::relations($data['images'] ?? null, GaleriesFilesItem::class),
+            images: Cast::relatedList($data['images'] ?? null, GaleriesFilesItem::class),
             surtitle: Cast::string($data['surtitle'] ?? null),
-            tags: Cast::relations($data['tags'] ?? null, GaleriesFfbbnationalTagsItem::class),
+            tags: Cast::relatedList($data['tags'] ?? null, GaleriesFfbbnationalTagsItem::class),
             title: Cast::string($data['title'] ?? null),
             raw: $data,
         );
@@ -61,7 +62,9 @@ final readonly class GaleriesItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

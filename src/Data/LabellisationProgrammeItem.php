@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_labellisation_programme` (schéma OpenAPI ItemsFfbbserverLabellisationProgramme).
@@ -18,13 +19,13 @@ final readonly class LabellisationProgrammeItem
     public function __construct(
         public ?string $affiche = null,
         public ?string $code = null,
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?bool $decouverte = null,
         public ?bool $demandeLabel = null,
         public ?string $engagement = null,
         public ?string $id = null,
-        public LabellisationLabelItem|string|int|null $labellisationLabel = null,
+        public ?LabellisationLabelItem $labellisationLabel = null,
         public ?string $libelle = null,
         public ?bool $licence = null,
         public ?string $lienHelloassoInitial = null,
@@ -47,13 +48,13 @@ final readonly class LabellisationProgrammeItem
         return new self(
             affiche: Cast::string($data['affiche'] ?? null),
             code: Cast::string($data['code'] ?? null),
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             decouverte: Cast::bool($data['decouverte'] ?? null),
             demandeLabel: Cast::bool($data['demandeLabel'] ?? null),
             engagement: Cast::string($data['engagement'] ?? null),
             id: Cast::string($data['id'] ?? null),
-            labellisationLabel: Cast::relation($data['labellisationLabel'] ?? null, LabellisationLabelItem::class),
+            labellisationLabel: Cast::related($data['labellisationLabel'] ?? null, LabellisationLabelItem::class),
             libelle: Cast::string($data['libelle'] ?? null),
             licence: Cast::bool($data['licence'] ?? null),
             lienHelloassoInitial: Cast::string($data['lienHelloassoInitial'] ?? null),
@@ -77,7 +78,9 @@ final readonly class LabellisationProgrammeItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

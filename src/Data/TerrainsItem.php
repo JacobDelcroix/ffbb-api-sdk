@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_terrains` (schéma OpenAPI ItemsFfbbserverTerrains).
@@ -17,14 +18,14 @@ final readonly class TerrainsItem
 
     public function __construct(
         public ?bool $accesLibre = null,
-        public CartographiesItem|string|int|null $cartographie = null,
-        public CommunesItem|string|int|null $commune = null,
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?CartographiesItem $cartographie = null,
+        public ?CommunesItem $commune = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?string $id = null,
         public ?int $largeur = null,
         public ?int $longueur = null,
-        public RevetementsItem|string|int|null $natureSol = null,
+        public ?RevetementsItem $natureSol = null,
         public ?string $nom = null,
         public ?int $numero = null,
         public ?string $rue = null,
@@ -39,14 +40,14 @@ final readonly class TerrainsItem
     {
         return new self(
             accesLibre: Cast::bool($data['accesLibre'] ?? null),
-            cartographie: Cast::relation($data['cartographie'] ?? null, CartographiesItem::class),
-            commune: Cast::relation($data['commune'] ?? null, CommunesItem::class),
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            cartographie: Cast::related($data['cartographie'] ?? null, CartographiesItem::class),
+            commune: Cast::related($data['commune'] ?? null, CommunesItem::class),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             id: Cast::string($data['id'] ?? null),
             largeur: Cast::int($data['largeur'] ?? null),
             longueur: Cast::int($data['longueur'] ?? null),
-            natureSol: Cast::relation($data['natureSol'] ?? null, RevetementsItem::class),
+            natureSol: Cast::related($data['natureSol'] ?? null, RevetementsItem::class),
             nom: Cast::string($data['nom'] ?? null),
             numero: Cast::int($data['numero'] ?? null),
             rue: Cast::string($data['rue'] ?? null),
@@ -63,7 +64,9 @@ final readonly class TerrainsItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

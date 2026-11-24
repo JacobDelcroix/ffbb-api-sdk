@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_entraineurs` (schéma OpenAPI ItemsFfbbserverEntraineurs).
@@ -18,9 +19,9 @@ final readonly class EntraineursItem
     public function __construct(
         public ?string $adresse1 = null,
         public ?string $adresse2 = null,
-        public CommunesItem|string|int|null $commune = null,
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?CommunesItem $commune = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?string $idLicence = null,
         public ?string $nom = null,
         public ?string $prenom = null,
@@ -36,9 +37,9 @@ final readonly class EntraineursItem
         return new self(
             adresse1: Cast::string($data['adresse1'] ?? null),
             adresse2: Cast::string($data['adresse2'] ?? null),
-            commune: Cast::relation($data['commune'] ?? null, CommunesItem::class),
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            commune: Cast::related($data['commune'] ?? null, CommunesItem::class),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             idLicence: Cast::string($data['idLicence'] ?? null),
             nom: Cast::string($data['nom'] ?? null),
             prenom: Cast::string($data['prenom'] ?? null),
@@ -55,7 +56,9 @@ final readonly class EntraineursItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

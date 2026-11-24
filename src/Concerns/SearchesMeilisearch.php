@@ -4,6 +4,17 @@ declare(strict_types=1);
 
 namespace CoachBasket\Ffbb\Concerns;
 
+use CoachBasket\Ffbb\Data\Models\CompetitionsHit;
+use CoachBasket\Ffbb\Data\Models\ContentHit;
+use CoachBasket\Ffbb\Data\Models\EngagementsHit;
+use CoachBasket\Ffbb\Data\Models\FormationsHit;
+use CoachBasket\Ffbb\Data\Models\OrganismesHit;
+use CoachBasket\Ffbb\Data\Models\PratiquesHit;
+use CoachBasket\Ffbb\Data\Models\RencontresHit;
+use CoachBasket\Ffbb\Data\Models\SallesHit;
+use CoachBasket\Ffbb\Data\Models\TerrainsHit;
+use CoachBasket\Ffbb\Data\Models\TournoisHit;
+use CoachBasket\Ffbb\Data\Models\SearchResult;
 use CoachBasket\Ffbb\Search\GeoSortOrder;
 use CoachBasket\Ffbb\Search\Index;
 use CoachBasket\Ffbb\Search\MeilisearchSearcher;
@@ -13,33 +24,46 @@ use CoachBasket\Ffbb\Support\Validator;
 /**
  * Recherche Meilisearch (miroir de _SearchFacade / MeilisearchFFBBClient).
  *
- * Chaque résultat est le tableau Meilisearch d'une sous-requête :
- * ['indexUid', 'hits', 'estimatedTotalHits', 'facetDistribution', 'facetStats', ...].
- *
- * Comme en Python, toutes les pages sont récupérées jusqu'à estimatedTotalHits
- * et les hits sont filtrés côté client (HitMatcher).
+ * Chaque recherche renvoie un SearchResult typé : hits (DTO de l'index), estimatedTotalHits,
+ * facetDistribution, facetStats… Comme en Python, toutes les pages sont récupérées jusqu'à
+ * estimatedTotalHits et les hits sont filtrés côté client (HitMatcher).
  *
  * @property-read MeilisearchSearcher $search
+ *
+ * FICHIER GÉNÉRÉ par tools/generate_concerns.py — modifier le générateur plutôt que ce fichier.
  */
 trait SearchesMeilisearch
 {
     /**
-     * Recherche universelle sur les 13 index (1 hit par index et par page).
+     * Recherche universelle sur les 13 index (un résultat par index, dans l'ordre de l'enum Index).
      *
-     * @return list<array<string, mixed>>|null
+     * @return list<SearchResult<object>>|null
      */
     public function multiSearch(?string $name = null): ?array
     {
-        return $this->search->recursiveSmartMultiSearch(
-            MultiSearchQuery::forAllIndexes(Validator::searchQuery($name, 'name')),
-        );
+        $queries = MultiSearchQuery::forAllIndexes(Validator::searchQuery($name, 'name'));
+        $results = $this->search->recursiveSmartMultiSearch($queries);
+
+        if ($results === null) {
+            return null;
+        }
+
+        $typed = [];
+
+        foreach ($queries as $i => $query) {
+            $typed[] = SearchResult::fromArray($results[$i] ?? [], $query->index->hitClass());
+        }
+
+        return $typed;
     }
 
     /**
+     * Exécute une recherche par texte et type les résultats avec le DTO de l'index.
+     *
      * @param  list<string|null>|null  $names
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return list<array<string, mixed>>|null
+     * @return list<SearchResult<object>>|null
      */
     protected function searchMultiple(Index $index, ?array $names, ?array $filter, ?array $sort, ?int $limit): ?array
     {
@@ -52,15 +76,19 @@ trait SearchesMeilisearch
             array_values($names),
         );
 
-        return $this->search->recursiveSmartMultiSearch($queries);
+        $results = $this->search->recursiveSmartMultiSearch($queries);
+
+        return $results === null
+            ? null
+            : array_map(static fn (array $result): SearchResult => SearchResult::fromArray($result, $index->hitClass()), $results);
     }
 
     /**
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return array<string, mixed>|null
+     * @return SearchResult<object>|null
      */
-    protected function searchOne(Index $index, ?string $name, ?array $filter, ?array $sort, ?int $limit): ?array
+    protected function searchOne(Index $index, ?string $name, ?array $filter, ?array $sort, ?int $limit): ?SearchResult
     {
         $results = $this->searchMultiple($index, $name !== null ? [$name] : null, $filter, $sort, $limit);
 
@@ -92,9 +120,9 @@ trait SearchesMeilisearch
      *
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return array<string, mixed>|null
+     * @return SearchResult<CompetitionsHit>|null
      */
-    public function searchCompetitions(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+    public function searchCompetitions(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
     {
         return $this->searchOne(Index::Competitions, $name, $filter, $sort, $limit);
     }
@@ -105,7 +133,7 @@ trait SearchesMeilisearch
      * @param  list<string|null>|null  $names
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return list<array<string, mixed>>|null
+     * @return list<SearchResult<CompetitionsHit>>|null
      */
     public function searchMultipleCompetitions(?array $names = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
     {
@@ -117,9 +145,9 @@ trait SearchesMeilisearch
      *
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return array<string, mixed>|null
+     * @return SearchResult<OrganismesHit>|null
      */
-    public function searchOrganismes(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+    public function searchOrganismes(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
     {
         return $this->searchOne(Index::Organismes, $name, $filter, $sort, $limit);
     }
@@ -130,7 +158,7 @@ trait SearchesMeilisearch
      * @param  list<string|null>|null  $names
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return list<array<string, mixed>>|null
+     * @return list<SearchResult<OrganismesHit>>|null
      */
     public function searchMultipleOrganismes(?array $names = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
     {
@@ -142,9 +170,9 @@ trait SearchesMeilisearch
      *
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return array<string, mixed>|null
+     * @return SearchResult<PratiquesHit>|null
      */
-    public function searchPratiques(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+    public function searchPratiques(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
     {
         return $this->searchOne(Index::Pratiques, $name, $filter, $sort, $limit);
     }
@@ -155,7 +183,7 @@ trait SearchesMeilisearch
      * @param  list<string|null>|null  $names
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return list<array<string, mixed>>|null
+     * @return list<SearchResult<PratiquesHit>>|null
      */
     public function searchMultiplePratiques(?array $names = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
     {
@@ -167,9 +195,9 @@ trait SearchesMeilisearch
      *
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return array<string, mixed>|null
+     * @return SearchResult<RencontresHit>|null
      */
-    public function searchRencontres(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+    public function searchRencontres(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
     {
         return $this->searchOne(Index::Rencontres, $name, $filter, $sort, $limit);
     }
@@ -180,7 +208,7 @@ trait SearchesMeilisearch
      * @param  list<string|null>|null  $names
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return list<array<string, mixed>>|null
+     * @return list<SearchResult<RencontresHit>>|null
      */
     public function searchMultipleRencontres(?array $names = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
     {
@@ -192,9 +220,9 @@ trait SearchesMeilisearch
      *
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return array<string, mixed>|null
+     * @return SearchResult<SallesHit>|null
      */
-    public function searchSalles(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+    public function searchSalles(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
     {
         return $this->searchOne(Index::Salles, $name, $filter, $sort, $limit);
     }
@@ -205,7 +233,7 @@ trait SearchesMeilisearch
      * @param  list<string|null>|null  $names
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return list<array<string, mixed>>|null
+     * @return list<SearchResult<SallesHit>>|null
      */
     public function searchMultipleSalles(?array $names = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
     {
@@ -217,9 +245,9 @@ trait SearchesMeilisearch
      *
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return array<string, mixed>|null
+     * @return SearchResult<TerrainsHit>|null
      */
-    public function searchTerrains(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+    public function searchTerrains(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
     {
         return $this->searchOne(Index::Terrains, $name, $filter, $sort, $limit);
     }
@@ -230,7 +258,7 @@ trait SearchesMeilisearch
      * @param  list<string|null>|null  $names
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return list<array<string, mixed>>|null
+     * @return list<SearchResult<TerrainsHit>>|null
      */
     public function searchMultipleTerrains(?array $names = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
     {
@@ -242,9 +270,9 @@ trait SearchesMeilisearch
      *
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return array<string, mixed>|null
+     * @return SearchResult<TournoisHit>|null
      */
-    public function searchTournois(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+    public function searchTournois(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
     {
         return $this->searchOne(Index::Tournois, $name, $filter, $sort, $limit);
     }
@@ -255,7 +283,7 @@ trait SearchesMeilisearch
      * @param  list<string|null>|null  $names
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return list<array<string, mixed>>|null
+     * @return list<SearchResult<TournoisHit>>|null
      */
     public function searchMultipleTournois(?array $names = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
     {
@@ -267,9 +295,9 @@ trait SearchesMeilisearch
      *
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return array<string, mixed>|null
+     * @return SearchResult<EngagementsHit>|null
      */
-    public function searchEngagements(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+    public function searchEngagements(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
     {
         return $this->searchOne(Index::Engagements, $name, $filter, $sort, $limit);
     }
@@ -280,7 +308,7 @@ trait SearchesMeilisearch
      * @param  list<string|null>|null  $names
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return list<array<string, mixed>>|null
+     * @return list<SearchResult<EngagementsHit>>|null
      */
     public function searchMultipleEngagements(?array $names = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
     {
@@ -292,9 +320,9 @@ trait SearchesMeilisearch
      *
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return array<string, mixed>|null
+     * @return SearchResult<FormationsHit>|null
      */
-    public function searchFormations(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+    public function searchFormations(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
     {
         return $this->searchOne(Index::Formations, $name, $filter, $sort, $limit);
     }
@@ -305,7 +333,7 @@ trait SearchesMeilisearch
      * @param  list<string|null>|null  $names
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return list<array<string, mixed>>|null
+     * @return list<SearchResult<FormationsHit>>|null
      */
     public function searchMultipleFormations(?array $names = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
     {
@@ -317,9 +345,9 @@ trait SearchesMeilisearch
      *
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return array<string, mixed>|null
+     * @return SearchResult<ContentHit>|null
      */
-    public function searchNews(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+    public function searchNews(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
     {
         return $this->searchOne(Index::News, $name, $filter, $sort, $limit);
     }
@@ -330,7 +358,7 @@ trait SearchesMeilisearch
      * @param  list<string|null>|null  $names
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return list<array<string, mixed>>|null
+     * @return list<SearchResult<ContentHit>>|null
      */
     public function searchMultipleNews(?array $names = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
     {
@@ -342,9 +370,9 @@ trait SearchesMeilisearch
      *
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return array<string, mixed>|null
+     * @return SearchResult<ContentHit>|null
      */
-    public function searchYoutubeVideos(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+    public function searchYoutubeVideos(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
     {
         return $this->searchOne(Index::YoutubeVideos, $name, $filter, $sort, $limit);
     }
@@ -355,7 +383,7 @@ trait SearchesMeilisearch
      * @param  list<string|null>|null  $names
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return list<array<string, mixed>>|null
+     * @return list<SearchResult<ContentHit>>|null
      */
     public function searchMultipleYoutubeVideos(?array $names = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
     {
@@ -367,9 +395,9 @@ trait SearchesMeilisearch
      *
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return array<string, mixed>|null
+     * @return SearchResult<ContentHit>|null
      */
-    public function searchRss(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+    public function searchRss(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
     {
         return $this->searchOne(Index::Rss, $name, $filter, $sort, $limit);
     }
@@ -380,7 +408,7 @@ trait SearchesMeilisearch
      * @param  list<string|null>|null  $names
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return list<array<string, mixed>>|null
+     * @return list<SearchResult<ContentHit>>|null
      */
     public function searchMultipleRss(?array $names = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
     {
@@ -392,9 +420,9 @@ trait SearchesMeilisearch
      *
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return array<string, mixed>|null
+     * @return SearchResult<ContentHit>|null
      */
-    public function searchGaleries(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
+    public function searchGaleries(?string $name = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?SearchResult
     {
         return $this->searchOne(Index::Galeries, $name, $filter, $sort, $limit);
     }
@@ -405,7 +433,7 @@ trait SearchesMeilisearch
      * @param  list<string|null>|null  $names
      * @param  list<string>|null  $filter
      * @param  list<string>|null  $sort
-     * @return list<array<string, mixed>>|null
+     * @return list<SearchResult<ContentHit>>|null
      */
     public function searchMultipleGaleries(?array $names = null, ?array $filter = null, ?array $sort = null, ?int $limit = 10): ?array
     {
@@ -419,9 +447,9 @@ trait SearchesMeilisearch
     /**
      * Clubs dans un rayon autour d'un point GPS, triés par distance.
      *
-     * @return array<string, mixed>|null
+     * @return SearchResult<OrganismesHit>|null
      */
-    public function searchOrganismesByGeo(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 20, GeoSortOrder $geoSort = GeoSortOrder::NearestFirst): ?array
+    public function searchOrganismesByGeo(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 20, GeoSortOrder $geoSort = GeoSortOrder::NearestFirst): ?SearchResult
     {
         return $this->searchOrganismes($q, [self::geoRadius($lat, $lng, $radiusKm)], [self::geoPoint($lat, $lng, $geoSort)], $limit);
     }
@@ -429,9 +457,9 @@ trait SearchesMeilisearch
     /**
      * Clubs d'une commune (correspondance exacte sur le nom de la commune).
      *
-     * @return array<string, mixed>|null
+     * @return SearchResult<OrganismesHit>|null
      */
-    public function searchOrganismesByCity(string $cityName, string $q = '', int $limit = 200): ?array
+    public function searchOrganismesByCity(string $cityName, string $q = '', int $limit = 200): ?SearchResult
     {
         return $this->searchOrganismes($q, [sprintf('commune = "%s"', $cityName)], null, $limit);
     }
@@ -439,9 +467,9 @@ trait SearchesMeilisearch
     /**
      * Salles dans un rayon autour d'un point GPS.
      *
-     * @return array<string, mixed>|null
+     * @return SearchResult<SallesHit>|null
      */
-    public function searchSallesByGeo(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 20, GeoSortOrder $geoSort = GeoSortOrder::NearestFirst): ?array
+    public function searchSallesByGeo(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 20, GeoSortOrder $geoSort = GeoSortOrder::NearestFirst): ?SearchResult
     {
         return $this->searchSalles($q, [self::geoRadius($lat, $lng, $radiusKm)], [self::geoPoint($lat, $lng, $geoSort)], $limit);
     }
@@ -449,9 +477,9 @@ trait SearchesMeilisearch
     /**
      * Équipes engagées dans un rayon autour d'un point GPS.
      *
-     * @return array<string, mixed>|null
+     * @return SearchResult<EngagementsHit>|null
      */
-    public function searchEngagementsByGeo(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 20, GeoSortOrder $geoSort = GeoSortOrder::NearestFirst): ?array
+    public function searchEngagementsByGeo(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 20, GeoSortOrder $geoSort = GeoSortOrder::NearestFirst): ?SearchResult
     {
         return $this->searchEngagements($q, [self::geoRadius($lat, $lng, $radiusKm)], [self::geoPoint($lat, $lng, $geoSort)], $limit);
     }
@@ -461,9 +489,9 @@ trait SearchesMeilisearch
      *
      * @param  list<string>|null  $sexes  ex. ['F', 'M']
      * @param  list<string>|null  $niveauCodes  ex. ['DEP', 'REG']
-     * @return array<string, mixed>|null
+     * @return SearchResult<EngagementsHit>|null
      */
-    public function searchEngagementsFiltered(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 5000, ?array $sexes = null, ?array $niveauCodes = null): ?array
+    public function searchEngagementsFiltered(float $lat, float $lng, float $radiusKm = 10.0, string $q = '', ?int $limit = 5000, ?array $sexes = null, ?array $niveauCodes = null): ?SearchResult
     {
         $filters = [self::geoRadius($lat, $lng, $radiusKm)];
 

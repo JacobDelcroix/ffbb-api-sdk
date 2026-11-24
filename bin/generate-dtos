@@ -4,151 +4,204 @@
 declare(strict_types=1);
 
 /*
- * Génère les DTOs de src/Data/ depuis la spec OpenAPI Directus
- * (resources/discovery/openapi.json, rafraîchie par bin/discover).
+ * Génère tous les DTOs du SDK.
  *
- * Un DTO par collection FFBB (ffbbserver_* et ffbbnational_*) :
- *  - propriétés typées et toutes nullables (les données FFBB sont souvent partielles) ;
- *  - relations hydratées en DTO quand Directus renvoie l'objet développé, sinon l'identifiant ;
- *  - $raw conserve la réponse complète (champs pas encore présents dans la spec).
+ * 1. src/Data/*Item.php — une classe par collection Directus (ffbbserver_*, ffbbnational_*, edf_*,
+ *    genius_*, rematch_*, configuration), depuis la spec OpenAPI (resources/discovery/openapi.json).
  *
- * Usage : php bin/generate-dtos [chemin/openapi.json]
+ * 2. src/Data/Models/*.php — réponses qui ne viennent pas de Directus :
+ *    hits Meilisearch (un DTO par index) et matchs en direct (Live), avec leurs objets imbriqués.
+ *    Source : modèles du SDK Python (resources/upstream/models.json, lu par tools/extract_models.py),
+ *    complétés par les attributs réellement observés (resources/discovery/indexes.json).
+ *    Pour chaque index, le modèle Python retenu est celui qui recouvre le mieux les attributs observés
+ *    (le SDK Python inverse par exemple TerrainsHit et TournoisHit).
+ *
+ * Toutes les propriétés sont nullables ; $raw conserve la réponse complète.
+ *
+ * Usage : php bin/generate-dtos
  */
 
 $root = dirname(__DIR__);
-$specPath = $argv[1] ?? $root.'/resources/discovery/openapi.json';
-$targetDir = $root.'/src/Data';
 
-$spec = json_decode((string) file_get_contents($specPath), true, flags: JSON_THROW_ON_ERROR);
-$schemas = $spec['components']['schemas'] ?? [];
+$readJson = static fn (string $path): array => is_file($path)
+    ? (array) json_decode((string) file_get_contents($path), true, flags: JSON_THROW_ON_ERROR)
+    : [];
 
-$prefixes = ['ItemsFfbbserver' => 'ffbbserver_', 'ItemsFfbbnational' => 'ffbbnational_'];
+$spec = $readJson($root.'/resources/discovery/openapi.json');
+$models = $readJson($root.'/resources/upstream/models.json');
+$indexes = $readJson($root.'/resources/discovery/indexes.json');
 
-// Schéma OpenAPI -> [classe PHP, collection Directus]
-$classes = [];
-
-foreach (array_keys($schemas) as $schemaName) {
-    foreach ($prefixes as $prefix => $collectionPrefix) {
-        if (str_starts_with($schemaName, $prefix) && strlen($schemaName) > strlen($prefix)) {
-            $base = substr($schemaName, strlen($prefix));
-            $collection = $collectionPrefix.strtolower(preg_replace('/(?<!^)[A-Z]/', '_$0', $base));
-            $classes[$schemaName] = [$base.'Item', $collection];
-        }
-    }
-}
-
-ksort($classes);
-
-$refClass = static function (?string $ref) use ($classes): ?string {
-    if ($ref === null) {
-        return null;
-    }
-
-    $name = substr($ref, strrpos($ref, '/') + 1);
-
-    return $classes[$name][0] ?? null;
-};
+$validName = static fn (string $key): bool => preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $key) === 1 && $key !== 'raw';
 
 /**
- * Analyse une propriété OpenAPI.
+ * Rend une classe DTO.
  *
- * @return array{kind: string, php: string, doc: string, class: ?string}
+ * @param  list<array{name: string, php: string, doc: string, cast: string}>  $props
  */
-$analyse = static function (array $prop) use (&$analyse, $refClass): array {
-    if (isset($prop['oneOf'])) {
-        $class = null;
-
-        foreach ($prop['oneOf'] as $option) {
-            if (isset($option['$ref'])) {
-                $class = $refClass($option['$ref']) ?? $class;
-            }
-        }
-
-        $scalarTypes = ['string', 'int'];
-
-        if ($class !== null) {
-            return ['kind' => 'relation', 'php' => implode('|', [$class, ...$scalarTypes]).'|null', 'doc' => '', 'class' => $class];
-        }
-
-        return ['kind' => 'mixed', 'php' => 'mixed', 'doc' => '', 'class' => null];
-    }
-
-    if (isset($prop['$ref'])) {
-        $class = $refClass($prop['$ref']);
-
-        return $class !== null
-            ? ['kind' => 'relation', 'php' => $class.'|string|int|null', 'doc' => '', 'class' => $class]
-            : ['kind' => 'mixed', 'php' => 'mixed', 'doc' => '', 'class' => null];
-    }
-
-    return match ($prop['type'] ?? null) {
-        'integer' => ['kind' => 'int', 'php' => '?int', 'doc' => '', 'class' => null],
-        'number' => ['kind' => 'float', 'php' => '?float', 'doc' => '', 'class' => null],
-        'boolean' => ['kind' => 'bool', 'php' => '?bool', 'doc' => '', 'class' => null],
-        'string' => ['kind' => 'string', 'php' => '?string', 'doc' => '', 'class' => null],
-        'array' => (static function () use ($prop, $analyse): array {
-            $item = isset($prop['items']) ? $analyse($prop['items']) : null;
-            $class = $item['class'] ?? null;
-            $doc = $class !== null ? "list<{$class}|string|int>|null" : 'list<mixed>|null';
-
-            return ['kind' => 'relations', 'php' => '?array', 'doc' => $doc, 'class' => $class];
-        })(),
-        // object / json / type inconnu : valeur brute conservée telle quelle
-        default => ['kind' => 'mixed', 'php' => 'mixed', 'doc' => '', 'class' => null],
-    };
-};
-
-@mkdir($targetDir, 0777, true);
-
-foreach (glob($targetDir.'/*Item.php') ?: [] as $old) {
-    unlink($old);
-}
-
-$map = [];
-
-foreach ($classes as $schemaName => [$class, $collection]) {
-    $properties = $schemas[$schemaName]['properties'] ?? [];
-    ksort($properties);
-
+$render = static function (string $namespace, string $class, string $description, array $props, array $constants = []): string {
     $params = [];
     $assigns = [];
+    $uses = ['CoachBasket\\Ffbb\\Support\\Cast'];
 
-    foreach ($properties as $key => $prop) {
-        if (! preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', (string) $key) || $key === 'raw') {
-            continue;
+    foreach ($props as $prop) {
+        if (str_contains($prop['php'], 'DateTimeImmutable')) {
+            $uses[] = 'DateTimeImmutable';
         }
 
-        $info = $analyse($prop);
-        $doc = $info['doc'] !== '' ? "        /** @var {$info['doc']} */\n" : '';
-        $params[] = $doc."        public {$info['php']} \${$key} = null,";
-
-        $value = '$data['.var_export($key, true).'] ?? null';
-        $assigns[] = '            '.$key.': '.match ($info['kind']) {
-            'int' => "Cast::int({$value})",
-            'float' => "Cast::float({$value})",
-            'bool' => "Cast::bool({$value})",
-            'string' => "Cast::string({$value})",
-            'relation' => "Cast::relation({$value}, {$info['class']}::class)",
-            'relations' => 'Cast::relations('.$value.', '.($info['class'] !== null ? $info['class'].'::class' : 'null').')',
-            default => $value,
-        }.',';
+        $doc = $prop['doc'] !== '' ? "        /** @var {$prop['doc']} */\n" : '';
+        $params[] = $doc."        public {$prop['php']} \${$prop['name']} = null,";
+        $assigns[] = "            {$prop['name']}: {$prop['cast']},";
     }
 
     $params[] = "        /** @var array<string, mixed> Réponse brute complète */\n        public array \$raw = [],";
     $assigns[] = '            raw: $data,';
 
-    $code = "<?php\n\ndeclare(strict_types=1);\n\nnamespace CoachBasket\\Ffbb\\Data;\n\nuse CoachBasket\\Ffbb\\Support\\Cast;\n\n";
-    $code .= "/**\n * Collection Directus `{$collection}` (schéma OpenAPI {$schemaName}).\n *\n";
-    $code .= " * FICHIER GÉNÉRÉ par bin/generate-dtos — ne pas modifier à la main.\n */\n";
-    $code .= "final readonly class {$class}\n{\n    public const string COLLECTION = '{$collection}';\n\n";
+    $uses = array_unique($uses);
+    sort($uses);
+
+    $code = "<?php\n\ndeclare(strict_types=1);\n\nnamespace {$namespace};\n\n";
+    $code .= implode('', array_map(static fn (string $u): string => "use {$u};\n", $uses))."\n";
+    $code .= "/**\n * {$description}\n *\n * FICHIER GÉNÉRÉ par bin/generate-dtos — ne pas modifier à la main.\n */\n";
+    $code .= "final readonly class {$class}\n{\n";
+
+    foreach ($constants as $name => $value) {
+        $code .= "    public const string {$name} = '{$value}';\n\n";
+    }
+
     $code .= "    public function __construct(\n".implode("\n", $params)."\n    ) {}\n\n";
     $code .= "    /**\n     * @param  array<string, mixed>  \$data\n     */\n";
     $code .= "    public static function fromArray(array \$data): self\n    {\n        return new self(\n".implode("\n", $assigns)."\n        );\n    }\n\n";
     $code .= "    /**\n     * @param  iterable<array<string, mixed>>  \$items\n     * @return list<self>\n     */\n";
-    $code .= "    public static function collect(iterable \$items): array\n    {\n        \$out = [];\n\n        foreach (\$items as \$item) {\n            \$out[] = self::fromArray(\$item);\n        }\n\n        return \$out;\n    }\n\n";
+    $code .= "    public static function collect(iterable \$items): array\n    {\n        \$out = [];\n\n        foreach (\$items as \$item) {\n            if (is_array(\$item)) {\n                \$out[] = self::fromArray(\$item);\n            }\n        }\n\n        return \$out;\n    }\n\n";
     $code .= "    /**\n     * @return array<string, mixed>\n     */\n    public function toArray(): array\n    {\n        return \$this->raw;\n    }\n}\n";
 
-    file_put_contents("{$targetDir}/{$class}.php", $code);
+    return $code;
+};
+
+$value = static fn (string $key): string => '$data['.var_export($key, true).'] ?? null';
+
+// ---------------------------------------------------------------------------
+// 1. DTOs Directus
+// ---------------------------------------------------------------------------
+
+$schemas = $spec['components']['schemas'] ?? [];
+$directusClasses = []; // schéma => [classe, collection]
+
+foreach (array_keys($schemas) as $schemaName) {
+    if (! preg_match('/^Items(Ffbbserver|Ffbbnational|Edf|Genius|Rematch|Configuration)(.*)$/', (string) $schemaName, $m)) {
+        continue;
+    }
+
+    $rest = $m[1].$m[2];
+    $collection = strtolower((string) preg_replace('/(?<!^)[A-Z]/', '_$0', $rest));
+    $base = in_array($m[1], ['Ffbbserver', 'Ffbbnational'], true) && $m[2] !== '' ? $m[2] : $rest;
+    $class = $base.'Item';
+
+    foreach ($directusClasses as [$existing, $existingCollection]) {
+        if ($existing === $class) {
+            fwrite(STDERR, "Collision de nom : {$class} ({$existingCollection} et {$collection})\n");
+            exit(1);
+        }
+    }
+
+    $directusClasses[$schemaName] = [$class, $collection];
+}
+
+ksort($directusClasses);
+
+// Classes dont le schéma a un champ `id` : leurs relations sont toujours renvoyées en DTO.
+$withId = [];
+
+foreach ($directusClasses as $schemaName => [$class]) {
+    if (isset($schemas[$schemaName]['properties']['id'])) {
+        $withId[$class] = true;
+    }
+}
+
+$refClass = static function (?string $ref) use ($directusClasses): ?string {
+    if ($ref === null) {
+        return null;
+    }
+
+    return $directusClasses[substr($ref, (int) strrpos($ref, '/') + 1)][0] ?? null;
+};
+
+$directusProp = static function (string $key, array $prop) use (&$directusProp, $refClass, $value, $withId): array {
+    $v = $value($key);
+
+    if (isset($prop['oneOf']) || isset($prop['$ref'])) {
+        $class = null;
+
+        foreach (isset($prop['oneOf']) ? $prop['oneOf'] : [$prop] as $option) {
+            if (isset($option['$ref'])) {
+                $class = $refClass($option['$ref']) ?? $class;
+            }
+        }
+
+        return match (true) {
+            $class !== null && isset($withId[$class]) => ['name' => $key, 'php' => "?{$class}", 'doc' => '', 'cast' => "Cast::related({$v}, {$class}::class)"],
+            $class !== null => ['name' => $key, 'php' => "{$class}|string|int|null", 'doc' => '', 'cast' => "Cast::relation({$v}, {$class}::class)"],
+            default => ['name' => $key, 'php' => 'mixed', 'doc' => '', 'cast' => $v],
+        };
+    }
+
+    $format = $prop['format'] ?? null;
+
+    return match ($prop['type'] ?? null) {
+        'integer' => ['name' => $key, 'php' => '?int', 'doc' => '', 'cast' => "Cast::int({$v})"],
+        'number' => ['name' => $key, 'php' => '?float', 'doc' => '', 'cast' => "Cast::float({$v})"],
+        'boolean' => ['name' => $key, 'php' => '?bool', 'doc' => '', 'cast' => "Cast::bool({$v})"],
+        'string' => in_array($format, ['date-time', 'date', 'timestamp'], true)
+            ? ['name' => $key, 'php' => '?DateTimeImmutable', 'doc' => '', 'cast' => "Cast::dateTime({$v})"]
+            : ['name' => $key, 'php' => '?string', 'doc' => '', 'cast' => "Cast::string({$v})"],
+        'array' => (static function () use ($key, $prop, $refClass, $v, $withId): array {
+            $item = $prop['items'] ?? [];
+            $class = null;
+
+            foreach (isset($item['oneOf']) ? $item['oneOf'] : [$item] as $option) {
+                if (isset($option['$ref'])) {
+                    $class = $refClass($option['$ref']) ?? $class;
+                }
+            }
+
+            return match (true) {
+                $class !== null && isset($withId[$class]) => ['name' => $key, 'php' => '?array', 'doc' => "list<{$class}>|null", 'cast' => "Cast::relatedList({$v}, {$class}::class)"],
+                $class !== null => ['name' => $key, 'php' => '?array', 'doc' => "list<{$class}|string|int>|null", 'cast' => "Cast::relations({$v}, {$class}::class)"],
+                default => ['name' => $key, 'php' => '?array', 'doc' => 'list<mixed>|null', 'cast' => "Cast::relations({$v}, null)"],
+            };
+        })(),
+        default => ['name' => $key, 'php' => 'mixed', 'doc' => '', 'cast' => $v],
+    };
+};
+
+$dataDir = $root.'/src/Data';
+@mkdir($dataDir, 0777, true);
+
+foreach (glob($dataDir.'/*Item.php') ?: [] as $old) {
+    if (basename($old) !== 'Item.php') {
+        unlink($old);
+    }
+}
+
+$map = [];
+
+foreach ($directusClasses as $schemaName => [$class, $collection]) {
+    $properties = $schemas[$schemaName]['properties'] ?? [];
+    ksort($properties);
+
+    $props = [];
+
+    foreach ($properties as $key => $prop) {
+        if ($validName((string) $key)) {
+            $props[] = $directusProp((string) $key, (array) $prop);
+        }
+    }
+
+    file_put_contents(
+        "{$dataDir}/{$class}.php",
+        $render('CoachBasket\\Ffbb\\Data', $class, "Collection Directus `{$collection}` (schéma OpenAPI {$schemaName}).", $props, ['COLLECTION' => $collection]),
+    );
+
     $map[$collection] = $class;
 }
 
@@ -162,10 +215,179 @@ foreach ($map as $collection => $class) {
     $mapCode .= "        '{$collection}' => {$class}::class,\n";
 }
 
-$mapCode .= "    ];\n\n    /**\n     * @return class-string|null\n     */\n    public static function for(string \$collection): ?string\n    {\n";
+$mapCode .= "    ];\n\n    /**\n     * DTO d'une collection, ou null si la collection n'a pas de DTO généré.\n     *\n     * @return class-string|null\n     */\n    public static function for(string \$collection): ?string\n    {\n";
 $mapCode .= "        \$collection = str_starts_with(\$collection, 'items/') ? substr(\$collection, 6) : \$collection;\n\n";
 $mapCode .= "        return self::CLASSES[\$collection] ?? null;\n    }\n}\n";
 
-file_put_contents($targetDir.'/ItemMap.php', $mapCode);
+file_put_contents($dataDir.'/ItemMap.php', $mapCode);
 
-fwrite(STDOUT, sprintf("%d DTOs générés dans src/Data/\n", count($map)));
+// ---------------------------------------------------------------------------
+// 2. DTOs Meilisearch et Live (src/Data/Models)
+// ---------------------------------------------------------------------------
+
+$modelsDir = $dataDir.'/Models';
+@mkdir($modelsDir, 0777, true);
+
+foreach (glob($modelsDir.'/*.php') ?: [] as $old) {
+    if (! in_array(basename($old), ['SearchResult.php', 'ContentHit.php'], true)) {
+        unlink($old);
+    }
+}
+
+$hitIndexes = [
+    'ffbbserver_organismes' => 'OrganismesHit',
+    'ffbbserver_rencontres' => 'RencontresHit',
+    'ffbbserver_terrains' => 'TerrainsHit',
+    'ffbbserver_salles' => 'SallesHit',
+    'ffbbserver_tournois' => 'TournoisHit',
+    'ffbbnational_pratiques' => 'PratiquesHit',
+    'ffbbserver_engagements' => 'EngagementsHit',
+    'ffbbserver_formations' => 'FormationsHit',
+    'ffbbserver_competitions' => 'CompetitionsHit',
+];
+
+$pythonRoots = array_values(array_filter(array_keys($models), static fn (string $n): bool => str_ends_with($n, 'Hit')));
+
+$modelProp = static function (array $field) use ($value, $models): array {
+    $key = $field['key'];
+    $v = $value($key);
+
+    return match ($field['kind']) {
+        'string' => ['name' => $key, 'php' => '?string', 'doc' => '', 'cast' => "Cast::string({$v})"],
+        'int' => ['name' => $key, 'php' => '?int', 'doc' => '', 'cast' => "Cast::int({$v})"],
+        'float' => ['name' => $key, 'php' => '?float', 'doc' => '', 'cast' => "Cast::float({$v})"],
+        'bool' => ['name' => $key, 'php' => '?bool', 'doc' => '', 'cast' => "Cast::bool({$v})"],
+        'datetime' => ['name' => $key, 'php' => '?DateTimeImmutable', 'doc' => '', 'cast' => "Cast::dateTime({$v})"],
+        'object' => isset($models[$field['class'] ?? ''])
+            ? ['name' => $key, 'php' => '?'.$field['class'], 'doc' => '', 'cast' => "Cast::object({$v}, {$field['class']}::class)"]
+            : ['name' => $key, 'php' => 'mixed', 'doc' => '', 'cast' => $v],
+        'list' => isset($field['class']) && isset($models[$field['class']])
+            ? ['name' => $key, 'php' => '?array', 'doc' => "list<{$field['class']}>|null", 'cast' => "Cast::listOf({$v}, {$field['class']}::class)"]
+            : ['name' => $key, 'php' => '?array', 'doc' => 'list<'.(in_array($field['of'] ?? 'raw', ['string', 'int', 'float', 'bool'], true) ? $field['of'] : 'mixed').'>|null', 'cast' => "Cast::listOf({$v}, '".($field['of'] ?? 'raw')."')"],
+        default => ['name' => $key, 'php' => 'mixed', 'doc' => '', 'cast' => $v],
+    };
+};
+
+$observedProp = static function (string $key, string $type) use ($value): array {
+    $v = $value($key);
+
+    return match ($type) {
+        'string' => ['name' => $key, 'php' => '?string', 'doc' => '', 'cast' => "Cast::string({$v})"],
+        'int' => ['name' => $key, 'php' => '?int', 'doc' => '', 'cast' => "Cast::int({$v})"],
+        'float' => ['name' => $key, 'php' => '?float', 'doc' => '', 'cast' => "Cast::float({$v})"],
+        'bool' => ['name' => $key, 'php' => '?bool', 'doc' => '', 'cast' => "Cast::bool({$v})"],
+        'array' => ['name' => $key, 'php' => '?array', 'doc' => 'list<mixed>|null', 'cast' => "Cast::array({$v})"],
+        'object' => ['name' => $key, 'php' => '?array', 'doc' => 'array<string, mixed>|null', 'cast' => "Cast::array({$v})"],
+        default => ['name' => $key, 'php' => 'mixed', 'doc' => '', 'cast' => $v],
+    };
+};
+
+$generated = [];
+$nested = [];
+$report = [];
+
+$propsFor = static function (array $model) use ($modelProp, $validName): array {
+    $props = [];
+
+    foreach ($model['fields'] as $field) {
+        if ($validName($field['key']) && ! isset($props[$field['key']])) {
+            $props[$field['key']] = $modelProp($field);
+        }
+    }
+
+    return $props;
+};
+
+$collectNested = static function (array $model) use (&$nested, $models): void {
+    $queue = [$model];
+
+    while ($queue !== []) {
+        $current = array_pop($queue);
+
+        foreach ($current['fields'] as $field) {
+            $class = $field['class'] ?? null;
+
+            if ($class !== null && isset($models[$class]) && ! isset($nested[$class]) && ! str_ends_with($class, 'Hit')) {
+                $nested[$class] = true;
+                $queue[] = $models[$class];
+            }
+        }
+    }
+};
+
+foreach ($hitIndexes as $uid => $phpClass) {
+    $observed = $indexes[$uid]['attributes'] ?? [];
+    $types = $indexes[$uid]['types'] ?? [];
+
+    // Modèle Python qui recouvre le mieux les attributs observés (à égalité : même nom).
+    $best = null;
+    $bestScore = -1;
+
+    foreach ($pythonRoots as $python) {
+        $keys = array_column($models[$python]['fields'], 'key');
+        $score = count(array_intersect($keys, $observed)) * 2 + ($python === $phpClass ? 1 : 0);
+
+        if ($score > $bestScore) {
+            [$best, $bestScore] = [$python, $score];
+        }
+    }
+
+    $model = $models[$best] ?? ['fields' => []];
+    $props = $propsFor($model);
+    $collectNested($model);
+
+    $added = [];
+
+    // Type de repli : celui que la spec Directus déclare pour le même champ de la même collection.
+    $directusSchema = 'Items'.str_replace(' ', '', ucwords(str_replace('_', ' ', $uid)));
+    $directusType = static function (string $key) use ($schemas, $directusSchema): string {
+        $prop = $schemas[$directusSchema]['properties'][$key] ?? null;
+
+        return match ($prop['type'] ?? null) {
+            'integer' => 'int',
+            'number' => 'float',
+            'boolean' => 'bool',
+            'string' => 'string',
+            default => 'mixed',
+        };
+    };
+
+    foreach ($observed as $key) {
+        if ($validName($key) && ! isset($props[$key])) {
+            $type = $types[$key] ?? 'mixed';
+            $props[$key] = $observedProp($key, in_array($type, ['mixed', 'null'], true) ? $directusType($key) : $type);
+            $added[] = $key;
+        }
+    }
+
+    ksort($props);
+
+    $source = $best === $phpClass ? "modèle Python {$best}" : "modèle Python {$best} (le SDK Python l'associe à un autre index)";
+    $description = "Hit Meilisearch de l'index `{$uid}` ({$source}"
+        .($added !== [] ? ', complété par '.count($added).' attribut(s) observé(s)' : '').').';
+
+    file_put_contents("{$modelsDir}/{$phpClass}.php", $render('CoachBasket\\Ffbb\\Data\\Models', $phpClass, $description, array_values($props), ['INDEX' => $uid]));
+    $generated[] = $phpClass;
+    $report[] = sprintf('%s ← %s (+%d observés)', $phpClass, $best, count($added));
+}
+
+if (isset($models['Live'])) {
+    $props = $propsFor($models['Live']);
+    ksort($props);
+    $collectNested($models['Live']);
+    file_put_contents("{$modelsDir}/Live.php", $render('CoachBasket\\Ffbb\\Data\\Models', 'Live', 'Match en direct (json/lives.json), modèle Python Live.', array_values($props)));
+    $generated[] = 'Live';
+}
+
+ksort($nested);
+
+foreach (array_keys($nested) as $class) {
+    $props = $propsFor($models[$class]);
+    ksort($props);
+    $doc = trim((string) ($models[$class]['doc'] ?? ''));
+    $description = "Objet imbriqué {$class} (modèle Python, ".$models[$class]['file'].').'.($doc !== '' ? "\n *\n * {$doc}" : '');
+    file_put_contents("{$modelsDir}/{$class}.php", $render('CoachBasket\\Ffbb\\Data\\Models', $class, $description, array_values($props)));
+    $generated[] = $class;
+}
+
+fwrite(STDOUT, sprintf("%d DTOs Directus dans src/Data/\n%d DTOs de réponse dans src/Data/Models/\n  %s\n", count($map), count($generated), implode("\n  ", $report)));

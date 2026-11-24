@@ -49,35 +49,47 @@ Variables d'environnement reconnues :
 ## Premier parcours : de mon club à mon classement
 
 ```php
-// 1. Trouver le club : la recherche renvoie un résultat Meilisearch, avec les hits
-$club = $ffbb->searchOrganismes('Ostrevent')['hits'][0];
-// ['id' => '10238', 'code' => 'HDF0059038', 'nom' => 'OSTREVENT BASKET BALL EAA MONCHECOURT', ...]
+// 1. Trouver le club : la recherche renvoie un SearchResult, avec des hits typés
+$club = $ffbb->searchOrganismes('Ostrevent')->first();   // OrganismesHit
+$club->id;     // '10238'
+$club->code;   // 'HDF0059038'
+$club->nom;    // 'OSTREVENT BASKET BALL EAA MONCHECOURT'
 
 // 2. Ses équipes engagées cette saison
-$equipes = $ffbb->getEquipes((int) $club['id']);
+$equipes = $ffbb->getEquipes((int) $club->id);            // list<EngagementsItem>
 
 // 3. Choisir une équipe : ici la première U15 féminine
 $u15f = array_values(array_filter(
     $equipes,
-    fn (array $e) => str_contains($e['idCompetition']['nom'] ?? '', 'U15') && ($e['idCompetition']['sexe'] ?? '') === 'F',
+    fn ($e) => str_contains($e->idCompetition?->nom ?? '', 'U15') && $e->idCompetition?->sexe === 'F',
 ))[0];
 
 // 4. Classement et matchs de sa poule
-$pouleId = (int) $u15f['idPoule']['id'];
-$classement = $ffbb->getClassement($pouleId);
-$rencontres = $ffbb->listRencontresByPoule($pouleId);
+$pouleId = (int) $u15f->idPoule->id;
+$classement = $ffbb->getClassement($pouleId);              // list<PoulesClassementsItem>
+$rencontres = $ffbb->listRencontresByPoule($pouleId);      // list<RencontresItem>
 ```
 
 ## Forme des données
 
-Par souci de parité avec le SDK Python, les méthodes renvoient les **tableaux bruts** de Directus ou de Meilisearch :
+**Toutes les méthodes renvoient des objets typés** : l'IDE complète les propriétés et PHPStan vérifie les types.
 
-- un élément → `array<string, mixed>|null` (`null` si introuvable) ;
-- une liste → `list<array<string, mixed>>` (`[]` si vide) ;
-- une recherche → le résultat Meilisearch : `['hits' => [...], 'estimatedTotalHits' => 42, 'facetDistribution' => [...]]`.
+| Source | Type renvoyé | Exemple |
+|---|---|---|
+| un élément Directus | DTO de la collection, ou `null` si introuvable | `getOrganisme()` → `?OrganismesItem` |
+| une liste Directus | liste de DTOs (`[]` si vide) | `listRencontres()` → `list<RencontresItem>` |
+| une recherche | `SearchResult` dont les hits sont typés selon l'index | `searchSalles()` → `?SearchResult<SallesHit>` |
+| les matchs en direct | `list<Live>` | `getLives()` |
 
-Les relations Directus sont soit un identifiant, soit un sous-tableau quand le jeu de champs les développe
-(ex. `$equipe['idPoule']['nom']`). Pour travailler avec des objets typés, voir les [DTOs](07-dtos.md).
+Ce que garantissent les DTOs :
+
+- **toutes les propriétés sont nullables** : les données FFBB sont souvent partielles ;
+- **les conversions sont tolérantes** : `"1"` → `true`, `"72"` → `72`, et les dates sont des `DateTimeImmutable` ;
+- **une relation est toujours un objet** : `$equipe->idPoule` est un `PoulesItem`. Si Directus ne l'a pas développée,
+  seul `->id` est rempli (`->nom` vaut `null`) ;
+- **`->raw` (ou `toArray()`) conserve la réponse complète**, y compris les champs absents de la spec.
+
+Détails : [guide 07 — DTOs](07-dtos.md).
 
 ## Suite
 

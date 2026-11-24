@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use CoachBasket\Ffbb\Data\Models\OrganismesHit;
+use CoachBasket\Ffbb\Data\Models\SearchResult;
 use CoachBasket\Ffbb\Requests\Meilisearch\MultiSearch;
 use CoachBasket\Ffbb\Search\GeoSortOrder;
 use Saloon\Http\Faking\MockClient;
@@ -20,8 +22,11 @@ it('cherche un club et filtre les hits côté client', function () {
     $result = ffbb($mock)->searchOrganismes('Ostrevent');
     $body = $mock->getLastPendingRequest()->body()->all();
 
-    expect($result['hits'])->toHaveCount(1)
-        ->and($result['hits'][0]['id'])->toBe('10238')
+    expect($result)->toBeInstanceOf(SearchResult::class)
+        ->and($result->hits)->toHaveCount(1)
+        ->and($result->first())->toBeInstanceOf(OrganismesHit::class)
+        ->and($result->first()->id)->toBe('10238')
+        ->and($result->first()->code)->toBe('HDF0059038')
         ->and($body['queries'][0]['indexUid'])->toBe('ffbbserver_organismes')
         ->and($body['queries'][0]['q'])->toBe('Ostrevent')
         ->and($mock->getLastPendingRequest()->getUrl())->toBe('https://meilisearch-prod.ffbb.app/multi-search')
@@ -47,7 +52,7 @@ it('récupère les pages suivantes jusqu à estimatedTotalHits', function () {
 
     $result = ffbb($mock)->searchRencontres('', limit: 500);
 
-    expect($result['hits'])->toHaveCount(2500)
+    expect($result->hits)->toHaveCount(2500)
         ->and($bodies)->toBe([[0, 500], [500, 1000], [1500, 1000]]);
 });
 
@@ -81,6 +86,7 @@ it('interroge les 13 index pour la recherche universelle', function () {
     $results = ffbb($mock)->multiSearch('Ostrevent');
 
     expect($results)->toHaveCount(13)
+        ->and($results[0])->toBeInstanceOf(SearchResult::class)
         ->and($mock->getLastPendingRequest()->body()->all()['queries'])->toHaveCount(13);
 });
 

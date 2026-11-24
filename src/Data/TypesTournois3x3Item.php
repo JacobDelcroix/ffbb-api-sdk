@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_types_tournois3x3` (schéma OpenAPI ItemsFfbbserverTypesTournois3x3).
@@ -16,13 +17,13 @@ final readonly class TypesTournois3x3Item
     public const string COLLECTION = 'ffbbserver_types_tournois3x3';
 
     public function __construct(
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?int $id = null,
         public ?string $libelle = null,
         public mixed $logo = null,
         public ?string $type_league = null,
-        public TypesTournoisItem|string|int|null $type_tournois = null,
+        public ?TypesTournoisItem $type_tournois = null,
         public ?string $user_created = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
@@ -34,13 +35,13 @@ final readonly class TypesTournois3x3Item
     public static function fromArray(array $data): self
     {
         return new self(
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             id: Cast::int($data['id'] ?? null),
             libelle: Cast::string($data['libelle'] ?? null),
             logo: $data['logo'] ?? null,
             type_league: Cast::string($data['type_league'] ?? null),
-            type_tournois: Cast::relation($data['type_tournois'] ?? null, TypesTournoisItem::class),
+            type_tournois: Cast::related($data['type_tournois'] ?? null, TypesTournoisItem::class),
             user_created: Cast::string($data['user_created'] ?? null),
             raw: $data,
         );
@@ -55,7 +56,9 @@ final readonly class TypesTournois3x3Item
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;

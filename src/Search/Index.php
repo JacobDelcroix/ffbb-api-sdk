@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Search;
 
 use CoachBasket\Ffbb\Config;
+use CoachBasket\Ffbb\Data\Models;
 
 /**
  * Index Meilisearch interrogés par l'app FFBB, avec leurs facettes par défaut
@@ -74,6 +75,27 @@ enum Index: string
             self::Rss => ['categories', 'tags'],
             self::Galeries => ['tags', 'type'],
             self::Terrains, self::Competitions, self::Salles => null,
+        };
+    }
+
+    /**
+     * DTO des hits de cet index.
+     *
+     * @return class-string
+     */
+    public function hitClass(): string
+    {
+        return match ($this) {
+            self::Organismes => Models\OrganismesHit::class,
+            self::Rencontres => Models\RencontresHit::class,
+            self::Terrains => Models\TerrainsHit::class,
+            self::Competitions => Models\CompetitionsHit::class,
+            self::Salles => Models\SallesHit::class,
+            self::Tournois => Models\TournoisHit::class,
+            self::Pratiques => Models\PratiquesHit::class,
+            self::Engagements => Models\EngagementsHit::class,
+            self::Formations => Models\FormationsHit::class,
+            self::News, self::YoutubeVideos, self::Rss, self::Galeries => Models\ContentHit::class,
         };
     }
 }

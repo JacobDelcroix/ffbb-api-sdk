@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Directus;
 
 use CoachBasket\Ffbb\Connectors\ApiFfbbConnector;
+use CoachBasket\Ffbb\Data\Item;
 use CoachBasket\Ffbb\Data\ItemMap;
 use CoachBasket\Ffbb\Exceptions\FfbbNotFoundException;
 use CoachBasket\Ffbb\Requests\Directus\GetItem;
@@ -12,7 +13,6 @@ use CoachBasket\Ffbb\Requests\Directus\ListItems;
 use CoachBasket\Ffbb\Support\Json;
 use CoachBasket\Ffbb\Support\Transport;
 use Generator;
-use LogicException;
 
 /**
  * Query builder Directus complet, pour aller au-delà des méthodes reprises du SDK Python.
@@ -27,6 +27,11 @@ use LogicException;
  *         ->sort('-date_rencontre')
  *         ->limit(50)
  *         ->get();
+ *
+ * Les résultats sont des DTOs (RencontresItem…), ou des Item génériques pour une collection sans DTO.
+ * Les variantes *Raw() renvoient les tableaux Directus, utiles pour les agrégats.
+ *
+ * @template T of object
  */
 final class QueryBuilder
 {
@@ -63,10 +68,26 @@ final class QueryBuilder
 
     private ?string $meta = null;
 
+    private readonly string $collection;
+
+    /** @var class-string */
+    private readonly string $dtoClass;
+
+    /**
+     * @param  class-string<T>|string  $collection  nom de collection (« ffbbserver_rencontres ») ou classe DTO
+     */
     public function __construct(
         private readonly ApiFfbbConnector $connector,
-        private readonly string $collection,
-    ) {}
+        string $collection,
+    ) {
+        if (class_exists($collection) && defined($collection.'::COLLECTION')) {
+            $this->dtoClass = $collection;
+            $this->collection = (string) constant($collection.'::COLLECTION');
+        } else {
+            $this->collection = $collection;
+            $this->dtoClass = ItemMap::for($collection) ?? Item::class;
+        }
+    }
 
     /**
      * Champs à renvoyer, notation pointée pour les relations ("idPoule.nom", "engagements.*", "*").
@@ -303,45 +324,27 @@ final class QueryBuilder
     }
 
     /**
-     * Les éléments correspondant à la requête.
+     * Les éléments correspondant à la requête, hydratés dans le DTO de la collection.
+     *
+     * @return list<T>
+     */
+    public function get(): array
+    {
+        return $this->dtoClass::collect($this->getRaw());
+    }
+
+    /**
+     * Les éléments correspondant à la requête, en tableaux Directus (ex. lignes d'agrégat).
      *
      * @return list<array<string, mixed>>
      */
-    public function get(): array
+    public function getRaw(): array
     {
         $data = $this->raw()['data'] ?? [];
 
         return is_array($data) && array_is_list($data) ? array_values(array_filter($data, 'is_array')) : [];
     }
 
-    /**
-     * Les éléments hydratés dans le DTO de la collection (src/Data, généré depuis la spec OpenAPI).
-     *
-     * @return list<object>
-     */
-    public function getData(): array
-    {
-        return $this->dtoClass()::collect($this->get());
-    }
-
-    /**
-     * Un élément par identifiant, hydraté dans son DTO.
-     */
-    public function findData(string|int $id): ?object
-    {
-        $item = $this->find($id);
-
-        return $item === null ? null : $this->dtoClass()::fromArray($item);
-    }
-
-    /**
-     * @return class-string
-     */
-    private function dtoClass(): string
-    {
-        return ItemMap::for($this->collection)
-            ?? throw new LogicException("Aucun DTO généré pour la collection {$this->collection}.");
-    }
 
     /**
      * Réponse brute Directus : ['data' => [...], 'meta' => [...]].
@@ -366,26 +369,50 @@ final class QueryBuilder
     /**
      * Le premier élément correspondant à la requête (limit 1).
      *
+     * @return T|null
+     */
+    public function first(): ?object
+    {
+        $item = $this->firstRaw();
+
+        return $item === null ? null : $this->dtoClass::fromArray($item);
+    }
+
+    /**
+     * Le premier élément correspondant à la requête, en tableau Directus.
+     *
      * @return array<string, mixed>|null
      */
-    public function first(): ?array
+    public function firstRaw(): ?array
     {
         $previous = $this->limit;
         $this->limit = 1;
 
         try {
-            return $this->get()[0] ?? null;
+            return $this->getRaw()[0] ?? null;
         } finally {
             $this->limit = $previous;
         }
     }
 
     /**
-     * Un élément par identifiant (seuls fields, deep et alias s'appliquent).
+     * Un élément par identifiant, hydraté dans son DTO (seuls fields, deep et alias s'appliquent).
+     *
+     * @return T|null
+     */
+    public function find(string|int $id): ?object
+    {
+        $item = $this->findRaw($id);
+
+        return $item === null ? null : $this->dtoClass::fromArray($item);
+    }
+
+    /**
+     * Un élément par identifiant, en tableau Directus.
      *
      * @return array<string, mixed>|null
      */
-    public function find(string|int $id): ?array
+    public function findRaw(string|int $id): ?array
     {
         $query = array_intersect_key($this->toQuery(), array_flip(['fields', 'deep', 'alias']));
 
@@ -422,9 +449,9 @@ final class QueryBuilder
     }
 
     /**
-     * Itère sur tous les résultats, page par page.
+     * Itère sur tous les résultats (DTOs), page par page.
      *
-     * @return Generator<int, array<string, mixed>>
+     * @return Generator<int, T>
      */
     public function cursor(int $pageSize = 100): Generator
     {
@@ -435,10 +462,10 @@ final class QueryBuilder
             $clone->limit = $pageSize;
             $clone->offset = $offset;
             $clone->page = null;
-            $batch = $clone->get();
+            $batch = $clone->getRaw();
 
             foreach ($batch as $item) {
-                yield $item;
+                yield $this->dtoClass::fromArray($item);
             }
 
             if (count($batch) < $pageSize) {

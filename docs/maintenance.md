@@ -9,7 +9,8 @@ Chaque source a son mécanisme.
 Workflow : `.github/workflows/ffbb-discovery.yml`, tous les jours à 04:23 UTC (et en manuel).
 
 1. Récupère `server/specs/oas` (spec OpenAPI Directus) et la normalise (clés triées, `info.version` retirée).
-2. Sonde chaque index Meilisearch (`q=""`, 20 hits) et relève les attributs observés.
+2. Sonde chaque index Meilisearch (`q=""`, 20 hits), y compris tous ceux de l'instantané précédent, et relève les
+   attributs observés et leur type JSON. Ces types complètent les DTOs de hits pour les attributs que le SDK Python ne modélise pas.
 3. Compare avec `resources/discovery/openapi.json` et `resources/discovery/indexes.json` (`SchemaDiff`).
 4. En cas de changement : met à jour les instantanés, **régénère les DTOs**, lance les tests et ouvre une PR
    `chore/ffbb-discovery` avec `resources/discovery/summary.md` en description.
@@ -32,7 +33,9 @@ Workflow : `.github/workflows/upstream-sync.yml`, tous les jours à 05:41 UTC (e
 2. `tools/extract_upstream.py` lit **statiquement** (module `ast`, aucun code exécuté) :
    - `config.py` → `resources/upstream/config.json` (URLs, User-Agents, endpoints, index, facettes, jetons de repli) ;
    - les façades → `resources/upstream/methods.json` (méthodes publiques synchrones) ;
-   - les classes `*Fields` → `resources/upstream/fields.json`, puis `src/Fields/FieldLists.php` est régénéré.
+   - les classes `*Fields` → `resources/upstream/fields.json`, puis `src/Fields/FieldLists.php` est régénéré ;
+   - les modèles de réponse (`*Hit`, `Live` et leurs objets imbriqués) → `resources/upstream/models.json`
+     (`tools/extract_models.py`), puis les DTOs de `src/Data/Models/` sont régénérés.
 3. `tests/Unit/UpstreamParityTest.php` échoue si une méthode, un endpoint, un User-Agent, une facette
    ou une liste de champs diverge : la PR montre exactement ce qu'il reste à porter.
 4. Si du code Python a changé (hors modèles), et si le secret `ANTHROPIC_API_KEY` est défini,

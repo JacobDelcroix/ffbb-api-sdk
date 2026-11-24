@@ -35,7 +35,7 @@ it('réessaie sur une erreur 5xx', function () {
         directus(['id' => '1', 'nomEquipe1' => 'OSTREVENT']),
     ]);
 
-    expect(ffbb($mock)->getRencontre('1')['nomEquipe1'])->toBe('OSTREVENT');
+    expect(ffbb($mock)->getRencontre('1')->nomEquipe1)->toBe('OSTREVENT');
     expect($mock->getRecordedResponses())->toHaveCount(2);
 });
 
@@ -55,7 +55,7 @@ it('change de User-Agent sur un blocage BunnyCDN puis réussit', function () {
         },
     ]);
 
-    expect(ffbb($mock)->getRencontre('1'))->toBe(['id' => '1'])
+    expect(ffbb($mock)->getRencontre('1')->id)->toBe('1')
         ->and($agents)->toBe([Config::ANDROID_USER_AGENT, Config::ANDROID_LEGACY_USER_AGENT]);
 });
 
@@ -64,4 +64,17 @@ it('ne réessaie pas un 403 Directus (JSON)', function () {
 
     expect(fn () => ffbb($mock)->getRencontre('1'))->toThrow(FfbbAuthenticationException::class, 'denied by Directus');
     expect($mock->getRecordedResponses())->toHaveCount(1);
+});
+
+it('type la configuration et les lives', function () {
+    $mock = new MockClient([
+        \CoachBasket\Ffbb\Requests\Directus\GetConfiguration::class => directus(['id' => 1, 'key_dh' => 'dh', 'key_ms' => 'ms', 'android_version' => '2.4.1']),
+        \CoachBasket\Ffbb\Requests\Directus\GetLives::class => MockResponse::make([['matchId' => 1, 'teamName_home' => 'OSTREVENT']]),
+    ]);
+    $client = ffbb($mock);
+
+    expect($client->getConfiguration())->toBeInstanceOf(\CoachBasket\Ffbb\Data\ConfigurationItem::class)
+        ->and($client->getConfiguration()->android_version)->toBe('2.4.1')
+        ->and($client->getLives()[0])->toBeInstanceOf(\CoachBasket\Ffbb\Data\Models\Live::class)
+        ->and($client->getLives()[0]->teamName_home)->toBe('OSTREVENT');
 });

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace CoachBasket\Ffbb\Data;
 
 use CoachBasket\Ffbb\Support\Cast;
+use DateTimeImmutable;
 
 /**
  * Collection Directus `ffbbserver_types_pratiques_sportives` (schéma OpenAPI ItemsFfbbserverTypesPratiquesSportives).
@@ -17,8 +18,8 @@ final readonly class TypesPratiquesSportivesItem
 
     public function __construct(
         public ?string $code = null,
-        public ?string $date_created = null,
-        public ?string $date_updated = null,
+        public ?DateTimeImmutable $date_created = null,
+        public ?DateTimeImmutable $date_updated = null,
         public ?string $id = null,
         public ?string $libelle = null,
         /** @var array<string, mixed> Réponse brute complète */
@@ -32,8 +33,8 @@ final readonly class TypesPratiquesSportivesItem
     {
         return new self(
             code: Cast::string($data['code'] ?? null),
-            date_created: Cast::string($data['date_created'] ?? null),
-            date_updated: Cast::string($data['date_updated'] ?? null),
+            date_created: Cast::dateTime($data['date_created'] ?? null),
+            date_updated: Cast::dateTime($data['date_updated'] ?? null),
             id: Cast::string($data['id'] ?? null),
             libelle: Cast::string($data['libelle'] ?? null),
             raw: $data,
@@ -49,7 +50,9 @@ final readonly class TypesPratiquesSportivesItem
         $out = [];
 
         foreach ($items as $item) {
-            $out[] = self::fromArray($item);
+            if (is_array($item)) {
+                $out[] = self::fromArray($item);
+            }
         }
 
         return $out;
