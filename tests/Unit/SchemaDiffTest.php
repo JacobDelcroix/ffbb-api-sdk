@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use CoachBasket\Ffbb\Data\RencontresItem;
 use CoachBasket\Ffbb\Discovery\Discoverer;
 use CoachBasket\Ffbb\Discovery\SchemaDiff;
 
@@ -57,7 +58,7 @@ it('ne signale rien si seules les métadonnées volatiles changent', function ()
 it('n a pas de dérive entre la spec enregistrée et les DTOs générés', function () {
     $spec = json_decode((string) file_get_contents(__DIR__.'/../../resources/discovery/openapi.json'), true);
     $props = array_keys($spec['components']['schemas']['ItemsFfbbserverRencontres']['properties']);
-    $constructor = (new ReflectionClass(\CoachBasket\Ffbb\Data\RencontresItem::class))->getConstructor();
+    $constructor = (new ReflectionClass(RencontresItem::class))->getConstructor();
     $params = array_map(static fn (ReflectionParameter $p): string => $p->getName(), $constructor->getParameters());
 
     expect(array_values(array_diff($props, $params)))->toBe([]);

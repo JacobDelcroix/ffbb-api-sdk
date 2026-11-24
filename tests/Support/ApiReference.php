@@ -393,7 +393,7 @@ final class ApiReference
         $return = $method->hasReturnType() ? ': '.self::reflectionType($method->getReturnType(), $method->getDeclaringClass()->getName()) : '';
         $static = $method->isStatic() ? 'static ' : '';
 
-        return "public {$static}function {$method->getName()}(".implode(', ', $params).")".$return;
+        return "public {$static}function {$method->getName()}(".implode(', ', $params).')'.$return;
     }
 
     private static function typeOf(ReflectionParameter $param): string

@@ -109,7 +109,7 @@ final class TokenManager
     /**
      * Lit items/configuration sur le premier hôte qui répond.
      *
-     * @return array<string, mixed>|null  la configuration (key_dh, key_ms, ios_version…)
+     * @return array<string, mixed>|null la configuration (key_dh, key_ms, ios_version…)
      */
     public function fetchConfiguration(): ?array
     {

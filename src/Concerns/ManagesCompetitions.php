@@ -14,10 +14,10 @@ use CoachBasket\Ffbb\Fallback\MeilisearchFallback;
 use CoachBasket\Ffbb\Fallback\PouleCompetitionRegistry;
 use CoachBasket\Ffbb\Fields\FieldSet;
 use CoachBasket\Ffbb\Fields\QueryFields;
-use CoachBasket\Ffbb\Support\Json;
-use CoachBasket\Ffbb\Support\Validator;
 use CoachBasket\Ffbb\Requests\Directus\GetItem;
 use CoachBasket\Ffbb\Requests\Directus\ListItems;
+use CoachBasket\Ffbb\Support\Json;
+use CoachBasket\Ffbb\Support\Validator;
 use Throwable;
 
 /**

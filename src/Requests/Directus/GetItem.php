@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace CoachBasket\Ffbb\Requests\Directus;
 
+use CoachBasket\Ffbb\Config;
 use Saloon\CachePlugin\Traits\HasCaching;
 use Saloon\Enums\Method;
-use CoachBasket\Ffbb\Config;
 use Saloon\Http\Request;
 use Saloon\Traits\Plugins\HasTimeout;
 

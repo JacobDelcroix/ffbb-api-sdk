@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use CoachBasket\Ffbb\Data\RencontresItem;
 use CoachBasket\Ffbb\Exceptions\ValidationException;
 use CoachBasket\Ffbb\Requests\Directus\ListItems;
 use Saloon\Http\Faking\MockClient;
@@ -115,6 +116,6 @@ it('renvoie des DTOs depuis le query builder', function () {
 
     $rencontres = ffbb($mock)->directus('ffbbserver_rencontres')->getData();
 
-    expect($rencontres[0])->toBeInstanceOf(\CoachBasket\Ffbb\Data\RencontresItem::class)
+    expect($rencontres[0])->toBeInstanceOf(RencontresItem::class)
         ->and($rencontres[0]->joue)->toBeTrue();
 });
