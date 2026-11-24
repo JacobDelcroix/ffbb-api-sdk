@@ -421,8 +421,16 @@ foreach ($hitIndexes as $uid => $phpClass) {
 
     foreach ($observed as $key) {
         if ($validName($key) && ! isset($props[$key])) {
-            $type = $types[$key] ?? 'mixed';
-            $props[$key] = $observedProp($key, in_array($type, ['mixed', 'null'], true) ? $directusType($key) : $type);
+            // Priorité : type déclaré par Directus, puis type observé dans les hits (souvent des
+            // chaînes pour des nombres côté Meilisearch, d'où la préférence pour la spec).
+            $type = $directusType($key);
+
+            if ($type === 'mixed') {
+                $observedType = $types[$key] ?? 'mixed';
+                $type = $observedType === 'null' ? 'mixed' : $observedType;
+            }
+
+            $props[$key] = $observedProp($key, $type);
             $added[] = $key;
         }
     }

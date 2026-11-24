@@ -48,14 +48,16 @@ $summary = $diff->toMarkdown();
 fwrite(STDOUT, $summary);
 
 if (! $dryRun && $diff->hasChanges()) {
+    // Les deux instantanés d'abord : les DTOs Meilisearch dépendent des attributs observés.
     if ($spec !== null) {
         $write('openapi.json', $spec);
-        passthru(escapeshellarg(PHP_BINARY).' '.escapeshellarg($root.'/bin/generate-dtos'));
-        passthru(escapeshellarg(PHP_BINARY).' '.escapeshellarg($root.'/bin/generate-api-reference'));
     }
 
     $write('indexes.json', $indexes);
     file_put_contents("{$dir}/summary.md", $summary);
+
+    passthru(escapeshellarg(PHP_BINARY).' '.escapeshellarg($root.'/bin/generate-dtos'));
+    passthru(escapeshellarg(PHP_BINARY).' '.escapeshellarg($root.'/bin/generate-api-reference'));
 }
 
 if ($output = getenv('GITHUB_OUTPUT')) {
