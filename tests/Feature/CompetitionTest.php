@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use CoachBasket\Ffbb\Config;
+use CoachBasket\Ffbb\Data\CompetitionsItem;
+use CoachBasket\Ffbb\Data\RencontresItem;
 use CoachBasket\Ffbb\Exceptions\FfbbAuthenticationException;
 use CoachBasket\Ffbb\Requests\Directus\GetItem;
 use CoachBasket\Ffbb\Requests\Directus\ListItems;
@@ -20,7 +22,7 @@ it('passe par le listing filtré quand Directus refuse l accès direct (saison a
     $competition = ffbb($mock)->getCompetition(500);
     $query = $mock->getLastPendingRequest()->query()->all();
 
-    expect($competition)->toBeInstanceOf(\CoachBasket\Ffbb\Data\CompetitionsItem::class)
+    expect($competition)->toBeInstanceOf(CompetitionsItem::class)
         ->and($competition->nom)->toBe('U15 F D2')
         ->and($query['filter[id][_eq]'])->toBe('500')
         ->and($query['limit'])->toBe('1');
@@ -77,7 +79,7 @@ it('recalcule le classement depuis les rencontres Meilisearch', function () {
 
     expect($poule->nom)->toBe('Poule A')
         ->and($poule->rencontres)->toHaveCount(2)
-        ->and($poule->rencontres[0])->toBeInstanceOf(\CoachBasket\Ffbb\Data\RencontresItem::class)
+        ->and($poule->rencontres[0])->toBeInstanceOf(RencontresItem::class)
         // DOUAI : 1 victoire + 1 défaite = 3 pts ; OSTREVENT : 1 victoire = 2 pts ; LENS : 1 défaite = 1 pt.
         ->and($classement[0]->organisme->nom)->toBe('DOUAI')
         ->and($classement[0]->points)->toBe(3)

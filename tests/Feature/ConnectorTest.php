@@ -3,9 +3,13 @@
 declare(strict_types=1);
 
 use CoachBasket\Ffbb\Config;
+use CoachBasket\Ffbb\Data\ConfigurationItem;
+use CoachBasket\Ffbb\Data\Models\Live;
 use CoachBasket\Ffbb\Exceptions\FfbbAuthenticationException;
 use CoachBasket\Ffbb\Exceptions\FfbbServerException;
+use CoachBasket\Ffbb\Requests\Directus\GetConfiguration;
 use CoachBasket\Ffbb\Requests\Directus\GetItem;
+use CoachBasket\Ffbb\Requests\Directus\GetLives;
 use Saloon\Http\Faking\MockClient;
 use Saloon\Http\Faking\MockResponse;
 use Saloon\Http\PendingRequest;
@@ -68,13 +72,13 @@ it('ne réessaie pas un 403 Directus (JSON)', function () {
 
 it('type la configuration et les lives', function () {
     $mock = new MockClient([
-        \CoachBasket\Ffbb\Requests\Directus\GetConfiguration::class => directus(['id' => 1, 'key_dh' => 'dh', 'key_ms' => 'ms', 'android_version' => '2.4.1']),
-        \CoachBasket\Ffbb\Requests\Directus\GetLives::class => MockResponse::make([['matchId' => 1, 'teamName_home' => 'OSTREVENT']]),
+        GetConfiguration::class => directus(['id' => 1, 'key_dh' => 'dh', 'key_ms' => 'ms', 'android_version' => '2.4.1']),
+        GetLives::class => MockResponse::make([['matchId' => 1, 'teamName_home' => 'OSTREVENT']]),
     ]);
     $client = ffbb($mock);
 
-    expect($client->getConfiguration())->toBeInstanceOf(\CoachBasket\Ffbb\Data\ConfigurationItem::class)
+    expect($client->getConfiguration())->toBeInstanceOf(ConfigurationItem::class)
         ->and($client->getConfiguration()->android_version)->toBe('2.4.1')
-        ->and($client->getLives()[0])->toBeInstanceOf(\CoachBasket\Ffbb\Data\Models\Live::class)
+        ->and($client->getLives()[0])->toBeInstanceOf(Live::class)
         ->and($client->getLives()[0]->teamName_home)->toBe('OSTREVENT');
 });

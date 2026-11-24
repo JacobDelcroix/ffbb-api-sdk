@@ -345,7 +345,6 @@ final class QueryBuilder
         return is_array($data) && array_is_list($data) ? array_values(array_filter($data, 'is_array')) : [];
     }
 
-
     /**
      * Réponse brute Directus : ['data' => [...], 'meta' => [...]].
      *
