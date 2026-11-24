@@ -1,4 +1,19 @@
 {
+    "edf_matches": {
+        "available": false,
+        "attributes": [],
+        "estimatedTotalHits": null
+    },
+    "edf_players": {
+        "available": false,
+        "attributes": [],
+        "estimatedTotalHits": null
+    },
+    "edf_teams": {
+        "available": false,
+        "attributes": [],
+        "estimatedTotalHits": null
+    },
     "ffbbnational_galeries": {
         "available": true,
         "attributes": [
@@ -73,7 +88,7 @@
             "type",
             "ville_salle"
         ],
-        "estimatedTotalHits": 649
+        "estimatedTotalHits": 704
     },
     "ffbbnational_rss": {
         "available": true,
@@ -101,7 +116,7 @@
             "title",
             "type"
         ],
-        "estimatedTotalHits": 4465
+        "estimatedTotalHits": 4563
     },
     "ffbbserver_competitions": {
         "available": true,
@@ -143,7 +158,7 @@
             "typeCompetition",
             "typeCompetitionGenerique"
         ],
-        "estimatedTotalHits": 3717
+        "estimatedTotalHits": 3713
     },
     "ffbbserver_engagements": {
         "available": true,
@@ -210,7 +225,7 @@
             "title",
             "type"
         ],
-        "estimatedTotalHits": 121
+        "estimatedTotalHits": 127
     },
     "ffbbserver_organismes": {
         "available": true,
@@ -311,6 +326,11 @@
         ],
         "estimatedTotalHits": 5000
     },
+    "ffbbserver_sessions": {
+        "available": false,
+        "attributes": [],
+        "estimatedTotalHits": null
+    },
     "ffbbserver_terrains": {
         "available": true,
         "attributes": [
@@ -367,64 +387,7 @@
             "tournoiTypes3x3",
             "urlOrganisateur"
         ],
-        "estimatedTotalHits": 25
-    },
-    "ffbbsite_faq": {
-        "available": true,
-        "attributes": [
-            "answer",
-            "category",
-            "date_published",
-            "id",
-            "question",
-            "subcategories",
-            "thumbnail",
-            "type"
-        ],
-        "estimatedTotalHits": 187
-    },
-    "ffbbsite_jobs": {
-        "available": true,
-        "attributes": [
-            "asset",
-            "author",
-            "category",
-            "city",
-            "contract_duration",
-            "contract_specificities",
-            "contract_type",
-            "date_published",
-            "date_published_timestamp",
-            "degree",
-            "departement",
-            "domain",
-            "experience",
-            "id",
-            "job_description",
-            "job_start",
-            "job_start_filter",
-            "job_start_timestamp",
-            "lieu",
-            "mail",
-            "openings",
-            "phone",
-            "postal_code",
-            "profil",
-            "reference",
-            "region",
-            "salary",
-            "service",
-            "structure",
-            "structure_linked",
-            "studies",
-            "terms_contact",
-            "thumbnail",
-            "title",
-            "type",
-            "type_filter",
-            "unit"
-        ],
-        "estimatedTotalHits": 6
+        "estimatedTotalHits": 23
     },
     "ffbbsite_news": {
         "available": true,
@@ -451,33 +414,22 @@
             "title",
             "type"
         ],
-        "estimatedTotalHits": 6469
+        "estimatedTotalHits": 6567
     },
-    "ffbbsite_pages": {
-        "available": true,
-        "attributes": [
-            "categories",
-            "category",
-            "codes",
-            "content",
-            "date_published",
-            "id",
-            "image",
-            "link",
-            "navigation_type",
-            "permalink",
-            "private",
-            "private_type",
-            "thumbnail",
-            "title",
-            "type"
-        ],
-        "estimatedTotalHits": 351
-    },
-    "youtube_playlists": {
-        "available": true,
+    "genius_sport_matches": {
+        "available": false,
         "attributes": [],
-        "estimatedTotalHits": 0
+        "estimatedTotalHits": null
+    },
+    "genius_sports_live_logs": {
+        "available": false,
+        "attributes": [],
+        "estimatedTotalHits": null
+    },
+    "rematch_videos": {
+        "available": false,
+        "attributes": [],
+        "estimatedTotalHits": null
     },
     "youtube_videos": {
         "available": true,
@@ -507,6 +459,6 @@
             "type",
             "viewCount"
         ],
-        "estimatedTotalHits": 1872
+        "estimatedTotalHits": 1875
     }
 }
