@@ -13,6 +13,13 @@ use CoachBasket\Ffbb\Support\Cast;
  */
 final readonly class IDOrganismeEquipe1Logo
 {
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [];
+
     public function __construct(
         public ?string $gradient_color = null,
         public ?string $id = null,

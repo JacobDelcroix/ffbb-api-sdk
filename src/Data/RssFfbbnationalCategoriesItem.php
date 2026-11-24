@@ -15,9 +15,21 @@ final readonly class RssFfbbnationalCategoriesItem
 {
     public const string COLLECTION = 'ffbbnational_rss_ffbbnational_categories';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'ffbbnational_categories' => 'ffbbnational_categories_id',
+        'ffbbnational_rss' => 'ffbbnational_rss_id',
+    ];
+
     public function __construct(
-        public ?CategoriesItem $ffbbnational_categories_id = null,
-        public ?RssItem $ffbbnational_rss_id = null,
+        /** Champ Directus : ffbbnational_categories_id */
+        public ?CategoriesItem $ffbbnational_categories = null,
+        /** Champ Directus : ffbbnational_rss_id */
+        public ?RssItem $ffbbnational_rss = null,
         public ?int $id = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
@@ -29,8 +41,8 @@ final readonly class RssFfbbnationalCategoriesItem
     public static function fromArray(array $data): self
     {
         return new self(
-            ffbbnational_categories_id: Cast::related($data['ffbbnational_categories_id'] ?? null, CategoriesItem::class),
-            ffbbnational_rss_id: Cast::related($data['ffbbnational_rss_id'] ?? null, RssItem::class),
+            ffbbnational_categories: Cast::related($data['ffbbnational_categories_id'] ?? null, CategoriesItem::class),
+            ffbbnational_rss: Cast::related($data['ffbbnational_rss_id'] ?? null, RssItem::class),
             id: Cast::int($data['id'] ?? null),
             raw: $data,
         );

@@ -15,9 +15,21 @@ final readonly class GaleriesFfbbnationalTagsItem
 {
     public const string COLLECTION = 'ffbbnational_galeries_ffbbnational_tags';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'ffbbnational_galeries' => 'ffbbnational_galeries_id',
+        'ffbbnational_tags' => 'ffbbnational_tags_id',
+    ];
+
     public function __construct(
-        public ?GaleriesItem $ffbbnational_galeries_id = null,
-        public ?TagsItem $ffbbnational_tags_id = null,
+        /** Champ Directus : ffbbnational_galeries_id */
+        public ?GaleriesItem $ffbbnational_galeries = null,
+        /** Champ Directus : ffbbnational_tags_id */
+        public ?TagsItem $ffbbnational_tags = null,
         public ?int $id = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
@@ -29,8 +41,8 @@ final readonly class GaleriesFfbbnationalTagsItem
     public static function fromArray(array $data): self
     {
         return new self(
-            ffbbnational_galeries_id: Cast::related($data['ffbbnational_galeries_id'] ?? null, GaleriesItem::class),
-            ffbbnational_tags_id: Cast::related($data['ffbbnational_tags_id'] ?? null, TagsItem::class),
+            ffbbnational_galeries: Cast::related($data['ffbbnational_galeries_id'] ?? null, GaleriesItem::class),
+            ffbbnational_tags: Cast::related($data['ffbbnational_tags_id'] ?? null, TagsItem::class),
             id: Cast::int($data['id'] ?? null),
             raw: $data,
         );

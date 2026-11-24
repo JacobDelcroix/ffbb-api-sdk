@@ -15,6 +15,16 @@ final readonly class EngagementsHit
 {
     public const string INDEX = 'ffbbserver_engagements';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'competition' => 'idCompetition',
+        'poule' => 'idPoule',
+    ];
+
     public function __construct(
         public ?Geo $_geo = null,
         public ?string $age = null,
@@ -24,11 +34,11 @@ final readonly class EngagementsHit
         public ?string $codeClub = null,
         public ?string $codeComite = null,
         public ?string $codeLigue = null,
+        /** Champ Directus : idCompetition */
+        public ?CompetitionOrigine $competition = null,
         public ?string $competitionsUrl = null,
         public ?string $gradient_color = null,
         public ?string $id = null,
-        public ?CompetitionOrigine $idCompetition = null,
-        public ?Poule $idPoule = null,
         public ?string $logo = null,
         public ?Categorie $niveau = null,
         public ?string $nom = null,
@@ -42,6 +52,8 @@ final readonly class EngagementsHit
         public ?string $nomOrganisme = null,
         public ?string $nomUsuel = null,
         public ?string $numeroEquipe = null,
+        /** Champ Directus : idPoule */
+        public ?Poule $poule = null,
         public ?string $sexe = null,
         public ?string $thumbnail = null,
         /** @var array<string, mixed> Réponse brute complète */
@@ -62,11 +74,10 @@ final readonly class EngagementsHit
             codeClub: Cast::string($data['codeClub'] ?? null),
             codeComite: Cast::string($data['codeComite'] ?? null),
             codeLigue: Cast::string($data['codeLigue'] ?? null),
+            competition: Cast::object($data['idCompetition'] ?? null, CompetitionOrigine::class),
             competitionsUrl: Cast::string($data['competitionsUrl'] ?? null),
             gradient_color: Cast::string($data['gradient_color'] ?? null),
             id: Cast::string($data['id'] ?? null),
-            idCompetition: Cast::object($data['idCompetition'] ?? null, CompetitionOrigine::class),
-            idPoule: Cast::object($data['idPoule'] ?? null, Poule::class),
             logo: Cast::string($data['logo'] ?? null),
             niveau: Cast::object($data['niveau'] ?? null, Categorie::class),
             nom: Cast::string($data['nom'] ?? null),
@@ -80,6 +91,7 @@ final readonly class EngagementsHit
             nomOrganisme: Cast::string($data['nomOrganisme'] ?? null),
             nomUsuel: Cast::string($data['nomUsuel'] ?? null),
             numeroEquipe: Cast::string($data['numeroEquipe'] ?? null),
+            poule: Cast::object($data['idPoule'] ?? null, Poule::class),
             sexe: Cast::string($data['sexe'] ?? null),
             thumbnail: Cast::string($data['thumbnail'] ?? null),
             raw: $data,

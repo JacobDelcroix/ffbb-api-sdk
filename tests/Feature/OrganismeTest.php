@@ -32,8 +32,8 @@ it('renvoie uniquement les équipes engagées', function () {
     $equipes = $client->getEquipes(10238);
 
     expect($equipes)->toHaveCount(1)
-        ->and($equipes[0]->idCompetition->nom)->toBe('U15 Féminine D2')
-        ->and($equipes[0]->idPoule->nom)->toBe('Poule A')
+        ->and($equipes[0]->competition->nom)->toBe('U15 Féminine D2')
+        ->and($equipes[0]->poule->nom)->toBe('Poule A')
         ->and($client->registry->get('900'))->toBe(['competitionId' => '500', 'pouleNom' => 'Poule A']);
 });
 

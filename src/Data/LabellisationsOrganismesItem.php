@@ -16,14 +16,26 @@ final readonly class LabellisationsOrganismesItem
 {
     public const string COLLECTION = 'ffbbserver_labellisations_organismes';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'labellisationProgramme' => 'idLabellisationProgramme',
+        'organisme' => 'idOrganisme',
+    ];
+
     public function __construct(
         public ?DateTimeImmutable $date_created = null,
         public ?DateTimeImmutable $date_updated = null,
         public ?DateTimeImmutable $debut = null,
         public ?DateTimeImmutable $fin = null,
         public ?string $id = null,
-        public ?LabellisationProgrammeItem $idLabellisationProgramme = null,
-        public ?OrganismesItem $idOrganisme = null,
+        /** Champ Directus : idLabellisationProgramme */
+        public ?LabellisationProgrammeItem $labellisationProgramme = null,
+        /** Champ Directus : idOrganisme */
+        public ?OrganismesItem $organisme = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
     ) {}
@@ -39,8 +51,8 @@ final readonly class LabellisationsOrganismesItem
             debut: Cast::dateTime($data['debut'] ?? null),
             fin: Cast::dateTime($data['fin'] ?? null),
             id: Cast::string($data['id'] ?? null),
-            idLabellisationProgramme: Cast::related($data['idLabellisationProgramme'] ?? null, LabellisationProgrammeItem::class),
-            idOrganisme: Cast::related($data['idOrganisme'] ?? null, OrganismesItem::class),
+            labellisationProgramme: Cast::related($data['idLabellisationProgramme'] ?? null, LabellisationProgrammeItem::class),
+            organisme: Cast::related($data['idOrganisme'] ?? null, OrganismesItem::class),
             raw: $data,
         );
     }

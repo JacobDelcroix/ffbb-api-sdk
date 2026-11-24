@@ -16,6 +16,13 @@ final readonly class RevetementsItem
 {
     public const string COLLECTION = 'ffbbserver_revetements';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [];
+
     public function __construct(
         public ?string $code = null,
         public ?DateTimeImmutable $date_created = null,

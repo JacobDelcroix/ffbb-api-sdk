@@ -15,9 +15,19 @@ final readonly class FormationsFilesItem
 {
     public const string COLLECTION = 'ffbbserver_formations_files';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'ffbbserver_formations' => 'ffbbserver_formations_id',
+    ];
+
     public function __construct(
         public mixed $directus_files_id = null,
-        public ?FormationsItem $ffbbserver_formations_id = null,
+        /** Champ Directus : ffbbserver_formations_id */
+        public ?FormationsItem $ffbbserver_formations = null,
         public ?int $id = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
@@ -30,7 +40,7 @@ final readonly class FormationsFilesItem
     {
         return new self(
             directus_files_id: $data['directus_files_id'] ?? null,
-            ffbbserver_formations_id: Cast::related($data['ffbbserver_formations_id'] ?? null, FormationsItem::class),
+            ffbbserver_formations: Cast::related($data['ffbbserver_formations_id'] ?? null, FormationsItem::class),
             id: Cast::int($data['id'] ?? null),
             raw: $data,
         );

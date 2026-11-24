@@ -16,6 +16,13 @@ final readonly class TerrainsItem
 {
     public const string COLLECTION = 'ffbbserver_terrains';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [];
+
     public function __construct(
         public ?bool $accesLibre = null,
         public ?CartographiesItem $cartographie = null,

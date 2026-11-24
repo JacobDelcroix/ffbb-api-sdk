@@ -16,6 +16,15 @@ final readonly class EdfMatchesItem
 {
     public const string COLLECTION = 'edf_matches';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'gs' => 'gsId',
+    ];
+
     public function __construct(
         public ?EdfArenasItem $arena = null,
         public ?EdfCampaignsItem $campaign = null,
@@ -29,7 +38,8 @@ final readonly class EdfMatchesItem
         public ?EdfTeamsItem $edf_team = null,
         public ?int $federation_number = null,
         public ?bool $france_at_home = null,
-        public GeniusSportMatchesItem|string|int|null $gsId = null,
+        /** Champ Directus : gsId */
+        public GeniusSportMatchesItem|string|int|null $gs = null,
         public ?string $hour = null,
         public ?int $id = null,
         public ?int $national_number = null,
@@ -84,7 +94,7 @@ final readonly class EdfMatchesItem
             edf_team: Cast::related($data['edf_team'] ?? null, EdfTeamsItem::class),
             federation_number: Cast::int($data['federation_number'] ?? null),
             france_at_home: Cast::bool($data['france_at_home'] ?? null),
-            gsId: Cast::relation($data['gsId'] ?? null, GeniusSportMatchesItem::class),
+            gs: Cast::relation($data['gsId'] ?? null, GeniusSportMatchesItem::class),
             hour: Cast::string($data['hour'] ?? null),
             id: Cast::int($data['id'] ?? null),
             national_number: Cast::int($data['national_number'] ?? null),

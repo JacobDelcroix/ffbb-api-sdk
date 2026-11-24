@@ -16,17 +16,48 @@ par `php bin/generate-dtos` et régénérées automatiquement quand la FFBB ou l
 - **Toutes les propriétés sont nullables** : les données FFBB sont souvent partielles.
 - **Conversions tolérantes** : `"1"` → `true`, `"12"` → `12`, `"3.5"` → `3.5`.
 - **Dates en `DateTimeImmutable`** : `$match->date_rencontre?->format('d/m/Y H:i')`.
-- **Relations toujours en objets** : `$equipe->idPoule` est un `PoulesItem`. Quand Directus ne développe pas
+- **Relations toujours en objets** : `$equipe->poule` est un `PoulesItem`. Quand Directus ne développe pas
   la relation, seul l'identifiant est rempli :
 
   ```php
   $equipe = $ffbb->getEngagement($id);
 
-  $equipe->idPoule->id;    // toujours renseigné
-  $equipe->idPoule->nom;   // null si le champ idPoule.nom n'a pas été demandé
+  $equipe->poule->id;    // toujours renseigné
+  $equipe->poule->nom;   // null si le champ idPoule.nom n'a pas été demandé
   ```
 
 - **`$raw` garde la réponse complète**, y compris les champs absents de la spec ; `toArray()` la renvoie.
+
+## Noms des relations : lecture et requêtes
+
+En lecture, les relations portent un nom naturel : le préfixe ou suffixe de clé étrangère de Directus est retiré.
+
+| Champ Directus | Propriété du DTO |
+|---|---|
+| `idPoule` | `poule` |
+| `idCompetition`, `competitionId` | `competition` |
+| `idOrganisme`, `idOrganismeEquipe1` | `organisme`, `organismeEquipe1` |
+| `idEngagement`, `idEngagementEquipe1` | `engagement`, `engagementEquipe1` |
+| `edf_players_id` | `edf_players` |
+
+Les **requêtes**, elles, s'écrivent avec les noms Directus, car ce sont ceux que l'API comprend :
+`fields(['idPoule.nom'])`, `where('idPoule', '_eq', 900)`, `'{"idPoule":{"_eq":900}}'`, et les filtres
+Meilisearch (`'idCompetition.sexe = "F"'`).
+
+Chaque DTO donne la correspondance dans sa constante `DIRECTUS_FIELDS`, et la [référence](../reference/dtos.md)
+l'affiche à côté de chaque propriété :
+
+```php
+EngagementsItem::DIRECTUS_FIELDS;
+// ['competition' => 'idCompetition', 'organisme' => 'idOrganisme', 'organismeCtc' => 'idOrganismeCtc', 'poule' => 'idPoule']
+
+$equipes = $ffbb->directus(EngagementsItem::class)
+    ->fields(['id', 'nom', 'idPoule.nom'])    // nom Directus pour la requête
+    ->where('idPoule', '_eq', 900)
+    ->get();
+
+$equipes[0]->poule->nom;                      // nom naturel à la lecture
+```
 
 ## Collections Directus
 

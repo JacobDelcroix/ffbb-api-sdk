@@ -16,16 +16,28 @@ final readonly class PoulesClassementsItem
 {
     public const string COLLECTION = 'ffbbserver_poules_classements';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'competition' => 'idCompetition',
+        'engagement' => 'idEngagement',
+        'poule' => 'idPoule',
+    ];
+
     public function __construct(
+        /** Champ Directus : idCompetition */
+        public ?CompetitionsItem $competition = null,
         public ?DateTimeImmutable $date_created = null,
         public ?DateTimeImmutable $date_updated = null,
         public ?int $difference = null,
+        /** Champ Directus : idEngagement */
+        public ?EngagementsItem $engagement = null,
         public ?int $gagnes = null,
         public ?bool $horsClassement = null,
         public ?string $id = null,
-        public ?CompetitionsItem $idCompetition = null,
-        public ?EngagementsItem $idEngagement = null,
-        public ?PoulesItem $idPoule = null,
         public ?int $matchJoues = null,
         public ?int $match_joues = null,
         public ?int $nombreDefauts = null,
@@ -44,6 +56,8 @@ final readonly class PoulesClassementsItem
         public ?int $points = null,
         public ?int $pointsInitiaux = null,
         public ?int $position = null,
+        /** Champ Directus : idPoule */
+        public ?PoulesItem $poule = null,
         public ?float $quotient = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
@@ -55,15 +69,14 @@ final readonly class PoulesClassementsItem
     public static function fromArray(array $data): self
     {
         return new self(
+            competition: Cast::related($data['idCompetition'] ?? null, CompetitionsItem::class),
             date_created: Cast::dateTime($data['date_created'] ?? null),
             date_updated: Cast::dateTime($data['date_updated'] ?? null),
             difference: Cast::int($data['difference'] ?? null),
+            engagement: Cast::related($data['idEngagement'] ?? null, EngagementsItem::class),
             gagnes: Cast::int($data['gagnes'] ?? null),
             horsClassement: Cast::bool($data['horsClassement'] ?? null),
             id: Cast::string($data['id'] ?? null),
-            idCompetition: Cast::related($data['idCompetition'] ?? null, CompetitionsItem::class),
-            idEngagement: Cast::related($data['idEngagement'] ?? null, EngagementsItem::class),
-            idPoule: Cast::related($data['idPoule'] ?? null, PoulesItem::class),
             matchJoues: Cast::int($data['matchJoues'] ?? null),
             match_joues: Cast::int($data['match_joues'] ?? null),
             nombreDefauts: Cast::int($data['nombreDefauts'] ?? null),
@@ -82,6 +95,7 @@ final readonly class PoulesClassementsItem
             points: Cast::int($data['points'] ?? null),
             pointsInitiaux: Cast::int($data['pointsInitiaux'] ?? null),
             position: Cast::int($data['position'] ?? null),
+            poule: Cast::related($data['idPoule'] ?? null, PoulesItem::class),
             quotient: Cast::float($data['quotient'] ?? null),
             raw: $data,
         );

@@ -15,9 +15,21 @@ final readonly class EdfCampaignsEdfCitiesItem
 {
     public const string COLLECTION = 'edf_campaigns_edf_cities';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'edf_campaigns' => 'edf_campaigns_id',
+        'edf_cities' => 'edf_cities_id',
+    ];
+
     public function __construct(
-        public ?EdfCampaignsItem $edf_campaigns_id = null,
-        public ?EdfCitiesItem $edf_cities_id = null,
+        /** Champ Directus : edf_campaigns_id */
+        public ?EdfCampaignsItem $edf_campaigns = null,
+        /** Champ Directus : edf_cities_id */
+        public ?EdfCitiesItem $edf_cities = null,
         public ?int $id = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
@@ -29,8 +41,8 @@ final readonly class EdfCampaignsEdfCitiesItem
     public static function fromArray(array $data): self
     {
         return new self(
-            edf_campaigns_id: Cast::related($data['edf_campaigns_id'] ?? null, EdfCampaignsItem::class),
-            edf_cities_id: Cast::related($data['edf_cities_id'] ?? null, EdfCitiesItem::class),
+            edf_campaigns: Cast::related($data['edf_campaigns_id'] ?? null, EdfCampaignsItem::class),
+            edf_cities: Cast::related($data['edf_cities_id'] ?? null, EdfCitiesItem::class),
             id: Cast::int($data['id'] ?? null),
             raw: $data,
         );

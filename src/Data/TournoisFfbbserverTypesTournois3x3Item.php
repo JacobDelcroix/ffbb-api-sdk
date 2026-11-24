@@ -15,9 +15,21 @@ final readonly class TournoisFfbbserverTypesTournois3x3Item
 {
     public const string COLLECTION = 'ffbbserver_tournois_ffbbserver_types_tournois3x3';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'ffbbserver_tournois' => 'ffbbserver_tournois_id',
+        'ffbbserver_types_tournois_3x3' => 'ffbbserver_types_tournois_3x3_id',
+    ];
+
     public function __construct(
-        public ?TournoisItem $ffbbserver_tournois_id = null,
-        public ?TypesTournois3x3Item $ffbbserver_types_tournois_3x3_id = null,
+        /** Champ Directus : ffbbserver_tournois_id */
+        public ?TournoisItem $ffbbserver_tournois = null,
+        /** Champ Directus : ffbbserver_types_tournois_3x3_id */
+        public ?TypesTournois3x3Item $ffbbserver_types_tournois_3x3 = null,
         public ?int $id = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
@@ -29,8 +41,8 @@ final readonly class TournoisFfbbserverTypesTournois3x3Item
     public static function fromArray(array $data): self
     {
         return new self(
-            ffbbserver_tournois_id: Cast::related($data['ffbbserver_tournois_id'] ?? null, TournoisItem::class),
-            ffbbserver_types_tournois_3x3_id: Cast::related($data['ffbbserver_types_tournois_3x3_id'] ?? null, TypesTournois3x3Item::class),
+            ffbbserver_tournois: Cast::related($data['ffbbserver_tournois_id'] ?? null, TournoisItem::class),
+            ffbbserver_types_tournois_3x3: Cast::related($data['ffbbserver_types_tournois_3x3_id'] ?? null, TypesTournois3x3Item::class),
             id: Cast::int($data['id'] ?? null),
             raw: $data,
         );

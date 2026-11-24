@@ -16,10 +16,21 @@ final readonly class CompetitionsItem
 {
     public const string COLLECTION = 'ffbbserver_competitions';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'competitionPere' => 'idCompetitionPere',
+    ];
+
     public function __construct(
         public ?CategoriesChampionnatsItem $categorie = null,
         public ?string $code = null,
         public ?bool $compare_old_site = null,
+        /** Champ Directus : idCompetitionPere */
+        public ?CompetitionsItem $competitionPere = null,
         public ?CompetitionsItem $competition_origine = null,
         public ?int $competition_origine_niveau = null,
         public ?string $competition_origine_nom = null,
@@ -29,7 +40,6 @@ final readonly class CompetitionsItem
         public ?bool $emarqueV2 = null,
         public ?string $etat = null,
         public ?string $id = null,
-        public ?CompetitionsItem $idCompetitionPere = null,
         public ?bool $liveStat = null,
         public mixed $logo = null,
         public ?string $nom = null,
@@ -61,6 +71,7 @@ final readonly class CompetitionsItem
             categorie: Cast::related($data['categorie'] ?? null, CategoriesChampionnatsItem::class),
             code: Cast::string($data['code'] ?? null),
             compare_old_site: Cast::bool($data['compare_old_site'] ?? null),
+            competitionPere: Cast::related($data['idCompetitionPere'] ?? null, CompetitionsItem::class),
             competition_origine: Cast::related($data['competition_origine'] ?? null, CompetitionsItem::class),
             competition_origine_niveau: Cast::int($data['competition_origine_niveau'] ?? null),
             competition_origine_nom: Cast::string($data['competition_origine_nom'] ?? null),
@@ -70,7 +81,6 @@ final readonly class CompetitionsItem
             emarqueV2: Cast::bool($data['emarqueV2'] ?? null),
             etat: Cast::string($data['etat'] ?? null),
             id: Cast::string($data['id'] ?? null),
-            idCompetitionPere: Cast::related($data['idCompetitionPere'] ?? null, CompetitionsItem::class),
             liveStat: Cast::bool($data['liveStat'] ?? null),
             logo: $data['logo'] ?? null,
             nom: Cast::string($data['nom'] ?? null),

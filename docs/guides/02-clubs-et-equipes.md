@@ -66,9 +66,9 @@ $ffbb->getOrganisme(10238, ['id', 'nom', 'code']); // champs choisis
 $equipes = $ffbb->getEquipes(10238);   // list<EngagementsItem>
 
 foreach ($equipes as $equipe) {
-    echo $equipe->idCompetition?->nom;   // ex. « U15 Féminine Départementale 2 »
-    echo $equipe->idCompetition?->sexe;  // F / M
-    echo $equipe->idPoule?->nom;         // ex. « Poule A »
+    echo $equipe->competition?->nom;   // ex. « U15 Féminine Départementale 2 »
+    echo $equipe->competition?->sexe;  // F / M
+    echo $equipe->poule?->nom;         // ex. « Poule A »
     echo $equipe->numeroEquipe;          // 1, 2… si le club a plusieurs équipes
 }
 ```

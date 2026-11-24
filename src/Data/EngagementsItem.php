@@ -16,6 +16,18 @@ final readonly class EngagementsItem
 {
     public const string COLLECTION = 'ffbbserver_engagements';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'competition' => 'idCompetition',
+        'organisme' => 'idOrganisme',
+        'organismeCtc' => 'idOrganismeCtc',
+        'poule' => 'idPoule',
+    ];
+
     public function __construct(
         public ?string $adresseCorrespondantEquipe = null,
         /** @var list<PoulesClassementsItem>|null */
@@ -23,6 +35,8 @@ final readonly class EngagementsItem
         public ?bool $clubPro = null,
         public ?string $codeAbrege = null,
         public ?string $communeCorrespondantEquipe = null,
+        /** Champ Directus : idCompetition */
+        public ?CompetitionsItem $competition = null,
         public ?string $complementAdresseCorrespondantEquipe = null,
         public ?DateTimeImmutable $creation = null,
         public ?DateTimeImmutable $date_created = null,
@@ -32,10 +46,6 @@ final readonly class EngagementsItem
         public EntraineursItem|string|int|null $entraineurAdjoint = null,
         public ?bool $forfaitGeneral = null,
         public ?string $id = null,
-        public ?CompetitionsItem $idCompetition = null,
-        public ?OrganismesItem $idOrganisme = null,
-        public ?OrganismesItem $idOrganismeCtc = null,
-        public ?PoulesItem $idPoule = null,
         public mixed $logo = null,
         public ?string $logo_genius = null,
         public ?DateTimeImmutable $modification = null,
@@ -47,11 +57,17 @@ final readonly class EngagementsItem
         public ?string $nomOfficiel = null,
         public ?string $nomUsuel = null,
         public ?string $numeroEquipe = null,
+        /** Champ Directus : idOrganisme */
+        public ?OrganismesItem $organisme = null,
+        /** Champ Directus : idOrganismeCtc */
+        public ?OrganismesItem $organismeCtc = null,
         public ?string $photo = null,
         public ?int $position = null,
         public ?int $positionVariation = null,
         public ?int $position_n1 = null,
         public mixed $positions = null,
+        /** Champ Directus : idPoule */
+        public ?PoulesItem $poule = null,
         public ?string $pouleId = null,
         /** @var list<RencontresItem>|null */
         public ?array $rencontres_domiciles = null,
@@ -78,6 +94,7 @@ final readonly class EngagementsItem
             clubPro: Cast::bool($data['clubPro'] ?? null),
             codeAbrege: Cast::string($data['codeAbrege'] ?? null),
             communeCorrespondantEquipe: Cast::string($data['communeCorrespondantEquipe'] ?? null),
+            competition: Cast::related($data['idCompetition'] ?? null, CompetitionsItem::class),
             complementAdresseCorrespondantEquipe: Cast::string($data['complementAdresseCorrespondantEquipe'] ?? null),
             creation: Cast::dateTime($data['creation'] ?? null),
             date_created: Cast::dateTime($data['date_created'] ?? null),
@@ -87,10 +104,6 @@ final readonly class EngagementsItem
             entraineurAdjoint: Cast::relation($data['entraineurAdjoint'] ?? null, EntraineursItem::class),
             forfaitGeneral: Cast::bool($data['forfaitGeneral'] ?? null),
             id: Cast::string($data['id'] ?? null),
-            idCompetition: Cast::related($data['idCompetition'] ?? null, CompetitionsItem::class),
-            idOrganisme: Cast::related($data['idOrganisme'] ?? null, OrganismesItem::class),
-            idOrganismeCtc: Cast::related($data['idOrganismeCtc'] ?? null, OrganismesItem::class),
-            idPoule: Cast::related($data['idPoule'] ?? null, PoulesItem::class),
             logo: $data['logo'] ?? null,
             logo_genius: Cast::string($data['logo_genius'] ?? null),
             modification: Cast::dateTime($data['modification'] ?? null),
@@ -102,11 +115,14 @@ final readonly class EngagementsItem
             nomOfficiel: Cast::string($data['nomOfficiel'] ?? null),
             nomUsuel: Cast::string($data['nomUsuel'] ?? null),
             numeroEquipe: Cast::string($data['numeroEquipe'] ?? null),
+            organisme: Cast::related($data['idOrganisme'] ?? null, OrganismesItem::class),
+            organismeCtc: Cast::related($data['idOrganismeCtc'] ?? null, OrganismesItem::class),
             photo: Cast::string($data['photo'] ?? null),
             position: Cast::int($data['position'] ?? null),
             positionVariation: Cast::int($data['positionVariation'] ?? null),
             position_n1: Cast::int($data['position_n1'] ?? null),
             positions: $data['positions'] ?? null,
+            poule: Cast::related($data['idPoule'] ?? null, PoulesItem::class),
             pouleId: Cast::string($data['pouleId'] ?? null),
             rencontres_domiciles: Cast::relatedList($data['rencontres_domiciles'] ?? null, RencontresItem::class),
             rencontres_exterieur: Cast::relatedList($data['rencontres_exterieur'] ?? null, RencontresItem::class),

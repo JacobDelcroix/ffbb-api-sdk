@@ -11,7 +11,7 @@ Guide avec exemples : [07-dtos](../guides/07-dtos.md)
 
 ## Réponses Directus
 
-Générées par `bin/generate-dtos` depuis `resources/discovery/openapi.json`. Une relation vaut le DTO lié quand Directus la développe (`fields=relation.*`), sinon son identifiant. Une collection sans DTO renvoie un `Item` générique (`$item->champ`, `$item->get('a.b')`).
+Générées par `bin/generate-dtos` depuis `resources/discovery/openapi.json`. Une relation est toujours un DTO (seul `id` est rempli si Directus ne la développe pas) et porte un nom naturel : `idPoule` devient `poule`. La colonne « Champ Directus » donne le nom à utiliser dans `fields()`, `where()` et les filtres (constante `DIRECTUS_FIELDS`). Une collection sans DTO renvoie un `Item` générique (`$item->champ`, `$item->get('a.b')`).
 
 | Collection Directus | DTO | Propriétés |
 |---|---|---|
@@ -208,21 +208,21 @@ Collection Directus `edf_campaigns` (schéma OpenAPI ItemsEdfCampaigns).
 
 Collection Directus `edf_campaigns_edf_cities` (schéma OpenAPI ItemsEdfCampaignsEdfCities).
 
-| Propriété | Type |
-|---|---|
-| `edf_campaigns_id` | `?EdfCampaignsItem` |
-| `edf_cities_id` | `?EdfCitiesItem` |
-| `id` | `?int` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `edf_campaigns` | `?EdfCampaignsItem` | `edf_campaigns_id` |
+| `edf_cities` | `?EdfCitiesItem` | `edf_cities_id` |
+| `id` | `?int` |  |
 
 ### EdfCampaignsEdfCountriesItem
 
 Collection Directus `edf_campaigns_edf_countries` (schéma OpenAPI ItemsEdfCampaignsEdfCountries).
 
-| Propriété | Type |
-|---|---|
-| `edf_campaigns_id` | `?EdfCampaignsItem` |
-| `edf_countries_id` | `?EdfCountriesItem` |
-| `id` | `?int` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `edf_campaigns` | `?EdfCampaignsItem` | `edf_campaigns_id` |
+| `edf_countries` | `?EdfCountriesItem` | `edf_countries_id` |
+| `id` | `?int` |  |
 
 ### EdfCitiesItem
 
@@ -288,52 +288,52 @@ Collection Directus `edf_countries` (schéma OpenAPI ItemsEdfCountries).
 
 Collection Directus `edf_matches` (schéma OpenAPI ItemsEdfMatches).
 
-| Propriété | Type |
-|---|---|
-| `arena` | `?EdfArenasItem` |
-| `campaign` | `?EdfCampaignsItem` |
-| `city` | `?EdfCitiesItem` |
-| `competition_type` | `?EdfCompetitionTypesItem` |
-| `country` | `?EdfCountriesItem` |
-| `date` | `?DateTimeImmutable` |
-| `date_created` | `?DateTimeImmutable` |
-| `date_timestamp` | `?int` |
-| `date_updated` | `?DateTimeImmutable` |
-| `edf_team` | `?EdfTeamsItem` |
-| `federation_number` | `?int` |
-| `france_at_home` | `?bool` |
-| `gsId` | `GeniusSportMatchesItem\|int\|string\|null` |
-| `hour` | `?string` |
-| `id` | `?int` |
-| `national_number` | `?int` |
-| `not_official` | `?bool` |
-| `opponent` | `?EdfOpponentsItem` |
-| `original_id` | `?int` |
-| `phase` | `?string` |
-| `preparation` | `?bool` |
-| `result` | `?string` |
-| `roster` | `list<EdfSelectionItem>\|null` |
-| `score_france` | `?int` |
-| `score_france_ot1` | `?int` |
-| `score_france_ot2` | `?int` |
-| `score_france_q1` | `?int` |
-| `score_france_q2` | `?int` |
-| `score_france_q3` | `?int` |
-| `score_france_q4` | `?int` |
-| `score_opponent` | `?int` |
-| `score_opponent_ot1` | `?int` |
-| `score_opponent_ot2` | `?int` |
-| `score_opponent_q1` | `?int` |
-| `score_opponent_q2` | `?int` |
-| `score_opponent_q3` | `?int` |
-| `score_opponent_q4` | `?int` |
-| `status` | `?string` |
-| `url_article` | `?string` |
-| `url_live` | `?string` |
-| `url_match_sheet` | `?string` |
-| `url_photos` | `?string` |
-| `url_ticketing` | `?string` |
-| `url_video` | `?string` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `arena` | `?EdfArenasItem` |  |
+| `campaign` | `?EdfCampaignsItem` |  |
+| `city` | `?EdfCitiesItem` |  |
+| `competition_type` | `?EdfCompetitionTypesItem` |  |
+| `country` | `?EdfCountriesItem` |  |
+| `date` | `?DateTimeImmutable` |  |
+| `date_created` | `?DateTimeImmutable` |  |
+| `date_timestamp` | `?int` |  |
+| `date_updated` | `?DateTimeImmutable` |  |
+| `edf_team` | `?EdfTeamsItem` |  |
+| `federation_number` | `?int` |  |
+| `france_at_home` | `?bool` |  |
+| `gs` | `GeniusSportMatchesItem\|int\|string\|null` | `gsId` |
+| `hour` | `?string` |  |
+| `id` | `?int` |  |
+| `national_number` | `?int` |  |
+| `not_official` | `?bool` |  |
+| `opponent` | `?EdfOpponentsItem` |  |
+| `original_id` | `?int` |  |
+| `phase` | `?string` |  |
+| `preparation` | `?bool` |  |
+| `result` | `?string` |  |
+| `roster` | `list<EdfSelectionItem>\|null` |  |
+| `score_france` | `?int` |  |
+| `score_france_ot1` | `?int` |  |
+| `score_france_ot2` | `?int` |  |
+| `score_france_q1` | `?int` |  |
+| `score_france_q2` | `?int` |  |
+| `score_france_q3` | `?int` |  |
+| `score_france_q4` | `?int` |  |
+| `score_opponent` | `?int` |  |
+| `score_opponent_ot1` | `?int` |  |
+| `score_opponent_ot2` | `?int` |  |
+| `score_opponent_q1` | `?int` |  |
+| `score_opponent_q2` | `?int` |  |
+| `score_opponent_q3` | `?int` |  |
+| `score_opponent_q4` | `?int` |  |
+| `status` | `?string` |  |
+| `url_article` | `?string` |  |
+| `url_live` | `?string` |  |
+| `url_match_sheet` | `?string` |  |
+| `url_photos` | `?string` |  |
+| `url_ticketing` | `?string` |  |
+| `url_video` | `?string` |  |
 
 ### EdfOpponentsItem
 
@@ -395,11 +395,11 @@ Collection Directus `edf_players` (schéma OpenAPI ItemsEdfPlayers).
 
 Collection Directus `edf_players_edf_positions` (schéma OpenAPI ItemsEdfPlayersEdfPositions).
 
-| Propriété | Type |
-|---|---|
-| `edf_players_id` | `?EdfPlayersItem` |
-| `edf_positions_id` | `?EdfPositionsItem` |
-| `id` | `?int` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `edf_players` | `?EdfPlayersItem` | `edf_players_id` |
+| `edf_positions` | `?EdfPositionsItem` | `edf_positions_id` |
+| `id` | `?int` |  |
 
 ### EdfPositionsItem
 
@@ -525,21 +525,21 @@ Collection Directus `ffbbnational_galeries` (schéma OpenAPI ItemsFfbbnationalGa
 
 Collection Directus `ffbbnational_galeries_ffbbnational_tags` (schéma OpenAPI ItemsFfbbnationalGaleriesFfbbnationalTags).
 
-| Propriété | Type |
-|---|---|
-| `ffbbnational_galeries_id` | `?GaleriesItem` |
-| `ffbbnational_tags_id` | `?TagsItem` |
-| `id` | `?int` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `ffbbnational_galeries` | `?GaleriesItem` | `ffbbnational_galeries_id` |
+| `ffbbnational_tags` | `?TagsItem` | `ffbbnational_tags_id` |
+| `id` | `?int` |  |
 
 ### GaleriesFilesItem
 
 Collection Directus `ffbbnational_galeries_files` (schéma OpenAPI ItemsFfbbnationalGaleriesFiles).
 
-| Propriété | Type |
-|---|---|
-| `directus_files_id` | `mixed` |
-| `ffbbnational_galeries_id` | `?GaleriesItem` |
-| `id` | `?int` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `directus_files_id` | `mixed` |  |
+| `ffbbnational_galeries` | `?GaleriesItem` | `ffbbnational_galeries_id` |
+| `id` | `?int` |  |
 
 ### PratiquesItem
 
@@ -623,21 +623,21 @@ Collection Directus `ffbbnational_rss` (schéma OpenAPI ItemsFfbbnationalRss).
 
 Collection Directus `ffbbnational_rss_ffbbnational_categories` (schéma OpenAPI ItemsFfbbnationalRssFfbbnationalCategories).
 
-| Propriété | Type |
-|---|---|
-| `ffbbnational_categories_id` | `?CategoriesItem` |
-| `ffbbnational_rss_id` | `?RssItem` |
-| `id` | `?int` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `ffbbnational_categories` | `?CategoriesItem` | `ffbbnational_categories_id` |
+| `ffbbnational_rss` | `?RssItem` | `ffbbnational_rss_id` |
+| `id` | `?int` |  |
 
 ### RssFfbbnationalTagsItem
 
 Collection Directus `ffbbnational_rss_ffbbnational_tags` (schéma OpenAPI ItemsFfbbnationalRssFfbbnationalTags).
 
-| Propriété | Type |
-|---|---|
-| `ffbbnational_rss_id` | `?RssItem` |
-| `ffbbnational_tags_id` | `?TagsItem` |
-| `id` | `?int` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `ffbbnational_rss` | `?RssItem` | `ffbbnational_rss_id` |
+| `ffbbnational_tags` | `?TagsItem` | `ffbbnational_tags_id` |
+| `id` | `?int` |  |
 
 ### TagsItem
 
@@ -714,87 +714,87 @@ Collection Directus `ffbbserver_communes` (schéma OpenAPI ItemsFfbbserverCommun
 
 Collection Directus `ffbbserver_competitions` (schéma OpenAPI ItemsFfbbserverCompetitions).
 
-| Propriété | Type |
-|---|---|
-| `categorie` | `?CategoriesChampionnatsItem` |
-| `code` | `?string` |
-| `compare_old_site` | `?bool` |
-| `competition_origine` | `?self` |
-| `competition_origine_niveau` | `?int` |
-| `competition_origine_nom` | `?string` |
-| `creationEnCours` | `?bool` |
-| `date_created` | `?DateTimeImmutable` |
-| `date_updated` | `?DateTimeImmutable` |
-| `emarqueV2` | `?bool` |
-| `etat` | `?string` |
-| `id` | `?string` |
-| `idCompetitionPere` | `?self` |
-| `liveStat` | `?bool` |
-| `logo` | `mixed` |
-| `nom` | `?string` |
-| `ordre` | `?int` |
-| `organisateur` | `?OrganismesItem` |
-| `phase_code` | `?string` |
-| `phases` | `list<CompetitionsItem>\|null` |
-| `poules` | `list<PoulesItem>\|null` |
-| `pro` | `?bool` |
-| `publicationInternet` | `?string` |
-| `saison` | `?SaisonsItem` |
-| `sexe` | `?string` |
-| `slug` | `?string` |
-| `toUpdate` | `?bool` |
-| `typeCompetition` | `?string` |
-| `typeCompetitionGenerique` | `?TypesCompetitionsItem` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `categorie` | `?CategoriesChampionnatsItem` |  |
+| `code` | `?string` |  |
+| `compare_old_site` | `?bool` |  |
+| `competitionPere` | `?self` | `idCompetitionPere` |
+| `competition_origine` | `?self` |  |
+| `competition_origine_niveau` | `?int` |  |
+| `competition_origine_nom` | `?string` |  |
+| `creationEnCours` | `?bool` |  |
+| `date_created` | `?DateTimeImmutable` |  |
+| `date_updated` | `?DateTimeImmutable` |  |
+| `emarqueV2` | `?bool` |  |
+| `etat` | `?string` |  |
+| `id` | `?string` |  |
+| `liveStat` | `?bool` |  |
+| `logo` | `mixed` |  |
+| `nom` | `?string` |  |
+| `ordre` | `?int` |  |
+| `organisateur` | `?OrganismesItem` |  |
+| `phase_code` | `?string` |  |
+| `phases` | `list<CompetitionsItem>\|null` |  |
+| `poules` | `list<PoulesItem>\|null` |  |
+| `pro` | `?bool` |  |
+| `publicationInternet` | `?string` |  |
+| `saison` | `?SaisonsItem` |  |
+| `sexe` | `?string` |  |
+| `slug` | `?string` |  |
+| `toUpdate` | `?bool` |  |
+| `typeCompetition` | `?string` |  |
+| `typeCompetitionGenerique` | `?TypesCompetitionsItem` |  |
 
 ### EngagementsItem
 
 Collection Directus `ffbbserver_engagements` (schéma OpenAPI ItemsFfbbserverEngagements).
 
-| Propriété | Type |
-|---|---|
-| `adresseCorrespondantEquipe` | `?string` |
-| `classement` | `list<PoulesClassementsItem>\|null` |
-| `clubPro` | `?bool` |
-| `codeAbrege` | `?string` |
-| `communeCorrespondantEquipe` | `?string` |
-| `complementAdresseCorrespondantEquipe` | `?string` |
-| `creation` | `?DateTimeImmutable` |
-| `date_created` | `?DateTimeImmutable` |
-| `date_updated` | `?DateTimeImmutable` |
-| `emailCorrespondantEquipe` | `?string` |
-| `entraineur` | `EntraineursItem\|int\|string\|null` |
-| `entraineurAdjoint` | `EntraineursItem\|int\|string\|null` |
-| `forfaitGeneral` | `?bool` |
-| `id` | `?string` |
-| `idCompetition` | `?CompetitionsItem` |
-| `idOrganisme` | `?OrganismesItem` |
-| `idOrganismeCtc` | `?OrganismesItem` |
-| `idPoule` | `?PoulesItem` |
-| `logo` | `mixed` |
-| `logo_genius` | `?string` |
-| `modification` | `?DateTimeImmutable` |
-| `niveau` | `?TypesDivisionsItem` |
-| `nom` | `?string` |
-| `nomCorrespondantEquipe` | `?string` |
-| `nomCtc` | `?string` |
-| `nomEquipe` | `?string` |
-| `nomOfficiel` | `?string` |
-| `nomUsuel` | `?string` |
-| `numeroEquipe` | `?string` |
-| `photo` | `?string` |
-| `position` | `?int` |
-| `positionVariation` | `?int` |
-| `position_n1` | `?int` |
-| `positions` | `mixed` |
-| `pouleId` | `?string` |
-| `rencontres_domiciles` | `list<RencontresItem>\|null` |
-| `rencontres_exterieur` | `list<RencontresItem>\|null` |
-| `telephoneFixeCorrespondantEquipe` | `?string` |
-| `telephonePortableCorrespondantEquipe` | `?string` |
-| `telephoneTravailCorrespondantEquipe` | `?string` |
-| `toUpdate` | `?bool` |
-| `typeEntenteCtc` | `?string` |
-| `url_competition` | `?string` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `adresseCorrespondantEquipe` | `?string` |  |
+| `classement` | `list<PoulesClassementsItem>\|null` |  |
+| `clubPro` | `?bool` |  |
+| `codeAbrege` | `?string` |  |
+| `communeCorrespondantEquipe` | `?string` |  |
+| `competition` | `?CompetitionsItem` | `idCompetition` |
+| `complementAdresseCorrespondantEquipe` | `?string` |  |
+| `creation` | `?DateTimeImmutable` |  |
+| `date_created` | `?DateTimeImmutable` |  |
+| `date_updated` | `?DateTimeImmutable` |  |
+| `emailCorrespondantEquipe` | `?string` |  |
+| `entraineur` | `EntraineursItem\|int\|string\|null` |  |
+| `entraineurAdjoint` | `EntraineursItem\|int\|string\|null` |  |
+| `forfaitGeneral` | `?bool` |  |
+| `id` | `?string` |  |
+| `logo` | `mixed` |  |
+| `logo_genius` | `?string` |  |
+| `modification` | `?DateTimeImmutable` |  |
+| `niveau` | `?TypesDivisionsItem` |  |
+| `nom` | `?string` |  |
+| `nomCorrespondantEquipe` | `?string` |  |
+| `nomCtc` | `?string` |  |
+| `nomEquipe` | `?string` |  |
+| `nomOfficiel` | `?string` |  |
+| `nomUsuel` | `?string` |  |
+| `numeroEquipe` | `?string` |  |
+| `organisme` | `?OrganismesItem` | `idOrganisme` |
+| `organismeCtc` | `?OrganismesItem` | `idOrganismeCtc` |
+| `photo` | `?string` |  |
+| `position` | `?int` |  |
+| `positionVariation` | `?int` |  |
+| `position_n1` | `?int` |  |
+| `positions` | `mixed` |  |
+| `poule` | `?PoulesItem` | `idPoule` |
+| `pouleId` | `?string` |  |
+| `rencontres_domiciles` | `list<RencontresItem>\|null` |  |
+| `rencontres_exterieur` | `list<RencontresItem>\|null` |  |
+| `telephoneFixeCorrespondantEquipe` | `?string` |  |
+| `telephonePortableCorrespondantEquipe` | `?string` |  |
+| `telephoneTravailCorrespondantEquipe` | `?string` |  |
+| `toUpdate` | `?bool` |  |
+| `typeEntenteCtc` | `?string` |  |
+| `url_competition` | `?string` |  |
 
 ### EntraineursItem
 
@@ -881,11 +881,11 @@ Collection Directus `ffbbserver_formations_domain` (schéma OpenAPI ItemsFfbbser
 
 Collection Directus `ffbbserver_formations_files` (schéma OpenAPI ItemsFfbbserverFormationsFiles).
 
-| Propriété | Type |
-|---|---|
-| `directus_files_id` | `mixed` |
-| `ffbbserver_formations_id` | `?FormationsItem` |
-| `id` | `?int` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `directus_files_id` | `mixed` |  |
+| `ffbbserver_formations` | `?FormationsItem` | `ffbbserver_formations_id` |
+| `id` | `?int` |  |
 
 ### FormationsThemeItem
 
@@ -938,39 +938,39 @@ Collection Directus `ffbbserver_labellisation_programme` (schéma OpenAPI ItemsF
 
 Collection Directus `ffbbserver_labellisations_organismes` (schéma OpenAPI ItemsFfbbserverLabellisationsOrganismes).
 
-| Propriété | Type |
-|---|---|
-| `date_created` | `?DateTimeImmutable` |
-| `date_updated` | `?DateTimeImmutable` |
-| `debut` | `?DateTimeImmutable` |
-| `fin` | `?DateTimeImmutable` |
-| `id` | `?string` |
-| `idLabellisationProgramme` | `?LabellisationProgrammeItem` |
-| `idOrganisme` | `?OrganismesItem` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `date_created` | `?DateTimeImmutable` |  |
+| `date_updated` | `?DateTimeImmutable` |  |
+| `debut` | `?DateTimeImmutable` |  |
+| `fin` | `?DateTimeImmutable` |  |
+| `id` | `?string` |  |
+| `labellisationProgramme` | `?LabellisationProgrammeItem` | `idLabellisationProgramme` |
+| `organisme` | `?OrganismesItem` | `idOrganisme` |
 
 ### MembresItem
 
 Collection Directus `ffbbserver_membres` (schéma OpenAPI ItemsFfbbserverMembres).
 
-| Propriété | Type |
-|---|---|
-| `accordDiffusionSiteWeb` | `?bool` |
-| `adresse1` | `?string` |
-| `adresse2` | `?string` |
-| `codeFonction` | `?string` |
-| `codePostal` | `?string` |
-| `date_created` | `?DateTimeImmutable` |
-| `date_updated` | `?DateTimeImmutable` |
-| `id` | `?string` |
-| `idLicence` | `?string` |
-| `idOrganisme` | `?OrganismesItem` |
-| `libelleFonction` | `?string` |
-| `mail` | `?string` |
-| `nom` | `?string` |
-| `prenom` | `?string` |
-| `telephoneFixe` | `?string` |
-| `telephonePortable` | `?string` |
-| `ville` | `?string` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `accordDiffusionSiteWeb` | `?bool` |  |
+| `adresse1` | `?string` |  |
+| `adresse2` | `?string` |  |
+| `codeFonction` | `?string` |  |
+| `codePostal` | `?string` |  |
+| `date_created` | `?DateTimeImmutable` |  |
+| `date_updated` | `?DateTimeImmutable` |  |
+| `id` | `?string` |  |
+| `idLicence` | `?string` |  |
+| `libelleFonction` | `?string` |  |
+| `mail` | `?string` |  |
+| `nom` | `?string` |  |
+| `organisme` | `?OrganismesItem` | `idOrganisme` |
+| `prenom` | `?string` |  |
+| `telephoneFixe` | `?string` |  |
+| `telephonePortable` | `?string` |  |
+| `ville` | `?string` |  |
 
 ### OfficielsItem
 
@@ -1060,21 +1060,21 @@ Collection Directus `ffbbserver_organismes` (schéma OpenAPI ItemsFfbbserverOrga
 
 Collection Directus `ffbbserver_organismes_ffbbserver_offres_pratiques` (schéma OpenAPI ItemsFfbbserverOrganismesFfbbserverOffresPratiques).
 
-| Propriété | Type |
-|---|---|
-| `ffbbserver_offres_pratiques_id` | `?OffresPratiquesItem` |
-| `ffbbserver_organismes_id` | `?OrganismesItem` |
-| `id` | `?int` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `ffbbserver_offres_pratiques` | `?OffresPratiquesItem` | `ffbbserver_offres_pratiques_id` |
+| `ffbbserver_organismes` | `?OrganismesItem` | `ffbbserver_organismes_id` |
+| `id` | `?int` |  |
 
 ### OrganismesFfbbserverOrganismesItem
 
 Collection Directus `ffbbserver_organismes_ffbbserver_organismes` (schéma OpenAPI ItemsFfbbserverOrganismesFfbbserverOrganismes).
 
-| Propriété | Type |
-|---|---|
-| `ffbbserver_organismes_id` | `?OrganismesItem` |
-| `id` | `?int` |
-| `related_ffbbserver_organismes_id` | `?OrganismesItem` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `ffbbserver_organismes` | `?OrganismesItem` | `ffbbserver_organismes_id` |
+| `id` | `?int` |  |
+| `related_ffbbserver_organismes` | `?OrganismesItem` | `related_ffbbserver_organismes_id` |
 
 ### PoulesItem
 
@@ -1095,86 +1095,86 @@ Collection Directus `ffbbserver_poules` (schéma OpenAPI ItemsFfbbserverPoules).
 
 Collection Directus `ffbbserver_poules_classements` (schéma OpenAPI ItemsFfbbserverPoulesClassements).
 
-| Propriété | Type |
-|---|---|
-| `date_created` | `?DateTimeImmutable` |
-| `date_updated` | `?DateTimeImmutable` |
-| `difference` | `?int` |
-| `gagnes` | `?int` |
-| `horsClassement` | `?bool` |
-| `id` | `?string` |
-| `idCompetition` | `?CompetitionsItem` |
-| `idEngagement` | `?EngagementsItem` |
-| `idPoule` | `?PoulesItem` |
-| `matchJoues` | `?int` |
-| `match_joues` | `?int` |
-| `nombreDefauts` | `?int` |
-| `nombreForfaits` | `?int` |
-| `nuls` | `?int` |
-| `organisme` | `?OrganismesItem` |
-| `organisme_nom` | `?string` |
-| `paniersEncaisses` | `?int` |
-| `paniersMarques` | `?int` |
-| `penalites` | `?int` |
-| `penalitesArbitrage` | `?int` |
-| `penalitesDiverses` | `?int` |
-| `penalitesEntraineur` | `?int` |
-| `perdus` | `?int` |
-| `pointInitiaux` | `?int` |
-| `points` | `?int` |
-| `pointsInitiaux` | `?int` |
-| `position` | `?int` |
-| `quotient` | `?float` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `competition` | `?CompetitionsItem` | `idCompetition` |
+| `date_created` | `?DateTimeImmutable` |  |
+| `date_updated` | `?DateTimeImmutable` |  |
+| `difference` | `?int` |  |
+| `engagement` | `?EngagementsItem` | `idEngagement` |
+| `gagnes` | `?int` |  |
+| `horsClassement` | `?bool` |  |
+| `id` | `?string` |  |
+| `matchJoues` | `?int` |  |
+| `match_joues` | `?int` |  |
+| `nombreDefauts` | `?int` |  |
+| `nombreForfaits` | `?int` |  |
+| `nuls` | `?int` |  |
+| `organisme` | `?OrganismesItem` |  |
+| `organisme_nom` | `?string` |  |
+| `paniersEncaisses` | `?int` |  |
+| `paniersMarques` | `?int` |  |
+| `penalites` | `?int` |  |
+| `penalitesArbitrage` | `?int` |  |
+| `penalitesDiverses` | `?int` |  |
+| `penalitesEntraineur` | `?int` |  |
+| `perdus` | `?int` |  |
+| `pointInitiaux` | `?int` |  |
+| `points` | `?int` |  |
+| `pointsInitiaux` | `?int` |  |
+| `position` | `?int` |  |
+| `poule` | `?PoulesItem` | `idPoule` |
+| `quotient` | `?float` |  |
 
 ### RencontresItem
 
 Collection Directus `ffbbserver_rencontres` (schéma OpenAPI ItemsFfbbserverRencontres).
 
-| Propriété | Type |
-|---|---|
-| `competitionId` | `?CompetitionsItem` |
-| `creation` | `?DateTimeImmutable` |
-| `date` | `?DateTimeImmutable` |
-| `dateSaisieResultat` | `?DateTimeImmutable` |
-| `date_created` | `?DateTimeImmutable` |
-| `date_rencontre` | `?DateTimeImmutable` |
-| `date_updated` | `?DateTimeImmutable` |
-| `defautEquipe1` | `?bool` |
-| `defautEquipe2` | `?bool` |
-| `etat` | `?string` |
-| `forfaitEquipe1` | `?bool` |
-| `forfaitEquipe2` | `?bool` |
-| `gsId` | `GeniusSportMatchesItem\|int\|string\|null` |
-| `handicap1` | `?int` |
-| `handicap2` | `?int` |
-| `horaire` | `?int` |
-| `id` | `?string` |
-| `idEngagementEquipe1` | `?EngagementsItem` |
-| `idEngagementEquipe2` | `?EngagementsItem` |
-| `idOrganismeEquipe1` | `?OrganismesItem` |
-| `idOrganismeEquipe2` | `?OrganismesItem` |
-| `idPoule` | `?PoulesItem` |
-| `joue` | `?bool` |
-| `modification` | `?DateTimeImmutable` |
-| `nomEquipe1` | `?string` |
-| `nomEquipe2` | `?string` |
-| `numero` | `?int` |
-| `numeroJournee` | `?string` |
-| `officiels` | `list<OfficielsRencontresItem>\|null` |
-| `penaliteEquipe1` | `?bool` |
-| `penaliteEquipe2` | `?bool` |
-| `pratique` | `?string` |
-| `rematch_videos` | `list<RematchVideosItem\|string\|int>\|null` |
-| `remise` | `?bool` |
-| `resultatEquipe1` | `?int` |
-| `resultatEquipe2` | `?int` |
-| `saison` | `?SaisonsItem` |
-| `salle` | `?SallesItem` |
-| `status` | `?string` |
-| `toUpdate` | `?bool` |
-| `uniqueKey` | `?string` |
-| `url_competition` | `?string` |
-| `validee` | `?bool` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `competition` | `?CompetitionsItem` | `competitionId` |
+| `creation` | `?DateTimeImmutable` |  |
+| `date` | `?DateTimeImmutable` |  |
+| `dateSaisieResultat` | `?DateTimeImmutable` |  |
+| `date_created` | `?DateTimeImmutable` |  |
+| `date_rencontre` | `?DateTimeImmutable` |  |
+| `date_updated` | `?DateTimeImmutable` |  |
+| `defautEquipe1` | `?bool` |  |
+| `defautEquipe2` | `?bool` |  |
+| `engagementEquipe1` | `?EngagementsItem` | `idEngagementEquipe1` |
+| `engagementEquipe2` | `?EngagementsItem` | `idEngagementEquipe2` |
+| `etat` | `?string` |  |
+| `forfaitEquipe1` | `?bool` |  |
+| `forfaitEquipe2` | `?bool` |  |
+| `gs` | `GeniusSportMatchesItem\|int\|string\|null` | `gsId` |
+| `handicap1` | `?int` |  |
+| `handicap2` | `?int` |  |
+| `horaire` | `?int` |  |
+| `id` | `?string` |  |
+| `joue` | `?bool` |  |
+| `modification` | `?DateTimeImmutable` |  |
+| `nomEquipe1` | `?string` |  |
+| `nomEquipe2` | `?string` |  |
+| `numero` | `?int` |  |
+| `numeroJournee` | `?string` |  |
+| `officiels` | `list<OfficielsRencontresItem>\|null` |  |
+| `organismeEquipe1` | `?OrganismesItem` | `idOrganismeEquipe1` |
+| `organismeEquipe2` | `?OrganismesItem` | `idOrganismeEquipe2` |
+| `penaliteEquipe1` | `?bool` |  |
+| `penaliteEquipe2` | `?bool` |  |
+| `poule` | `?PoulesItem` | `idPoule` |
+| `pratique` | `?string` |  |
+| `rematch_videos` | `list<RematchVideosItem\|string\|int>\|null` |  |
+| `remise` | `?bool` |  |
+| `resultatEquipe1` | `?int` |  |
+| `resultatEquipe2` | `?int` |  |
+| `saison` | `?SaisonsItem` |  |
+| `salle` | `?SallesItem` |  |
+| `status` | `?string` |  |
+| `toUpdate` | `?bool` |  |
+| `uniqueKey` | `?string` |  |
+| `url_competition` | `?string` |  |
+| `validee` | `?bool` |  |
 
 ### RevetementsItem
 
@@ -1306,11 +1306,11 @@ Collection Directus `ffbbserver_tournois` (schéma OpenAPI ItemsFfbbserverTourno
 
 Collection Directus `ffbbserver_tournois_ffbbserver_types_tournois3x3` (schéma OpenAPI ItemsFfbbserverTournoisFfbbserverTypesTournois3x3).
 
-| Propriété | Type |
-|---|---|
-| `ffbbserver_tournois_id` | `?TournoisItem` |
-| `ffbbserver_types_tournois_3x3_id` | `?TypesTournois3x3Item` |
-| `id` | `?int` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `ffbbserver_tournois` | `?TournoisItem` | `ffbbserver_tournois_id` |
+| `ffbbserver_types_tournois_3x3` | `?TypesTournois3x3Item` | `ffbbserver_types_tournois_3x3_id` |
+| `id` | `?int` |  |
 
 ### TypesAssociationsItem
 
@@ -1399,74 +1399,74 @@ Collection Directus `ffbbserver_types_tournois3x3` (schéma OpenAPI ItemsFfbbser
 
 Collection Directus `genius_sport_matches` (schéma OpenAPI ItemsGeniusSportMatches).
 
-| Propriété | Type |
-|---|---|
-| `atNeutralVenue` | `?bool` |
-| `attendance` | `?int` |
-| `clock` | `?string` |
-| `competitionAbgName` | `?string` |
-| `competitionId` | `?int` |
-| `competitionName` | `?string` |
-| `consolidated` | `?bool` |
-| `currentPeriod` | `?string` |
-| `currentStatus` | `?string` |
-| `date_created` | `?DateTimeImmutable` |
-| `date_updated` | `?DateTimeImmutable` |
-| `duration` | `?int` |
-| `externalCompetitionId` | `?CompetitionsItem` |
-| `externalId` | `?RencontresItem` |
-| `extraPeriodsUsed` | `?int` |
-| `fouls_home` | `?int` |
-| `fouls_out` | `?int` |
-| `leagueId` | `?int` |
-| `liveStream` | `?bool` |
-| `matchId` | `?string` |
-| `matchName` | `?string` |
-| `matchNumber` | `?int` |
-| `matchStatus` | `?string` |
-| `matchTime` | `?DateTimeImmutable` |
-| `matchTimeUTC` | `?DateTimeImmutable` |
-| `matchTimeUTC_timestamp` | `?int` |
-| `matchTime_timestamp` | `?int` |
-| `matchType` | `?string` |
-| `periodStatus` | `?string` |
-| `phaseName` | `?string` |
-| `poolNumber` | `?int` |
-| `roundDescription` | `?string` |
-| `roundNumber` | `?string` |
-| `score_home` | `?int` |
-| `score_ot1_home` | `?int` |
-| `score_ot1_out` | `?int` |
-| `score_ot2_home` | `?int` |
-| `score_ot2_out` | `?int` |
-| `score_out` | `?int` |
-| `score_q1_home` | `?int` |
-| `score_q1_out` | `?int` |
-| `score_q2_home` | `?int` |
-| `score_q2_out` | `?int` |
-| `score_q3_home` | `?int` |
-| `score_q3_out` | `?int` |
-| `score_q4_home` | `?int` |
-| `score_q4_out` | `?int` |
-| `socket_opened` | `?bool` |
-| `statsSource` | `?string` |
-| `stats_full` | `mixed` |
-| `teamEngagement_home` | `?EngagementsItem` |
-| `teamEngagement_out` | `?EngagementsItem` |
-| `teamId_home` | `?int` |
-| `teamId_out` | `?int` |
-| `teamName_home` | `?string` |
-| `teamName_out` | `?string` |
-| `temperature` | `?string` |
-| `timeActual` | `?DateTimeImmutable` |
-| `timeActual_timestamp` | `?int` |
-| `timeEndActual` | `?DateTimeImmutable` |
-| `timeEndActual_timestamp` | `?int` |
-| `timezone` | `?string` |
-| `twitterHashtag` | `?string` |
-| `venueId` | `?int` |
-| `venueName` | `?string` |
-| `weather` | `?string` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `atNeutralVenue` | `?bool` |  |
+| `attendance` | `?int` |  |
+| `clock` | `?string` |  |
+| `competitionAbgName` | `?string` |  |
+| `competitionId` | `?int` |  |
+| `competitionName` | `?string` |  |
+| `consolidated` | `?bool` |  |
+| `currentPeriod` | `?string` |  |
+| `currentStatus` | `?string` |  |
+| `date_created` | `?DateTimeImmutable` |  |
+| `date_updated` | `?DateTimeImmutable` |  |
+| `duration` | `?int` |  |
+| `external` | `?RencontresItem` | `externalId` |
+| `externalCompetition` | `?CompetitionsItem` | `externalCompetitionId` |
+| `extraPeriodsUsed` | `?int` |  |
+| `fouls_home` | `?int` |  |
+| `fouls_out` | `?int` |  |
+| `leagueId` | `?int` |  |
+| `liveStream` | `?bool` |  |
+| `matchId` | `?string` |  |
+| `matchName` | `?string` |  |
+| `matchNumber` | `?int` |  |
+| `matchStatus` | `?string` |  |
+| `matchTime` | `?DateTimeImmutable` |  |
+| `matchTimeUTC` | `?DateTimeImmutable` |  |
+| `matchTimeUTC_timestamp` | `?int` |  |
+| `matchTime_timestamp` | `?int` |  |
+| `matchType` | `?string` |  |
+| `periodStatus` | `?string` |  |
+| `phaseName` | `?string` |  |
+| `poolNumber` | `?int` |  |
+| `roundDescription` | `?string` |  |
+| `roundNumber` | `?string` |  |
+| `score_home` | `?int` |  |
+| `score_ot1_home` | `?int` |  |
+| `score_ot1_out` | `?int` |  |
+| `score_ot2_home` | `?int` |  |
+| `score_ot2_out` | `?int` |  |
+| `score_out` | `?int` |  |
+| `score_q1_home` | `?int` |  |
+| `score_q1_out` | `?int` |  |
+| `score_q2_home` | `?int` |  |
+| `score_q2_out` | `?int` |  |
+| `score_q3_home` | `?int` |  |
+| `score_q3_out` | `?int` |  |
+| `score_q4_home` | `?int` |  |
+| `score_q4_out` | `?int` |  |
+| `socket_opened` | `?bool` |  |
+| `statsSource` | `?string` |  |
+| `stats_full` | `mixed` |  |
+| `teamEngagement_home` | `?EngagementsItem` |  |
+| `teamEngagement_out` | `?EngagementsItem` |  |
+| `teamId_home` | `?int` |  |
+| `teamId_out` | `?int` |  |
+| `teamName_home` | `?string` |  |
+| `teamName_out` | `?string` |  |
+| `temperature` | `?string` |  |
+| `timeActual` | `?DateTimeImmutable` |  |
+| `timeActual_timestamp` | `?int` |  |
+| `timeEndActual` | `?DateTimeImmutable` |  |
+| `timeEndActual_timestamp` | `?int` |  |
+| `timezone` | `?string` |  |
+| `twitterHashtag` | `?string` |  |
+| `venueId` | `?int` |  |
+| `venueName` | `?string` |  |
+| `weather` | `?string` |  |
 
 ### GeniusSportsLiveLogsItem
 
@@ -1484,25 +1484,25 @@ Collection Directus `genius_sports_live_logs` (schéma OpenAPI ItemsGeniusSports
 
 Collection Directus `rematch_videos` (schéma OpenAPI ItemsRematchVideos).
 
-| Propriété | Type |
-|---|---|
-| `author` | `?string` |
-| `club1FedeID` | `?OrganismesItem` |
-| `club2FedeID` | `?OrganismesItem` |
-| `competitionFedeID` | `?CompetitionsItem` |
-| `date` | `?DateTimeImmutable` |
-| `date_created` | `?DateTimeImmutable` |
-| `date_updated` | `?DateTimeImmutable` |
-| `federation` | `?string` |
-| `matchFedeID` | `?RencontresItem` |
-| `matchID` | `?string` |
-| `placeName` | `?string` |
-| `status` | `?string` |
-| `thumbnailURL` | `?string` |
-| `type` | `?string` |
-| `user_created` | `?string` |
-| `user_updated` | `?string` |
-| `videoID` | `?string` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `author` | `?string` |  |
+| `club1Fede` | `?OrganismesItem` | `club1FedeID` |
+| `club2Fede` | `?OrganismesItem` | `club2FedeID` |
+| `competitionFede` | `?CompetitionsItem` | `competitionFedeID` |
+| `date` | `?DateTimeImmutable` |  |
+| `date_created` | `?DateTimeImmutable` |  |
+| `date_updated` | `?DateTimeImmutable` |  |
+| `federation` | `?string` |  |
+| `matchFede` | `?RencontresItem` | `matchFedeID` |
+| `matchID` | `?string` |  |
+| `placeName` | `?string` |  |
+| `status` | `?string` |  |
+| `thumbnailURL` | `?string` |  |
+| `type` | `?string` |  |
+| `user_created` | `?string` |  |
+| `user_updated` | `?string` |  |
+| `videoID` | `?string` |  |
 
 ### Affiche
 
@@ -1747,36 +1747,36 @@ Objet imbriqué Engagement (modèle Python, rencontres_engagement.py).
 
 Hit Meilisearch de l'index `ffbbserver_engagements` (modèle Python EngagementsHit).
 
-| Propriété | Type |
-|---|---|
-| `_geo` | `?Geo` |
-| `age` | `?string` |
-| `categorie` | `?Categorie` |
-| `clubPro` | `?bool` |
-| `codeAbrege` | `?string` |
-| `codeClub` | `?string` |
-| `codeComite` | `?string` |
-| `codeLigue` | `?string` |
-| `competitionsUrl` | `?string` |
-| `gradient_color` | `?string` |
-| `id` | `?string` |
-| `idCompetition` | `?CompetitionOrigine` |
-| `idPoule` | `?Poule` |
-| `logo` | `?string` |
-| `niveau` | `?Categorie` |
-| `nom` | `?string` |
-| `nomClub` | `?string` |
-| `nomClubPro` | `?string` |
-| `nomComite` | `?string` |
-| `nomCtc` | `?string` |
-| `nomEquipe` | `?string` |
-| `nomLigue` | `?string` |
-| `nomOfficiel` | `?string` |
-| `nomOrganisme` | `?string` |
-| `nomUsuel` | `?string` |
-| `numeroEquipe` | `?string` |
-| `sexe` | `?string` |
-| `thumbnail` | `?string` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `_geo` | `?Geo` |  |
+| `age` | `?string` |  |
+| `categorie` | `?Categorie` |  |
+| `clubPro` | `?bool` |  |
+| `codeAbrege` | `?string` |  |
+| `codeClub` | `?string` |  |
+| `codeComite` | `?string` |  |
+| `codeLigue` | `?string` |  |
+| `competition` | `?CompetitionOrigine` | `idCompetition` |
+| `competitionsUrl` | `?string` |  |
+| `gradient_color` | `?string` |  |
+| `id` | `?string` |  |
+| `logo` | `?string` |  |
+| `niveau` | `?Categorie` |  |
+| `nom` | `?string` |  |
+| `nomClub` | `?string` |  |
+| `nomClubPro` | `?string` |  |
+| `nomComite` | `?string` |  |
+| `nomCtc` | `?string` |  |
+| `nomEquipe` | `?string` |  |
+| `nomLigue` | `?string` |  |
+| `nomOfficiel` | `?string` |  |
+| `nomOrganisme` | `?string` |  |
+| `nomUsuel` | `?string` |  |
+| `numeroEquipe` | `?string` |  |
+| `poule` | `?Poule` | `idPoule` |
+| `sexe` | `?string` |  |
+| `thumbnail` | `?string` |  |
 
 ### ExternalCompetitionID
 
@@ -1793,16 +1793,16 @@ Objet imbriqué ExternalCompetitionID (modèle Python, external_competition_id.p
 
 Objet imbriqué ExternalID (modèle Python, external_id.py).
 
-| Propriété | Type |
-|---|---|
-| `competitionId` | `?ExternalCompetitionID` |
-| `idOrganismeEquipe1` | `?IDOrganismeEquipe` |
-| `idOrganismeEquipe2` | `?IDOrganismeEquipe` |
-| `idPoule` | `?IDPoule` |
-| `nomEquipe1` | `?string` |
-| `nomEquipe2` | `?string` |
-| `numeroJournee` | `?int` |
-| `salle` | `?Salle` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `competition` | `?ExternalCompetitionID` | `competitionId` |
+| `nomEquipe1` | `?string` |  |
+| `nomEquipe2` | `?string` |  |
+| `numeroJournee` | `?int` |  |
+| `organismeEquipe1` | `?IDOrganismeEquipe` | `idOrganismeEquipe1` |
+| `organismeEquipe2` | `?IDOrganismeEquipe` | `idOrganismeEquipe2` |
+| `poule` | `?IDPoule` | `idPoule` |
+| `salle` | `?Salle` |  |
 
 ### Folder
 
@@ -1936,35 +1936,35 @@ Objet imbriqué IDPoule (modèle Python, id_poule.py).
 
 Match en direct (json/lives.json), modèle Python Live.
 
-| Propriété | Type |
-|---|---|
-| `clock` | `mixed` |
-| `competitionAbgName` | `?string` |
-| `competitionName` | `?string` |
-| `currentPeriod` | `?string` |
-| `currentStatus` | `?string` |
-| `externalId` | `?ExternalID` |
-| `matchId` | `?int` |
-| `matchStatus` | `?string` |
-| `matchTime` | `?DateTimeImmutable` |
-| `score_home` | `?int` |
-| `score_ot1_home` | `?int` |
-| `score_ot1_out` | `?int` |
-| `score_ot2_home` | `?int` |
-| `score_ot2_out` | `?int` |
-| `score_out` | `?int` |
-| `score_q1_home` | `?int` |
-| `score_q1_out` | `?int` |
-| `score_q2_home` | `?int` |
-| `score_q2_out` | `?int` |
-| `score_q3_home` | `?int` |
-| `score_q3_out` | `?int` |
-| `score_q4_home` | `?int` |
-| `score_q4_out` | `?int` |
-| `teamEngagement_home` | `?TeamEngagement` |
-| `teamEngagement_out` | `?TeamEngagement` |
-| `teamName_home` | `?string` |
-| `teamName_out` | `?string` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `clock` | `mixed` |  |
+| `competitionAbgName` | `?string` |  |
+| `competitionName` | `?string` |  |
+| `currentPeriod` | `?string` |  |
+| `currentStatus` | `?string` |  |
+| `external` | `?ExternalID` | `externalId` |
+| `matchId` | `?int` |  |
+| `matchStatus` | `?string` |  |
+| `matchTime` | `?DateTimeImmutable` |  |
+| `score_home` | `?int` |  |
+| `score_ot1_home` | `?int` |  |
+| `score_ot1_out` | `?int` |  |
+| `score_ot2_home` | `?int` |  |
+| `score_ot2_out` | `?int` |  |
+| `score_out` | `?int` |  |
+| `score_q1_home` | `?int` |  |
+| `score_q1_out` | `?int` |  |
+| `score_q2_home` | `?int` |  |
+| `score_q2_out` | `?int` |  |
+| `score_q3_home` | `?int` |  |
+| `score_q3_out` | `?int` |  |
+| `score_q4_home` | `?int` |  |
+| `score_q4_out` | `?int` |  |
+| `teamEngagement_home` | `?TeamEngagement` |  |
+| `teamEngagement_out` | `?TeamEngagement` |  |
+| `teamName_home` | `?string` |  |
+| `teamName_out` | `?string` |  |
 
 ### Logo
 
@@ -2177,45 +2177,45 @@ Objet imbriqué PurpleLogo (modèle Python, purple_logo.py).
 
 Hit Meilisearch de l'index `ffbbserver_rencontres` (modèle Python RencontresHit, complété par 9 attribut(s) observé(s)).
 
-| Propriété | Type |
-|---|---|
-| `_geo` | `?Geo` |
-| `competitionId` | `?CompetitionID` |
-| `creation_timestamp` | `?int` |
-| `date` | `?DateTimeImmutable` |
-| `dateSaisieResultat_timestamp` | `?int` |
-| `date_rencontre` | `?DateTimeImmutable` |
-| `date_rencontre_timestamp` | `?int` |
-| `date_timestamp` | `?int` |
-| `gsId` | `?string` |
-| `handicap1` | `?int` |
-| `handicap2` | `?int` |
-| `horaire` | `?string` |
-| `id` | `?string` |
-| `idEngagementEquipe1` | `?IDEngagementEquipe` |
-| `idEngagementEquipe2` | `?IDEngagementEquipe` |
-| `idOrganismeEquipe1` | `?IDOrganismeEquipe` |
-| `idOrganismeEquipe2` | `?IDOrganismeEquipe` |
-| `idPoule` | `?IDPoule` |
-| `joue` | `?bool` |
-| `modification_timestamp` | `?int` |
-| `niveau` | `?string` |
-| `niveau_nb` | `?int` |
-| `nomEquipe1` | `?string` |
-| `nomEquipe2` | `?string` |
-| `numeroJournee` | `?int` |
-| `officiels` | `list<mixed>\|null` |
-| `officiels_string` | `mixed` |
-| `organisateur` | `?Organisateur` |
-| `pratique` | `?string` |
-| `rematch_videos` | `mixed` |
-| `resultatEquipe1` | `?int` |
-| `resultatEquipe2` | `?int` |
-| `saison` | `?Saison` |
-| `salle` | `?Salle` |
-| `thumbnail` | `?string` |
-| `uniqueKey` | `?string` |
-| `url_competition` | `?string` |
+| Propriété | Type | Champ Directus |
+|---|---|---|
+| `_geo` | `?Geo` |  |
+| `competition` | `?CompetitionID` | `competitionId` |
+| `creation_timestamp` | `?int` |  |
+| `date` | `?DateTimeImmutable` |  |
+| `dateSaisieResultat_timestamp` | `?int` |  |
+| `date_rencontre` | `?DateTimeImmutable` |  |
+| `date_rencontre_timestamp` | `?int` |  |
+| `date_timestamp` | `?int` |  |
+| `engagementEquipe1` | `?IDEngagementEquipe` | `idEngagementEquipe1` |
+| `engagementEquipe2` | `?IDEngagementEquipe` | `idEngagementEquipe2` |
+| `gsId` | `?string` |  |
+| `handicap1` | `?int` |  |
+| `handicap2` | `?int` |  |
+| `horaire` | `?string` |  |
+| `id` | `?string` |  |
+| `joue` | `?bool` |  |
+| `modification_timestamp` | `?int` |  |
+| `niveau` | `?string` |  |
+| `niveau_nb` | `?int` |  |
+| `nomEquipe1` | `?string` |  |
+| `nomEquipe2` | `?string` |  |
+| `numeroJournee` | `?int` |  |
+| `officiels` | `list<mixed>\|null` |  |
+| `officiels_string` | `mixed` |  |
+| `organisateur` | `?Organisateur` |  |
+| `organismeEquipe1` | `?IDOrganismeEquipe` | `idOrganismeEquipe1` |
+| `organismeEquipe2` | `?IDOrganismeEquipe` | `idOrganismeEquipe2` |
+| `poule` | `?IDPoule` | `idPoule` |
+| `pratique` | `?string` |  |
+| `rematch_videos` | `mixed` |  |
+| `resultatEquipe1` | `?int` |  |
+| `resultatEquipe2` | `?int` |  |
+| `saison` | `?Saison` |  |
+| `salle` | `?Salle` |  |
+| `thumbnail` | `?string` |  |
+| `uniqueKey` | `?string` |  |
+| `url_competition` | `?string` |  |
 
 ### Saison
 

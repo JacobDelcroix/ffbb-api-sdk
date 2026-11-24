@@ -216,7 +216,7 @@ final class ApiReference
         $md .= "- [Réponses Meilisearch et lives](#réponses-meilisearch-et-lives) : hits par index, objets imbriqués, matchs en direct\n\n";
 
         $md .= "## Réponses Directus\n\n";
-        $md .= "Générées par `bin/generate-dtos` depuis `resources/discovery/openapi.json`. Une relation vaut le DTO lié quand Directus la développe (`fields=relation.*`), sinon son identifiant. Une collection sans DTO renvoie un `Item` générique (`\$item->champ`, `\$item->get('a.b')`).\n\n";
+        $md .= "Générées par `bin/generate-dtos` depuis `resources/discovery/openapi.json`. Une relation est toujours un DTO (seul `id` est rempli si Directus ne la développe pas) et porte un nom naturel : `idPoule` devient `poule`. La colonne « Champ Directus » donne le nom à utiliser dans `fields()`, `where()` et les filtres (constante `DIRECTUS_FIELDS`). Une collection sans DTO renvoie un `Item` générique (`\$item->champ`, `\$item->get('a.b')`).\n\n";
         $md .= "| Collection Directus | DTO | Propriétés |\n|---|---|---|\n";
 
         foreach (ItemMap::CLASSES as $collection => $class) {
@@ -283,7 +283,8 @@ final class ApiReference
             $md .= $summary."\n\n";
         }
 
-        $md .= "| Propriété | Type |\n|---|---|\n";
+        $directus = $reflection->hasConstant('DIRECTUS_FIELDS') ? (array) $reflection->getConstant('DIRECTUS_FIELDS') : [];
+        $md .= $directus === [] ? "| Propriété | Type |\n|---|---|\n" : "| Propriété | Type | Champ Directus |\n|---|---|---|\n";
 
         foreach ($constructor?->getParameters() ?? [] as $param) {
             if ($param->getName() === 'raw') {
@@ -291,7 +292,9 @@ final class ApiReference
             }
 
             $type = $doc['params'][$param->getName()]['type'] ?? self::propertyDocType($param) ?? self::typeOf($param);
-            $md .= sprintf("| `%s` | `%s` |\n", $param->getName(), self::escapeCell($type));
+            $md .= $directus === []
+                ? sprintf("| `%s` | `%s` |\n", $param->getName(), self::escapeCell($type))
+                : sprintf("| `%s` | `%s` | %s |\n", $param->getName(), self::escapeCell($type), isset($directus[$param->getName()]) ? '`'.$directus[$param->getName()].'`' : '');
         }
 
         return $md;

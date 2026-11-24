@@ -16,8 +16,24 @@ final readonly class RencontresItem
 {
     public const string COLLECTION = 'ffbbserver_rencontres';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'competition' => 'competitionId',
+        'engagementEquipe1' => 'idEngagementEquipe1',
+        'engagementEquipe2' => 'idEngagementEquipe2',
+        'gs' => 'gsId',
+        'organismeEquipe1' => 'idOrganismeEquipe1',
+        'organismeEquipe2' => 'idOrganismeEquipe2',
+        'poule' => 'idPoule',
+    ];
+
     public function __construct(
-        public ?CompetitionsItem $competitionId = null,
+        /** Champ Directus : competitionId */
+        public ?CompetitionsItem $competition = null,
         public ?DateTimeImmutable $creation = null,
         public ?DateTimeImmutable $date = null,
         public ?DateTimeImmutable $dateSaisieResultat = null,
@@ -26,19 +42,19 @@ final readonly class RencontresItem
         public ?DateTimeImmutable $date_updated = null,
         public ?bool $defautEquipe1 = null,
         public ?bool $defautEquipe2 = null,
+        /** Champ Directus : idEngagementEquipe1 */
+        public ?EngagementsItem $engagementEquipe1 = null,
+        /** Champ Directus : idEngagementEquipe2 */
+        public ?EngagementsItem $engagementEquipe2 = null,
         public ?string $etat = null,
         public ?bool $forfaitEquipe1 = null,
         public ?bool $forfaitEquipe2 = null,
-        public GeniusSportMatchesItem|string|int|null $gsId = null,
+        /** Champ Directus : gsId */
+        public GeniusSportMatchesItem|string|int|null $gs = null,
         public ?int $handicap1 = null,
         public ?int $handicap2 = null,
         public ?int $horaire = null,
         public ?string $id = null,
-        public ?EngagementsItem $idEngagementEquipe1 = null,
-        public ?EngagementsItem $idEngagementEquipe2 = null,
-        public ?OrganismesItem $idOrganismeEquipe1 = null,
-        public ?OrganismesItem $idOrganismeEquipe2 = null,
-        public ?PoulesItem $idPoule = null,
         public ?bool $joue = null,
         public ?DateTimeImmutable $modification = null,
         public ?string $nomEquipe1 = null,
@@ -47,8 +63,14 @@ final readonly class RencontresItem
         public ?string $numeroJournee = null,
         /** @var list<OfficielsRencontresItem>|null */
         public ?array $officiels = null,
+        /** Champ Directus : idOrganismeEquipe1 */
+        public ?OrganismesItem $organismeEquipe1 = null,
+        /** Champ Directus : idOrganismeEquipe2 */
+        public ?OrganismesItem $organismeEquipe2 = null,
         public ?bool $penaliteEquipe1 = null,
         public ?bool $penaliteEquipe2 = null,
+        /** Champ Directus : idPoule */
+        public ?PoulesItem $poule = null,
         public ?string $pratique = null,
         /** @var list<RematchVideosItem|string|int>|null */
         public ?array $rematch_videos = null,
@@ -72,7 +94,7 @@ final readonly class RencontresItem
     public static function fromArray(array $data): self
     {
         return new self(
-            competitionId: Cast::related($data['competitionId'] ?? null, CompetitionsItem::class),
+            competition: Cast::related($data['competitionId'] ?? null, CompetitionsItem::class),
             creation: Cast::dateTime($data['creation'] ?? null),
             date: Cast::dateTime($data['date'] ?? null),
             dateSaisieResultat: Cast::dateTime($data['dateSaisieResultat'] ?? null),
@@ -81,19 +103,16 @@ final readonly class RencontresItem
             date_updated: Cast::dateTime($data['date_updated'] ?? null),
             defautEquipe1: Cast::bool($data['defautEquipe1'] ?? null),
             defautEquipe2: Cast::bool($data['defautEquipe2'] ?? null),
+            engagementEquipe1: Cast::related($data['idEngagementEquipe1'] ?? null, EngagementsItem::class),
+            engagementEquipe2: Cast::related($data['idEngagementEquipe2'] ?? null, EngagementsItem::class),
             etat: Cast::string($data['etat'] ?? null),
             forfaitEquipe1: Cast::bool($data['forfaitEquipe1'] ?? null),
             forfaitEquipe2: Cast::bool($data['forfaitEquipe2'] ?? null),
-            gsId: Cast::relation($data['gsId'] ?? null, GeniusSportMatchesItem::class),
+            gs: Cast::relation($data['gsId'] ?? null, GeniusSportMatchesItem::class),
             handicap1: Cast::int($data['handicap1'] ?? null),
             handicap2: Cast::int($data['handicap2'] ?? null),
             horaire: Cast::int($data['horaire'] ?? null),
             id: Cast::string($data['id'] ?? null),
-            idEngagementEquipe1: Cast::related($data['idEngagementEquipe1'] ?? null, EngagementsItem::class),
-            idEngagementEquipe2: Cast::related($data['idEngagementEquipe2'] ?? null, EngagementsItem::class),
-            idOrganismeEquipe1: Cast::related($data['idOrganismeEquipe1'] ?? null, OrganismesItem::class),
-            idOrganismeEquipe2: Cast::related($data['idOrganismeEquipe2'] ?? null, OrganismesItem::class),
-            idPoule: Cast::related($data['idPoule'] ?? null, PoulesItem::class),
             joue: Cast::bool($data['joue'] ?? null),
             modification: Cast::dateTime($data['modification'] ?? null),
             nomEquipe1: Cast::string($data['nomEquipe1'] ?? null),
@@ -101,8 +120,11 @@ final readonly class RencontresItem
             numero: Cast::int($data['numero'] ?? null),
             numeroJournee: Cast::string($data['numeroJournee'] ?? null),
             officiels: Cast::relatedList($data['officiels'] ?? null, OfficielsRencontresItem::class),
+            organismeEquipe1: Cast::related($data['idOrganismeEquipe1'] ?? null, OrganismesItem::class),
+            organismeEquipe2: Cast::related($data['idOrganismeEquipe2'] ?? null, OrganismesItem::class),
             penaliteEquipe1: Cast::bool($data['penaliteEquipe1'] ?? null),
             penaliteEquipe2: Cast::bool($data['penaliteEquipe2'] ?? null),
+            poule: Cast::related($data['idPoule'] ?? null, PoulesItem::class),
             pratique: Cast::string($data['pratique'] ?? null),
             rematch_videos: Cast::relations($data['rematch_videos'] ?? null, RematchVideosItem::class),
             remise: Cast::bool($data['remise'] ?? null),

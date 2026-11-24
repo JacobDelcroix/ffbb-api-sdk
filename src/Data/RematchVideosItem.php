@@ -16,16 +16,32 @@ final readonly class RematchVideosItem
 {
     public const string COLLECTION = 'rematch_videos';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'club1Fede' => 'club1FedeID',
+        'club2Fede' => 'club2FedeID',
+        'competitionFede' => 'competitionFedeID',
+        'matchFede' => 'matchFedeID',
+    ];
+
     public function __construct(
         public ?string $author = null,
-        public ?OrganismesItem $club1FedeID = null,
-        public ?OrganismesItem $club2FedeID = null,
-        public ?CompetitionsItem $competitionFedeID = null,
+        /** Champ Directus : club1FedeID */
+        public ?OrganismesItem $club1Fede = null,
+        /** Champ Directus : club2FedeID */
+        public ?OrganismesItem $club2Fede = null,
+        /** Champ Directus : competitionFedeID */
+        public ?CompetitionsItem $competitionFede = null,
         public ?DateTimeImmutable $date = null,
         public ?DateTimeImmutable $date_created = null,
         public ?DateTimeImmutable $date_updated = null,
         public ?string $federation = null,
-        public ?RencontresItem $matchFedeID = null,
+        /** Champ Directus : matchFedeID */
+        public ?RencontresItem $matchFede = null,
         public ?string $matchID = null,
         public ?string $placeName = null,
         public ?string $status = null,
@@ -45,14 +61,14 @@ final readonly class RematchVideosItem
     {
         return new self(
             author: Cast::string($data['author'] ?? null),
-            club1FedeID: Cast::related($data['club1FedeID'] ?? null, OrganismesItem::class),
-            club2FedeID: Cast::related($data['club2FedeID'] ?? null, OrganismesItem::class),
-            competitionFedeID: Cast::related($data['competitionFedeID'] ?? null, CompetitionsItem::class),
+            club1Fede: Cast::related($data['club1FedeID'] ?? null, OrganismesItem::class),
+            club2Fede: Cast::related($data['club2FedeID'] ?? null, OrganismesItem::class),
+            competitionFede: Cast::related($data['competitionFedeID'] ?? null, CompetitionsItem::class),
             date: Cast::dateTime($data['date'] ?? null),
             date_created: Cast::dateTime($data['date_created'] ?? null),
             date_updated: Cast::dateTime($data['date_updated'] ?? null),
             federation: Cast::string($data['federation'] ?? null),
-            matchFedeID: Cast::related($data['matchFedeID'] ?? null, RencontresItem::class),
+            matchFede: Cast::related($data['matchFedeID'] ?? null, RencontresItem::class),
             matchID: Cast::string($data['matchID'] ?? null),
             placeName: Cast::string($data['placeName'] ?? null),
             status: Cast::string($data['status'] ?? null),

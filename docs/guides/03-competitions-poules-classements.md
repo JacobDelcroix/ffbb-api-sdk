@@ -56,7 +56,7 @@ foreach ($classement as $ligne) {
     printf(
         "%d. %s — %d pts (%d J, %d V, %d D, diff. %+d)\n",
         $ligne->position,
-        $ligne->idEngagement?->nom ?? $ligne->organisme?->nom,
+        $ligne->engagement?->nom ?? $ligne->organisme?->nom,
         $ligne->points,
         $ligne->matchJoues,
         $ligne->gagnes,
@@ -69,8 +69,8 @@ foreach ($classement as $ligne) {
 Champs disponibles par ligne : `position`, `points`, `matchJoues`, `gagnes`, `perdus`, `nuls`,
 `paniersMarques`, `paniersEncaisses`, `difference`, `quotient`, `nombreForfaits`, `nombreDefauts`,
 `penalitesArbitrage`, `penalitesEntraineur`, `penalitesDiverses`, `horsClassement`,
-`idEngagement` (`EngagementsItem` : `id`, `nom`, `nomUsuel`, `codeAbrege`, `numeroEquipe`, `logo`) et
-`organisme` (`OrganismesItem` : `id`, `nom`, `logo`). Liste complète : [PoulesClassementsItem](../reference/dtos.md#poulesclassementsitem).
+`engagement` (`EngagementsItem` : `id`, `nom`, `nomUsuel`, `codeAbrege`, `numeroEquipe`, `logo` ; champ Directus `idEngagement`)
+et `organisme` (`OrganismesItem` : `id`, `nom`, `logo`). Liste complète : [PoulesClassementsItem](../reference/dtos.md#poulesclassementsitem).
 
 ### Mettre en avant son équipe
 

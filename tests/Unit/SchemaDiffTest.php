@@ -60,6 +60,8 @@ it('n a pas de dérive entre la spec enregistrée et les DTOs générés', funct
     $props = array_keys($spec['components']['schemas']['ItemsFfbbserverRencontres']['properties']);
     $constructor = (new ReflectionClass(RencontresItem::class))->getConstructor();
     $params = array_map(static fn (ReflectionParameter $p): string => $p->getName(), $constructor->getParameters());
+    // Les relations sont renommées : on revient aux noms Directus via DIRECTUS_FIELDS.
+    $directusNames = array_map(static fn (string $p): string => RencontresItem::DIRECTUS_FIELDS[$p] ?? $p, $params);
 
-    expect(array_values(array_diff($props, $params)))->toBe([]);
+    expect(array_values(array_diff($props, $directusNames)))->toBe([]);
 });

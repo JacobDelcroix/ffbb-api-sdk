@@ -16,6 +16,13 @@ final readonly class OrganismesHit
 {
     public const string INDEX = 'ffbbserver_organismes';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [];
+
     public function __construct(
         public ?Geo $_geo = null,
         public ?string $adresse = null,

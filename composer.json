@@ -3,10 +3,25 @@
     "description": "SDK PHP (Saloon) non officiel pour les données FFBB : clubs, compétitions, poules, classements, rencontres, salles. Portage de nickdesi/ffbb-data-client.",
     "type": "library",
     "license": "Apache-2.0",
-    "keywords": ["ffbb", "basket", "basketball", "saloon", "sdk", "directus", "meilisearch"],
+    "keywords": [
+        "ffbb",
+        "basket",
+        "basketball",
+        "saloon",
+        "sdk",
+        "directus",
+        "meilisearch"
+    ],
+    "homepage": "https://github.com/JacobDelcroix/ffbb-api-sdk",
+    "support": {
+        "issues": "https://github.com/JacobDelcroix/ffbb-api-sdk/issues",
+        "source": "https://github.com/JacobDelcroix/ffbb-api-sdk",
+        "docs": "https://github.com/JacobDelcroix/ffbb-api-sdk/tree/main/docs"
+    },
     "authors": [
         {
-            "name": "Jacob"
+            "name": "Jacob Delcroix",
+            "homepage": "https://github.com/JacobDelcroix"
         }
     ],
     "require": {

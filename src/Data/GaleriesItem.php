@@ -16,6 +16,13 @@ final readonly class GaleriesItem
 {
     public const string COLLECTION = 'ffbbnational_galeries';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [];
+
     public function __construct(
         public mixed $cover = null,
         public ?string $creator = null,

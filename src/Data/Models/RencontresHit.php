@@ -16,25 +16,39 @@ final readonly class RencontresHit
 {
     public const string INDEX = 'ffbbserver_rencontres';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'competition' => 'competitionId',
+        'engagementEquipe1' => 'idEngagementEquipe1',
+        'engagementEquipe2' => 'idEngagementEquipe2',
+        'organismeEquipe1' => 'idOrganismeEquipe1',
+        'organismeEquipe2' => 'idOrganismeEquipe2',
+        'poule' => 'idPoule',
+    ];
+
     public function __construct(
         public ?Geo $_geo = null,
-        public ?CompetitionID $competitionId = null,
+        /** Champ Directus : competitionId */
+        public ?CompetitionID $competition = null,
         public ?int $creation_timestamp = null,
         public ?DateTimeImmutable $date = null,
         public ?int $dateSaisieResultat_timestamp = null,
         public ?DateTimeImmutable $date_rencontre = null,
         public ?int $date_rencontre_timestamp = null,
         public ?int $date_timestamp = null,
+        /** Champ Directus : idEngagementEquipe1 */
+        public ?IDEngagementEquipe $engagementEquipe1 = null,
+        /** Champ Directus : idEngagementEquipe2 */
+        public ?IDEngagementEquipe $engagementEquipe2 = null,
         public ?string $gsId = null,
         public ?int $handicap1 = null,
         public ?int $handicap2 = null,
         public ?string $horaire = null,
         public ?string $id = null,
-        public ?IDEngagementEquipe $idEngagementEquipe1 = null,
-        public ?IDEngagementEquipe $idEngagementEquipe2 = null,
-        public ?IDOrganismeEquipe $idOrganismeEquipe1 = null,
-        public ?IDOrganismeEquipe $idOrganismeEquipe2 = null,
-        public ?IDPoule $idPoule = null,
         public ?bool $joue = null,
         public ?int $modification_timestamp = null,
         public ?string $niveau = null,
@@ -46,6 +60,12 @@ final readonly class RencontresHit
         public ?array $officiels = null,
         public mixed $officiels_string = null,
         public ?Organisateur $organisateur = null,
+        /** Champ Directus : idOrganismeEquipe1 */
+        public ?IDOrganismeEquipe $organismeEquipe1 = null,
+        /** Champ Directus : idOrganismeEquipe2 */
+        public ?IDOrganismeEquipe $organismeEquipe2 = null,
+        /** Champ Directus : idPoule */
+        public ?IDPoule $poule = null,
         public ?string $pratique = null,
         public mixed $rematch_videos = null,
         public ?int $resultatEquipe1 = null,
@@ -66,23 +86,20 @@ final readonly class RencontresHit
     {
         return new self(
             _geo: Cast::object($data['_geo'] ?? null, Geo::class),
-            competitionId: Cast::object($data['competitionId'] ?? null, CompetitionID::class),
+            competition: Cast::object($data['competitionId'] ?? null, CompetitionID::class),
             creation_timestamp: Cast::int($data['creation_timestamp'] ?? null),
             date: Cast::dateTime($data['date'] ?? null),
             dateSaisieResultat_timestamp: Cast::int($data['dateSaisieResultat_timestamp'] ?? null),
             date_rencontre: Cast::dateTime($data['date_rencontre'] ?? null),
             date_rencontre_timestamp: Cast::int($data['date_rencontre_timestamp'] ?? null),
             date_timestamp: Cast::int($data['date_timestamp'] ?? null),
+            engagementEquipe1: Cast::object($data['idEngagementEquipe1'] ?? null, IDEngagementEquipe::class),
+            engagementEquipe2: Cast::object($data['idEngagementEquipe2'] ?? null, IDEngagementEquipe::class),
             gsId: Cast::string($data['gsId'] ?? null),
             handicap1: Cast::int($data['handicap1'] ?? null),
             handicap2: Cast::int($data['handicap2'] ?? null),
             horaire: Cast::string($data['horaire'] ?? null),
             id: Cast::string($data['id'] ?? null),
-            idEngagementEquipe1: Cast::object($data['idEngagementEquipe1'] ?? null, IDEngagementEquipe::class),
-            idEngagementEquipe2: Cast::object($data['idEngagementEquipe2'] ?? null, IDEngagementEquipe::class),
-            idOrganismeEquipe1: Cast::object($data['idOrganismeEquipe1'] ?? null, IDOrganismeEquipe::class),
-            idOrganismeEquipe2: Cast::object($data['idOrganismeEquipe2'] ?? null, IDOrganismeEquipe::class),
-            idPoule: Cast::object($data['idPoule'] ?? null, IDPoule::class),
             joue: Cast::bool($data['joue'] ?? null),
             modification_timestamp: Cast::int($data['modification_timestamp'] ?? null),
             niveau: Cast::string($data['niveau'] ?? null),
@@ -93,6 +110,9 @@ final readonly class RencontresHit
             officiels: Cast::listOf($data['officiels'] ?? null, 'raw'),
             officiels_string: $data['officiels_string'] ?? null,
             organisateur: Cast::object($data['organisateur'] ?? null, Organisateur::class),
+            organismeEquipe1: Cast::object($data['idOrganismeEquipe1'] ?? null, IDOrganismeEquipe::class),
+            organismeEquipe2: Cast::object($data['idOrganismeEquipe2'] ?? null, IDOrganismeEquipe::class),
+            poule: Cast::object($data['idPoule'] ?? null, IDPoule::class),
             pratique: Cast::string($data['pratique'] ?? null),
             rematch_videos: $data['rematch_videos'] ?? null,
             resultatEquipe1: Cast::int($data['resultatEquipe1'] ?? null),

@@ -16,6 +16,15 @@ final readonly class MembresItem
 {
     public const string COLLECTION = 'ffbbserver_membres';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'organisme' => 'idOrganisme',
+    ];
+
     public function __construct(
         public ?bool $accordDiffusionSiteWeb = null,
         public ?string $adresse1 = null,
@@ -26,10 +35,11 @@ final readonly class MembresItem
         public ?DateTimeImmutable $date_updated = null,
         public ?string $id = null,
         public ?string $idLicence = null,
-        public ?OrganismesItem $idOrganisme = null,
         public ?string $libelleFonction = null,
         public ?string $mail = null,
         public ?string $nom = null,
+        /** Champ Directus : idOrganisme */
+        public ?OrganismesItem $organisme = null,
         public ?string $prenom = null,
         public ?string $telephoneFixe = null,
         public ?string $telephonePortable = null,
@@ -53,10 +63,10 @@ final readonly class MembresItem
             date_updated: Cast::dateTime($data['date_updated'] ?? null),
             id: Cast::string($data['id'] ?? null),
             idLicence: Cast::string($data['idLicence'] ?? null),
-            idOrganisme: Cast::related($data['idOrganisme'] ?? null, OrganismesItem::class),
             libelleFonction: Cast::string($data['libelleFonction'] ?? null),
             mail: Cast::string($data['mail'] ?? null),
             nom: Cast::string($data['nom'] ?? null),
+            organisme: Cast::related($data['idOrganisme'] ?? null, OrganismesItem::class),
             prenom: Cast::string($data['prenom'] ?? null),
             telephoneFixe: Cast::string($data['telephoneFixe'] ?? null),
             telephonePortable: Cast::string($data['telephonePortable'] ?? null),

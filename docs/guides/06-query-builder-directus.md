@@ -17,6 +17,10 @@ Les résultats sont hydratés dans le DTO de la collection (`RencontresItem`…)
 Les collections disponibles sont listées dans la [référence DTOs](../reference/dtos.md#réponses-directus) et,
 de façon exhaustive, dans `resources/discovery/openapi.json`.
 
+Les requêtes utilisent les **noms Directus** des champs (`idPoule`, `idCompetition`…), tandis que les DTOs
+renvoyés exposent les relations sous un nom naturel (`poule`, `competition`…) : voir
+[noms des relations](07-dtos.md#noms-des-relations--lecture-et-requêtes).
+
 ## Champs
 
 ```php

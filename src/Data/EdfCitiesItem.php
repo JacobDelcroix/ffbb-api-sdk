@@ -16,6 +16,13 @@ final readonly class EdfCitiesItem
 {
     public const string COLLECTION = 'edf_cities';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [];
+
     public function __construct(
         /** @var list<EdfCampaignsEdfCitiesItem>|null */
         public ?array $campaigns = null,

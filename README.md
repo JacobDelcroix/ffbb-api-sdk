@@ -15,6 +15,8 @@
 </p>
 
 <p align="center">
+  <a href="https://packagist.org/packages/jacobdelcroix/ffbb-api-sdk"><img src="https://img.shields.io/packagist/v/jacobdelcroix/ffbb-api-sdk?style=flat-square&label=Packagist" alt="Version Packagist" /></a>
+  <a href="https://packagist.org/packages/jacobdelcroix/ffbb-api-sdk"><img src="https://img.shields.io/packagist/dt/jacobdelcroix/ffbb-api-sdk?style=flat-square" alt="Téléchargements" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/Licence-Apache--2.0-blue.svg?style=flat-square" alt="Licence Apache-2.0" /></a>
   <img src="https://img.shields.io/badge/Laravel-prêt-FF2D20?logo=laravel&logoColor=white&style=flat-square" alt="Laravel" />
   <img src="https://img.shields.io/badge/Tests-Pest-F28D1A?style=flat-square" alt="Pest" />
@@ -85,7 +87,7 @@ $club->code;  // 'HDF0059038'
 
 // 2. Ses équipes engagées
 foreach ($ffbb->getEquipes((int) $club->id) as $equipe) {   // EngagementsItem
-    echo $equipe->idCompetition?->nom.' — '.$equipe->idPoule?->nom.PHP_EOL;
+    echo $equipe->competition?->nom.' — '.$equipe->poule?->nom.PHP_EOL;
 }
 
 // 3. Le classement et les matchs d'une poule
@@ -102,8 +104,8 @@ $club = Ffbb::getOrganisme(10238);   // ?OrganismesItem
 ```
 
 Toutes les méthodes renvoient des **objets typés** : l'IDE complète les propriétés, PHPStan vérifie les types,
-les dates sont des `DateTimeImmutable` et les relations des objets (`$equipe->idPoule->nom`). La réponse brute
-reste accessible via `->raw` / `toArray()`.
+les dates sont des `DateTimeImmutable` et les relations des objets au nom naturel (`$equipe->poule->nom`, champ
+Directus `idPoule`). La réponse brute reste accessible via `->raw` / `toArray()`.
 
 ---
 
@@ -150,7 +152,7 @@ foreach ($resultats as $match) {
 
 ```php
 foreach ($ffbb->getClassement(900) ?? [] as $ligne) {
-    printf("%d. %s — %d pts (%d V / %d D)\n", $ligne->position, $ligne->idEngagement?->nom, $ligne->points, $ligne->gagnes, $ligne->perdus);
+    printf("%d. %s — %d pts (%d V / %d D)\n", $ligne->position, $ligne->engagement?->nom, $ligne->points, $ligne->gagnes, $ligne->perdus);
 }
 ```
 

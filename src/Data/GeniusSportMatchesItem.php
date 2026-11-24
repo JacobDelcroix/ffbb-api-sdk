@@ -16,6 +16,16 @@ final readonly class GeniusSportMatchesItem
 {
     public const string COLLECTION = 'genius_sport_matches';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'external' => 'externalId',
+        'externalCompetition' => 'externalCompetitionId',
+    ];
+
     public function __construct(
         public ?bool $atNeutralVenue = null,
         public ?int $attendance = null,
@@ -29,8 +39,10 @@ final readonly class GeniusSportMatchesItem
         public ?DateTimeImmutable $date_created = null,
         public ?DateTimeImmutable $date_updated = null,
         public ?int $duration = null,
-        public ?CompetitionsItem $externalCompetitionId = null,
-        public ?RencontresItem $externalId = null,
+        /** Champ Directus : externalId */
+        public ?RencontresItem $external = null,
+        /** Champ Directus : externalCompetitionId */
+        public ?CompetitionsItem $externalCompetition = null,
         public ?int $extraPeriodsUsed = null,
         public ?int $fouls_home = null,
         public ?int $fouls_out = null,
@@ -105,8 +117,8 @@ final readonly class GeniusSportMatchesItem
             date_created: Cast::dateTime($data['date_created'] ?? null),
             date_updated: Cast::dateTime($data['date_updated'] ?? null),
             duration: Cast::int($data['duration'] ?? null),
-            externalCompetitionId: Cast::related($data['externalCompetitionId'] ?? null, CompetitionsItem::class),
-            externalId: Cast::related($data['externalId'] ?? null, RencontresItem::class),
+            external: Cast::related($data['externalId'] ?? null, RencontresItem::class),
+            externalCompetition: Cast::related($data['externalCompetitionId'] ?? null, CompetitionsItem::class),
             extraPeriodsUsed: Cast::int($data['extraPeriodsUsed'] ?? null),
             fouls_home: Cast::int($data['fouls_home'] ?? null),
             fouls_out: Cast::int($data['fouls_out'] ?? null),

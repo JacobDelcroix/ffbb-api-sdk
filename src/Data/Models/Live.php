@@ -14,13 +14,23 @@ use DateTimeImmutable;
  */
 final readonly class Live
 {
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'external' => 'externalId',
+    ];
+
     public function __construct(
         public mixed $clock = null,
         public ?string $competitionAbgName = null,
         public ?string $competitionName = null,
         public ?string $currentPeriod = null,
         public ?string $currentStatus = null,
-        public ?ExternalID $externalId = null,
+        /** Champ Directus : externalId */
+        public ?ExternalID $external = null,
         public ?int $matchId = null,
         public ?string $matchStatus = null,
         public ?DateTimeImmutable $matchTime = null,
@@ -57,7 +67,7 @@ final readonly class Live
             competitionName: Cast::string($data['competitionName'] ?? null),
             currentPeriod: Cast::string($data['currentPeriod'] ?? null),
             currentStatus: Cast::string($data['currentStatus'] ?? null),
-            externalId: Cast::object($data['externalId'] ?? null, ExternalID::class),
+            external: Cast::object($data['externalId'] ?? null, ExternalID::class),
             matchId: Cast::int($data['matchId'] ?? null),
             matchStatus: Cast::string($data['matchStatus'] ?? null),
             matchTime: Cast::dateTime($data['matchTime'] ?? null),

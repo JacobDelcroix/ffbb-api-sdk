@@ -17,6 +17,8 @@ declare(strict_types=1);
  *    (le SDK Python inverse par exemple TerrainsHit et TournoisHit).
  *
  * Toutes les propriétés sont nullables ; $raw conserve la réponse complète.
+ * Les relations sont renommées sans leur préfixe / suffixe de clé étrangère (idPoule → poule) ;
+ * DIRECTUS_FIELDS donne le nom Directus de chaque propriété renommée.
  *
  * Usage : php bin/generate-dtos
  */
@@ -38,17 +40,74 @@ $validName = static fn (string $key): bool => preg_match('/^[A-Za-z_][A-Za-z0-9_
  *
  * @param  list<array{name: string, php: string, doc: string, cast: string}>  $props
  */
-$render = static function (string $namespace, string $class, string $description, array $props, array $constants = []): string {
+/**
+ * Nom de propriété d'une relation : on retire le préfixe / suffixe de clé étrangère.
+ *
+ *   idPoule → poule, idOrganismeEquipe1 → organismeEquipe1, competitionId → competition, edf_players_id → edf_players
+ */
+$relationName = static function (string $key): ?string {
+    if (preg_match('/^id([A-Z]\w*)$/', $key, $m) === 1) {
+        return lcfirst($m[1]);
+    }
+
+    if (preg_match('/^(\w+?)(?:_id|Id|ID)$/', $key, $m) === 1) {
+        return lcfirst($m[1]);
+    }
+
+    return null;
+};
+
+$isRelation = static fn (array $prop): bool => preg_match('/^Cast::(related|relation|relatedList|object)\(/', $prop['cast']) === 1
+    || preg_match('/^Cast::(relations|listOf)\(.*, [A-Z]\w*::class\)$/', $prop['cast']) === 1;
+
+/**
+ * Rend une classe DTO.
+ *
+ * Les propriétés de relation sont renommées (voir $relationName) ; la table DIRECTUS_FIELDS
+ * donne le nom Directus correspondant, à utiliser dans fields(), where() et les filtres.
+ *
+ * @param  list<array{name: string, php: string, doc: string, cast: string}>  $props
+ */
+$render = static function (string $namespace, string $class, string $description, array $props, array $constants = []) use ($relationName, $isRelation): string {
     $params = [];
     $assigns = [];
     $uses = ['CoachBasket\\Ffbb\\Support\\Cast'];
+    $taken = array_flip(array_column($props, 'name'));
+    $renamed = [];
+
+    foreach ($props as $i => $prop) {
+        $new = $isRelation($prop) ? $relationName($prop['name']) : null;
+
+        if ($new !== null && $new !== $prop['name'] && ! isset($taken[$new]) && $new !== 'raw') {
+            $taken[$new] = true;
+            $renamed[$new] = $prop['name'];
+            $props[$i]['name'] = $new;
+        }
+    }
+
+    usort($props, static fn (array $a, array $b): int => strcmp($a['name'], $b['name']));
 
     foreach ($props as $prop) {
         if (str_contains($prop['php'], 'DateTimeImmutable')) {
             $uses[] = 'DateTimeImmutable';
         }
 
-        $doc = $prop['doc'] !== '' ? "        /** @var {$prop['doc']} */\n" : '';
+        $docLines = [];
+
+        if ($prop['doc'] !== '') {
+            $docLines[] = "@var {$prop['doc']}";
+        }
+
+        if (isset($renamed[$prop['name']])) {
+            $docLines[] = "Champ Directus : {$renamed[$prop['name']]}";
+        }
+
+        $doc = match (count($docLines)) {
+            0 => '',
+            1 => "        /** {$docLines[0]} */\n",
+            default => "        /**\n".implode('', array_map(static fn (string $l): string => "         * {$l}\n", $docLines))."         */\n",
+        };
+
         $params[] = $doc."        public {$prop['php']} \${$prop['name']} = null,";
         $assigns[] = "            {$prop['name']}: {$prop['cast']},";
     }
@@ -67,6 +126,14 @@ $render = static function (string $namespace, string $class, string $description
     foreach ($constants as $name => $value) {
         $code .= "    public const string {$name} = '{$value}';\n\n";
     }
+
+    ksort($renamed);
+    $code .= "    /**\n     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).\n     *\n     * @var array<string, string>\n     */\n";
+    $code .= '    public const array DIRECTUS_FIELDS = ['.($renamed === [] ? '' : "\n".implode('', array_map(
+        static fn (string $prop, string $field): string => "        '{$prop}' => '{$field}',\n",
+        array_keys($renamed),
+        $renamed,
+    )).'    ')."];\n\n";
 
     $code .= "    public function __construct(\n".implode("\n", $params)."\n    ) {}\n\n";
     $code .= "    /**\n     * @param  array<string, mixed>  \$data\n     */\n";

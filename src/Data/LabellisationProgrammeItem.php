@@ -16,6 +16,13 @@ final readonly class LabellisationProgrammeItem
 {
     public const string COLLECTION = 'ffbbserver_labellisation_programme';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [];
+
     public function __construct(
         public ?string $affiche = null,
         public ?string $code = null,

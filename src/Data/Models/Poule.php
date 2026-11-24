@@ -13,6 +13,13 @@ use CoachBasket\Ffbb\Support\Cast;
  */
 final readonly class Poule
 {
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [];
+
     public function __construct(
         /** @var list<Engagement>|null */
         public ?array $engagements = null,

@@ -61,11 +61,11 @@ $equipes = $ffbb->getEquipes((int) $club->id);            // list<EngagementsIte
 // 3. Choisir une équipe : ici la première U15 féminine
 $u15f = array_values(array_filter(
     $equipes,
-    fn ($e) => str_contains($e->idCompetition?->nom ?? '', 'U15') && $e->idCompetition?->sexe === 'F',
+    fn ($e) => str_contains($e->competition?->nom ?? '', 'U15') && $e->competition?->sexe === 'F',
 ))[0];
 
 // 4. Classement et matchs de sa poule
-$pouleId = (int) $u15f->idPoule->id;
+$pouleId = (int) $u15f->poule->id;
 $classement = $ffbb->getClassement($pouleId);              // list<PoulesClassementsItem>
 $rencontres = $ffbb->listRencontresByPoule($pouleId);      // list<RencontresItem>
 ```
@@ -85,8 +85,8 @@ Ce que garantissent les DTOs :
 
 - **toutes les propriétés sont nullables** : les données FFBB sont souvent partielles ;
 - **les conversions sont tolérantes** : `"1"` → `true`, `"72"` → `72`, et les dates sont des `DateTimeImmutable` ;
-- **une relation est toujours un objet** : `$equipe->idPoule` est un `PoulesItem`. Si Directus ne l'a pas développée,
-  seul `->id` est rempli (`->nom` vaut `null`) ;
+- **une relation est toujours un objet, au nom naturel** : `$equipe->poule` est un `PoulesItem` (champ Directus
+  `idPoule`). Si Directus ne l'a pas développée, seul `->id` est rempli (`->nom` vaut `null`) ;
 - **`->raw` (ou `toArray()`) conserve la réponse complète**, y compris les champs absents de la spec.
 
 Détails : [guide 07 — DTOs](07-dtos.md).

@@ -15,10 +15,22 @@ final readonly class OrganismesFfbbserverOrganismesItem
 {
     public const string COLLECTION = 'ffbbserver_organismes_ffbbserver_organismes';
 
+    /**
+     * Propriétés renommées → nom du champ Directus (à utiliser dans fields(), where() et les filtres).
+     *
+     * @var array<string, string>
+     */
+    public const array DIRECTUS_FIELDS = [
+        'ffbbserver_organismes' => 'ffbbserver_organismes_id',
+        'related_ffbbserver_organismes' => 'related_ffbbserver_organismes_id',
+    ];
+
     public function __construct(
-        public ?OrganismesItem $ffbbserver_organismes_id = null,
+        /** Champ Directus : ffbbserver_organismes_id */
+        public ?OrganismesItem $ffbbserver_organismes = null,
         public ?int $id = null,
-        public ?OrganismesItem $related_ffbbserver_organismes_id = null,
+        /** Champ Directus : related_ffbbserver_organismes_id */
+        public ?OrganismesItem $related_ffbbserver_organismes = null,
         /** @var array<string, mixed> Réponse brute complète */
         public array $raw = [],
     ) {}
@@ -29,9 +41,9 @@ final readonly class OrganismesFfbbserverOrganismesItem
     public static function fromArray(array $data): self
     {
         return new self(
-            ffbbserver_organismes_id: Cast::related($data['ffbbserver_organismes_id'] ?? null, OrganismesItem::class),
+            ffbbserver_organismes: Cast::related($data['ffbbserver_organismes_id'] ?? null, OrganismesItem::class),
             id: Cast::int($data['id'] ?? null),
-            related_ffbbserver_organismes_id: Cast::related($data['related_ffbbserver_organismes_id'] ?? null, OrganismesItem::class),
+            related_ffbbserver_organismes: Cast::related($data['related_ffbbserver_organismes_id'] ?? null, OrganismesItem::class),
             raw: $data,
         );
     }
