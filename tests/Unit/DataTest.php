@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
+use CoachBasket\Ffbb\Data\EdfPlayersItem;
+use CoachBasket\Ffbb\Data\EngagementsItem;
 use CoachBasket\Ffbb\Data\ItemMap;
+use CoachBasket\Ffbb\Data\Models\RencontresHit;
 use CoachBasket\Ffbb\Data\OrganismesItem;
 use CoachBasket\Ffbb\Data\PoulesItem;
 use CoachBasket\Ffbb\Data\RencontresItem;
@@ -34,21 +37,21 @@ it('associe chaque collection à son DTO', function () {
 });
 
 it('nomme les relations sans leur préfixe de clé étrangère', function () {
-    $engagement = \CoachBasket\Ffbb\Data\EngagementsItem::fromArray([
+    $engagement = EngagementsItem::fromArray([
         'idPoule' => ['id' => '900', 'nom' => 'Poule A'],
         'idCompetition' => '500',
     ]);
 
     expect($engagement->poule->nom)->toBe('Poule A')
         ->and($engagement->competition->id)->toBe('500')
-        ->and(\CoachBasket\Ffbb\Data\EngagementsItem::DIRECTUS_FIELDS)->toHaveKey('poule', 'idPoule')
-        ->and(\CoachBasket\Ffbb\Data\Models\RencontresHit::DIRECTUS_FIELDS)->toHaveKey('competition', 'competitionId');
+        ->and(EngagementsItem::DIRECTUS_FIELDS)->toHaveKey('poule', 'idPoule')
+        ->and(RencontresHit::DIRECTUS_FIELDS)->toHaveKey('competition', 'competitionId');
 });
 
 it('garde le nom Directus quand le nom naturel est déjà pris', function () {
     $params = array_map(
         static fn (ReflectionParameter $p): string => $p->getName(),
-        (new ReflectionClass(\CoachBasket\Ffbb\Data\EdfPlayersItem::class))->getConstructor()->getParameters(),
+        (new ReflectionClass(EdfPlayersItem::class))->getConstructor()->getParameters(),
     );
 
     expect($params)->toContain('first_selection', 'first_selection_id');
