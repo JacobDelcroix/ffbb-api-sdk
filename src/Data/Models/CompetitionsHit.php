@@ -24,11 +24,11 @@ final readonly class CompetitionsHit
     public const array DIRECTUS_FIELDS = [];
 
     public function __construct(
-        public mixed $age = null,
+        public ?string $age = null,
         public ?Categorie $categorie = null,
         public ?string $code = null,
-        public mixed $codeComite = null,
-        public mixed $codeLigue = null,
+        public ?string $codeComite = null,
+        public ?string $codeLigue = null,
         public ?bool $compare_old_site = null,
         public ?string $competition_origine = null,
         public ?int $competition_origine_niveau = null,
@@ -47,7 +47,7 @@ final readonly class CompetitionsHit
         public ?string $nom = null,
         public ?int $ordre = null,
         public ?Organisateur $organisateur = null,
-        public mixed $participants = null,
+        public ?string $participants = null,
         public ?string $phase_code = null,
         /** @var list<string>|null */
         public ?array $phases = null,
@@ -72,11 +72,11 @@ final readonly class CompetitionsHit
     public static function fromArray(array $data): self
     {
         return new self(
-            age: $data['age'] ?? null,
+            age: Cast::string($data['age'] ?? null),
             categorie: Cast::object($data['categorie'] ?? null, Categorie::class),
             code: Cast::string($data['code'] ?? null),
-            codeComite: $data['codeComite'] ?? null,
-            codeLigue: $data['codeLigue'] ?? null,
+            codeComite: Cast::string($data['codeComite'] ?? null),
+            codeLigue: Cast::string($data['codeLigue'] ?? null),
             compare_old_site: Cast::bool($data['compare_old_site'] ?? null),
             competition_origine: Cast::string($data['competition_origine'] ?? null),
             competition_origine_niveau: Cast::int($data['competition_origine_niveau'] ?? null),
@@ -95,7 +95,7 @@ final readonly class CompetitionsHit
             nom: Cast::string($data['nom'] ?? null),
             ordre: Cast::int($data['ordre'] ?? null),
             organisateur: Cast::object($data['organisateur'] ?? null, Organisateur::class),
-            participants: $data['participants'] ?? null,
+            participants: Cast::string($data['participants'] ?? null),
             phase_code: Cast::string($data['phase_code'] ?? null),
             phases: Cast::listOf($data['phases'] ?? null, 'string'),
             poules: Cast::listOf($data['poules'] ?? null, Poule::class),

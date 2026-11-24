@@ -1,4 +1,19 @@
 {
+    "edf_matches": {
+        "available": false,
+        "attributes": [],
+        "estimatedTotalHits": null
+    },
+    "edf_players": {
+        "available": false,
+        "attributes": [],
+        "estimatedTotalHits": null
+    },
+    "edf_teams": {
+        "available": false,
+        "attributes": [],
+        "estimatedTotalHits": null
+    },
     "ffbbnational_galeries": {
         "available": true,
         "attributes": [
@@ -18,7 +33,24 @@
             "title",
             "type"
         ],
-        "estimatedTotalHits": 98
+        "estimatedTotalHits": 98,
+        "types": {
+            "count": "int",
+            "cover": "object",
+            "creator": "string",
+            "date": "string",
+            "date_created": "string",
+            "date_published": "string",
+            "date_timestamp": "int",
+            "date_updated": "string",
+            "id": "string",
+            "images": "array",
+            "surtitle": "string",
+            "tags": "array",
+            "thumbnail": "string",
+            "title": "string",
+            "type": "string"
+        }
     },
     "ffbbnational_pratiques": {
         "available": true,
@@ -73,7 +105,58 @@
             "type",
             "ville_salle"
         ],
-        "estimatedTotalHits": 649
+        "estimatedTotalHits": 705,
+        "types": {
+            "_geo": "object",
+            "action": "string",
+            "adresse": "string",
+            "adresse_salle": "string",
+            "adresse_structure": "string",
+            "affiche": "object",
+            "assurance": "null",
+            "cartographie": "object",
+            "code": "string",
+            "code_structure": "string",
+            "cp_salle": "string",
+            "date_created": "string",
+            "date_debut": "string",
+            "date_debut_timestamp": "int",
+            "date_demande": "string",
+            "date_fin": "string",
+            "date_fin_timestamp": "int",
+            "date_inscription": "null",
+            "date_updated": "string",
+            "date_validation_ffbb": "string",
+            "date_validation_ffbb_timestamp": "int",
+            "description": "null",
+            "email": "string",
+            "engagement": "string",
+            "facebook": "null",
+            "horaires_seances": "string",
+            "id": "string",
+            "inscriptions": "string",
+            "jours": "array",
+            "label": "string",
+            "latitude": "null",
+            "longitude": "null",
+            "mail_demandeur": "string",
+            "mail_structure": "string",
+            "nom_demandeur": "string",
+            "nom_salle": "string",
+            "nom_structure": "string",
+            "nombre_personnes": "string",
+            "nombre_seances": "string",
+            "objectif": "string",
+            "prenom_demandeur": "string",
+            "public": "string",
+            "site_web": "string",
+            "telephone": "string",
+            "thumbnail": "null",
+            "titre": "string",
+            "twitter": "null",
+            "type": "string",
+            "ville_salle": "string"
+        }
     },
     "ffbbnational_rss": {
         "available": true,
@@ -101,7 +184,31 @@
             "title",
             "type"
         ],
-        "estimatedTotalHits": 4465
+        "estimatedTotalHits": 4563,
+        "types": {
+            "categories": "array",
+            "chapo": "string",
+            "cover": "object",
+            "creator": "string",
+            "date": "string",
+            "date_created": "string",
+            "date_timestamp": "int",
+            "date_updated": "string",
+            "highlight": "bool",
+            "id": "string",
+            "img": "string",
+            "img_credits": "string",
+            "img_legend": "string",
+            "link": "string",
+            "match_id": "null",
+            "surtitle": "string",
+            "tags": "array",
+            "text": "object",
+            "texte": "string",
+            "thumbnail": "string",
+            "title": "string",
+            "type": "string"
+        }
     },
     "ffbbserver_competitions": {
         "available": true,
@@ -143,7 +250,45 @@
             "typeCompetition",
             "typeCompetitionGenerique"
         ],
-        "estimatedTotalHits": 3717
+        "estimatedTotalHits": 3713,
+        "types": {
+            "age": "string",
+            "categorie": "object",
+            "code": "string",
+            "codeComite": "string",
+            "codeLigue": "string",
+            "compare_old_site": "bool",
+            "competition_origine": "string",
+            "competition_origine_niveau": "int",
+            "competition_origine_nom": "string",
+            "creationEnCours": "bool",
+            "date_created": "string",
+            "date_updated": "string",
+            "emarqueV2": "null",
+            "etat": "string",
+            "id": "string",
+            "idCompetitionPere": "null",
+            "liveStat": "bool",
+            "logo": "object",
+            "niveau": "string",
+            "niveau_nb": "string",
+            "nom": "string",
+            "ordre": "int",
+            "organisateur": "object",
+            "participants": "string",
+            "phase_code": "string",
+            "phases": "array",
+            "poules": "array",
+            "pro": "bool",
+            "publicationInternet": "string",
+            "saison": "object",
+            "sexe": "string",
+            "slug": "string",
+            "thumbnail": "string",
+            "toUpdate": "bool",
+            "typeCompetition": "string",
+            "typeCompetitionGenerique": "object"
+        }
     },
     "ffbbserver_engagements": {
         "available": true,
@@ -177,7 +322,37 @@
             "sexe",
             "thumbnail"
         ],
-        "estimatedTotalHits": 5000
+        "estimatedTotalHits": 5000,
+        "types": {
+            "_geo": "object",
+            "age": "string",
+            "categorie": "object",
+            "clubPro": "bool",
+            "codeAbrege": "string",
+            "codeClub": "string",
+            "codeComite": "string",
+            "codeLigue": "string",
+            "competitionsUrl": "string",
+            "gradient_color": "string",
+            "id": "string",
+            "idCompetition": "object",
+            "idPoule": "object",
+            "logo": "object",
+            "niveau": "object",
+            "nom": "string",
+            "nomClub": "string",
+            "nomClubPro": "string",
+            "nomComite": "string",
+            "nomCtc": "null",
+            "nomEquipe": "string",
+            "nomLigue": "string",
+            "nomOfficiel": "string",
+            "nomOrganisme": "string",
+            "nomUsuel": "string",
+            "numeroEquipe": "string",
+            "sexe": "string",
+            "thumbnail": "string"
+        }
     },
     "ffbbserver_formations": {
         "available": true,
@@ -210,7 +385,36 @@
             "title",
             "type"
         ],
-        "estimatedTotalHits": 121
+        "estimatedTotalHits": 127,
+        "types": {
+            "certification": "string",
+            "content": "string",
+            "description": "string",
+            "domain": "string",
+            "duration_hours": "string",
+            "files": "array",
+            "goals": "string",
+            "id": "string",
+            "id_origin_hash": "string",
+            "image": "string",
+            "level": "string",
+            "modalities": "string",
+            "mode": "string",
+            "mode_hidden": "string",
+            "pedagogy": "string",
+            "places": "array",
+            "postal_codes": "array",
+            "prerequisites": "string",
+            "programIdFbi": "null",
+            "public": "string",
+            "reference": "string",
+            "results": "string",
+            "sessions": "array",
+            "theme": "string",
+            "thumbnail": "string",
+            "title": "string",
+            "type": "string"
+        }
     },
     "ffbbserver_organismes": {
         "available": true,
@@ -244,7 +448,37 @@
             "urlSiteWeb",
             "url_competition"
         ],
-        "estimatedTotalHits": 5000
+        "estimatedTotalHits": 5000,
+        "types": {
+            "_geo": "object",
+            "adresse": "string",
+            "adresseClubPro": "null",
+            "cartographie": "object",
+            "code": "string",
+            "code_emploi": "string",
+            "commune": "object",
+            "communeClubPro": "object",
+            "dateAffiliation": "null",
+            "engagements_codes": "string",
+            "engagements_noms": "string",
+            "id": "string",
+            "labellisation": "array",
+            "logo": "object",
+            "mail": "string",
+            "nom": "string",
+            "nomClubPro": "string",
+            "nom_simple": "null",
+            "offresPratiques": "array",
+            "organisme_id_pere": "object",
+            "saison": "null",
+            "saison_en_cours": "bool",
+            "telephone": "string",
+            "thumbnail": "string",
+            "type": "string",
+            "type_association": "object",
+            "urlSiteWeb": "string",
+            "url_competition": "string"
+        }
     },
     "ffbbserver_rencontres": {
         "available": true,
@@ -286,7 +520,45 @@
             "uniqueKey",
             "url_competition"
         ],
-        "estimatedTotalHits": 5000
+        "estimatedTotalHits": 5000,
+        "types": {
+            "_geo": "object",
+            "competitionId": "object",
+            "creation_timestamp": "int",
+            "date": "string",
+            "dateSaisieResultat_timestamp": "int",
+            "date_rencontre": "string",
+            "date_rencontre_timestamp": "int",
+            "date_timestamp": "int",
+            "gsId": "null",
+            "handicap1": "null",
+            "handicap2": "null",
+            "id": "string",
+            "idEngagementEquipe1": "object",
+            "idEngagementEquipe2": "object",
+            "idOrganismeEquipe1": "object",
+            "idOrganismeEquipe2": "object",
+            "idPoule": "object",
+            "joue": "bool",
+            "modification_timestamp": "int",
+            "niveau": "string",
+            "niveau_nb": "string",
+            "nomEquipe1": "string",
+            "nomEquipe2": "string",
+            "numeroJournee": "string",
+            "officiels": "array",
+            "officiels_string": "string",
+            "organisateur": "object",
+            "pratique": "string",
+            "rematch_videos": "array",
+            "resultatEquipe1": "string",
+            "resultatEquipe2": "string",
+            "saison": "object",
+            "salle": "object",
+            "thumbnail": "null",
+            "uniqueKey": "string",
+            "url_competition": "string"
+        }
     },
     "ffbbserver_salles": {
         "available": true,
@@ -309,7 +581,31 @@
             "type",
             "type_association"
         ],
-        "estimatedTotalHits": 5000
+        "estimatedTotalHits": 5000,
+        "types": {
+            "_geo": "object",
+            "adresse": "string",
+            "adresseComplement": "string",
+            "capaciteSpectateur": "string",
+            "cartographie": "object",
+            "commune": "object",
+            "date_created": "string",
+            "date_updated": "string",
+            "id": "string",
+            "libelle": "string",
+            "libelle2": "string",
+            "mail": "string",
+            "numero": "string",
+            "telephone": "string",
+            "thumbnail": "null",
+            "type": "string",
+            "type_association": "object"
+        }
+    },
+    "ffbbserver_sessions": {
+        "available": false,
+        "attributes": [],
+        "estimatedTotalHits": null
     },
     "ffbbserver_terrains": {
         "available": true,
@@ -330,7 +626,24 @@
             "thumbnail",
             "type"
         ],
-        "estimatedTotalHits": 5000
+        "estimatedTotalHits": 5000,
+        "types": {
+            "_geo": "object",
+            "accesLibre": "bool",
+            "cartographie": "object",
+            "commune": "object",
+            "date_created": "string",
+            "date_updated": "string",
+            "id": "string",
+            "largeur": "int",
+            "longueur": "int",
+            "natureSol": "object",
+            "nom": "string",
+            "numero": "int",
+            "rue": "string",
+            "thumbnail": "null",
+            "type": "string"
+        }
     },
     "ffbbserver_tournois": {
         "available": true,
@@ -367,7 +680,40 @@
             "tournoiTypes3x3",
             "urlOrganisateur"
         ],
-        "estimatedTotalHits": 25
+        "estimatedTotalHits": 23,
+        "types": {
+            "_geo": "object",
+            "adresse": "string",
+            "adresseComplement": "null",
+            "ageMax": "int",
+            "ageMin": "int",
+            "cartographie": "object",
+            "categorieChampionnat3x3Id": "null",
+            "categorieChampionnat3x3Libelle": "null",
+            "code": "string",
+            "commune": "object",
+            "date_created": "string",
+            "date_updated": "string",
+            "debut": "string",
+            "debut_timestamp": "int",
+            "description": "string",
+            "document_flyer": "null",
+            "fin": "string",
+            "fin_timestamp": "int",
+            "id": "string",
+            "mailOrganisateur": "null",
+            "nbParticipantPrevu": "null",
+            "nom": "string",
+            "nomOrganisateur": "null",
+            "sexe": "string",
+            "siteChoisi": "string",
+            "tarifOrganisateur": "string",
+            "telephoneOrganisateur": "string",
+            "thumbnail": "null",
+            "tournoiType": "string",
+            "tournoiTypes3x3": "array",
+            "urlOrganisateur": "null"
+        }
     },
     "ffbbsite_faq": {
         "available": true,
@@ -381,7 +727,17 @@
             "thumbnail",
             "type"
         ],
-        "estimatedTotalHits": 187
+        "estimatedTotalHits": 187,
+        "types": {
+            "answer": "string",
+            "category": "array",
+            "date_published": "string",
+            "id": "string",
+            "question": "string",
+            "subcategories": "array",
+            "thumbnail": "null",
+            "type": "string"
+        }
     },
     "ffbbsite_jobs": {
         "available": true,
@@ -424,7 +780,46 @@
             "type_filter",
             "unit"
         ],
-        "estimatedTotalHits": 6
+        "estimatedTotalHits": 5,
+        "types": {
+            "asset": "null",
+            "author": "string",
+            "category": "string",
+            "city": "string",
+            "contract_duration": "string",
+            "contract_specificities": "array",
+            "contract_type": "string",
+            "date_published": "string",
+            "date_published_timestamp": "int",
+            "degree": "array",
+            "departement": "string",
+            "domain": "string",
+            "experience": "string",
+            "id": "int",
+            "job_description": "string",
+            "job_start": "string",
+            "job_start_filter": "string",
+            "job_start_timestamp": "int",
+            "lieu": "object",
+            "mail": "string",
+            "openings": "int",
+            "phone": "string",
+            "postal_code": "string",
+            "profil": "string",
+            "reference": "string",
+            "region": "string",
+            "salary": "string",
+            "service": "string",
+            "structure": "string",
+            "structure_linked": "string",
+            "studies": "string",
+            "terms_contact": "null",
+            "thumbnail": "null",
+            "title": "string",
+            "type": "string",
+            "type_filter": "string",
+            "unit": "string"
+        }
     },
     "ffbbsite_news": {
         "available": true,
@@ -451,7 +846,30 @@
             "title",
             "type"
         ],
-        "estimatedTotalHits": 6469
+        "estimatedTotalHits": 6568,
+        "types": {
+            "author": "string",
+            "categories": "array",
+            "category": "string",
+            "category_2": "string",
+            "content": "string",
+            "date_published": "string",
+            "featured": "bool",
+            "featured_mobile": "null",
+            "filters_3x3": "null",
+            "headline": "string",
+            "id": "int",
+            "image": "string",
+            "link": "null",
+            "match_id": "null",
+            "permalink": "string",
+            "push_newsletter": "bool",
+            "surtitle": "string",
+            "tags": "array",
+            "thumbnail": "string",
+            "title": "string",
+            "type": "string"
+        }
     },
     "ffbbsite_pages": {
         "available": true,
@@ -472,12 +890,45 @@
             "title",
             "type"
         ],
-        "estimatedTotalHits": 351
+        "estimatedTotalHits": 351,
+        "types": {
+            "categories": "array",
+            "category": "string",
+            "codes": "array",
+            "content": "string",
+            "date_published": "string",
+            "id": "string",
+            "image": "string",
+            "link": "null",
+            "navigation_type": "null",
+            "permalink": "string",
+            "private": "bool",
+            "private_type": "string",
+            "thumbnail": "string",
+            "title": "string",
+            "type": "string"
+        }
+    },
+    "genius_sport_matches": {
+        "available": false,
+        "attributes": [],
+        "estimatedTotalHits": null
+    },
+    "genius_sports_live_logs": {
+        "available": false,
+        "attributes": [],
+        "estimatedTotalHits": null
+    },
+    "rematch_videos": {
+        "available": false,
+        "attributes": [],
+        "estimatedTotalHits": null
     },
     "youtube_playlists": {
         "available": true,
         "attributes": [],
-        "estimatedTotalHits": 0
+        "estimatedTotalHits": 0,
+        "types": []
     },
     "youtube_videos": {
         "available": true,
@@ -507,6 +958,32 @@
             "type",
             "viewCount"
         ],
-        "estimatedTotalHits": 1872
+        "estimatedTotalHits": 1875,
+        "types": {
+            "channelId": "string",
+            "channelTitle": "string",
+            "commentCount": "int",
+            "date": "string",
+            "date_created": "string",
+            "date_published": "string",
+            "date_updated": "string",
+            "description": "string",
+            "display_image": "null",
+            "duration": "string",
+            "duration_seconds": "int",
+            "id": "string",
+            "likeCount": "int",
+            "snippet": "object",
+            "tags": "array",
+            "thumbnail": "null",
+            "thumbnailDefaultUrl": "string",
+            "thumbnailHighUrl": "string",
+            "thumbnailMaxresUrl": "string",
+            "thumbnailMediumUrl": "string",
+            "thumbnailStandardUrl": "string",
+            "title": "string",
+            "type": "string",
+            "viewCount": "int"
+        }
     }
 }
