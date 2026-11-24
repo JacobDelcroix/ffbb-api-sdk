@@ -40,7 +40,7 @@ if ($spec === null) {
     fwrite(STDERR, "Spec OpenAPI inaccessible (WAF ou jeton) : instantané Directus inchangé.\n");
 }
 
-$indexes = $discoverer->indexes();
+$indexes = $discoverer->indexes(array_keys($read('indexes.json')));
 
 $diff = SchemaDiff::compare($read('openapi.json'), $spec ?? $read('openapi.json'), $read('indexes.json'), $indexes);
 $summary = $diff->toMarkdown();

@@ -42,11 +42,21 @@ final class Discoverer
     }
 
     /**
+     * Sonde les index du SDK, les index supplémentaires et tous ceux déjà connus.
+     *
+     * Les index de l'instantané précédent sont toujours sondés : sans cela, un index
+     * simplement non interrogé apparaîtrait à tort comme « indisponible ».
+     *
+     * @param  list<string>  $knownIndexes  index de l'instantané précédent
      * @return array<string, array{available: bool, attributes: list<string>, estimatedTotalHits: ?int}>
      */
-    public function indexes(): array
+    public function indexes(array $knownIndexes = []): array
     {
-        $uids = array_values(array_unique([...array_map(static fn (Index $i): string => $i->value, Index::cases()), ...self::EXTRA_INDEXES]));
+        $uids = array_values(array_unique([
+            ...array_map(static fn (Index $i): string => $i->value, Index::cases()),
+            ...self::EXTRA_INDEXES,
+            ...$knownIndexes,
+        ]));
         sort($uids);
 
         $out = [];
